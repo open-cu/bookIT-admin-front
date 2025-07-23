@@ -33,7 +33,7 @@ jobs:
       - name: Deploy on remote server
         run: |
           ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-          cd ./bookIT-admin-front &&
+          cd /home/$SSH_USER/bookIT-admin-front &&
           git checkout main &&
           git pull &&
           docker-compose down &&
