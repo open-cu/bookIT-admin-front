@@ -148,14 +148,3 @@ tui-avatar::before {
   justify-self: flex-end;
   align-items: center;
 }
-
-.table-container {
-  margin-top: 16px;
-  padding: 16px;
-  background: var(--background-secondary);
-  border-radius: 10px;
-}
-
-.table {
-  inline-size: 100%;
-}

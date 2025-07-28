@@ -34,6 +34,11 @@ export class FilterBlockComponent implements OnInit {
     return Object.entries(this.fields);
   }
 
+  protected getControl(formName: keyof typeof this.formGroup.controls) {
+    return this.formGroup.controls[formName] as FormControl<string>;
+  }
+
+
   protected onFindButton() {
     this.onFilterEmitter.emit(this.formGroup.value);
   }

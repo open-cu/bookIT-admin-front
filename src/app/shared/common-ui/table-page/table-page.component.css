@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.table-container {
+  padding: 16px;
+  background: var(--background-secondary);
+  border-radius: 10px;
+}
+
+.table {
+  inline-size: 100%;
+}

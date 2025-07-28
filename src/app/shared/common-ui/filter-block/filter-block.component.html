@@ -5,8 +5,9 @@
       <input
         [placeholder]="entry[1]"
         tuiTextfield
+        [formControl]="getControl(entry[0])"
       />
     </tui-textfield>
   }
 </div>
-<button class="filter-button" tuiButton>{{ filterText }}</button>
+<button class="filter-button" (click)="onFindButton()" tuiButton>{{ filterText }}</button>
