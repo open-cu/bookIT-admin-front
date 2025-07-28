@@ -1,0 +1,48 @@
+:host {
+  display: flex;
+}
+
+:host::ng-deep {
+  content: '';
+  background: url("/assets/images/coworking-background.webp") center center no-repeat;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+}
+
+p {
+  margin: 0;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+  margin: auto;
+  background: var(--background-primary);
+  border-radius: 20px;
+  padding: 16px;
+  width: min(100vw, 450px);
+  height: auto;
+}
+
+.auth-title {
+  color: var(--text-primary);
+}
+
+.invalid-input-label {
+  color: var(--tui-text-negative) !important;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.submit-button {
+  height: 48px;
+  justify-self: right;
+  margin-top: 8px;
+}
+

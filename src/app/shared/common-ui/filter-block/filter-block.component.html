@@ -1,0 +1,12 @@
+<p class="h1 filter-title">{{ title }}</p>
+<div class="input-container">
+  @for (entry of getEntries(); track $index) {
+    <tui-textfield class="filter-input">
+      <input
+        [placeholder]="entry[1]"
+        tuiTextfield
+      />
+    </tui-textfield>
+  }
+</div>
+<button class="filter-button" tuiButton>{{ filterText }}</button>

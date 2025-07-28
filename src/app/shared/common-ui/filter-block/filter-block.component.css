@@ -1,0 +1,29 @@
+:host {
+  display: grid;
+  background: var(--background-secondary);
+  padding: 20px;
+  row-gap: 20px;
+  border-radius: 10px;
+}
+
+.filter-title {
+  margin: 0;
+  justify-self: left;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 48px;
+}
+
+.filter-input {
+  width: 100%;
+}
+
+.filter-button {
+  margin: 0;
+  justify-self: center;
+  width: 158px;
+  height: 44px !important;
+}

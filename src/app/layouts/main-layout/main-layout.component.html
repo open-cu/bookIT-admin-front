@@ -1,0 +1,42 @@
+<header
+  class="nav-header"
+  tuiNavigationHeader
+>
+</header>
+<div class="side-bar-block">
+  <aside [tuiNavigationAside]="true" tuiTheme="light">
+    <header class="logo-container">
+      <img
+        class="logo"
+        src="/assets/images/logo.png"
+        alt="логотип Т-банка"
+        width="150"
+        height="46"
+      >
+    </header>
+    <nav class="sidebar-nav">
+      @for (button of NAVIGATION_BUTTONS; track $index) {
+        <button tuiAsideItem [routerLink]="['/', button.path]">
+          <tui-icon [icon]="button.icon"></tui-icon>
+          {{ button.name }}
+        </button>
+      }
+    </nav>
+    <footer>
+      <div class="user-block">
+        <tui-avatar [src]="'@tui.user'" size="l"></tui-avatar>
+        <p>{{ me$ | async | name }}</p>
+      </div>
+      <button
+        appearance="secondary-destructive"
+        tuiButton
+        type="button"
+        size="s"
+        (click)="onLogoutClick()"
+      >Выйти из аккаунта</button>
+    </footer>
+  </aside>
+</div>
+<main tuiNavigationMain>
+  <router-outlet></router-outlet>
+</main>
