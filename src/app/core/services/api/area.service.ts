@@ -9,7 +9,7 @@ import {UpdateArea} from '../../models/interfaces/areas/update-area';
   providedIn: 'root'
 })
 export class AreaService extends ApiService<Area> {
-  protected override baseUrl = '/api/area';
+  protected override baseUrl = '/api/areas';
 
   override delete(areaId: string) {
     return super.delete(areaId);

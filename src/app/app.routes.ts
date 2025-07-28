@@ -4,12 +4,14 @@ import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {APP_ROUTES} from './app.routes.paths';
 import {LoginPageComponent} from './pages/login-page/login-page.component';
 import {TicketsPageComponent} from './pages/tickets-page/tickets-page.component';
+import {AreaPageComponent} from './pages/area-page/area-page.component';
 
 export const routes: Routes = [
   {path: APP_ROUTES.LOGIN, component: LoginPageComponent},
   {path: '', component: MainLayoutComponent,
     children: [
       {path: APP_ROUTES.TICKETS, component: TicketsPageComponent},
+      {path: APP_ROUTES.AREAS, component: AreaPageComponent},
     ]
   },
   {path: '**', component: NotFoundPageComponent}

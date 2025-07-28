@@ -45,6 +45,8 @@ export class TablePageComponent<T extends object> implements OnChanges {
   })
   public loadItemsFn!: (params: any) => Observable<Pageable<T>>;
 
+  @Input('title') tableTitle = 'Таблица'
+
   protected readonly page$ = new BehaviorSubject(0);
   protected readonly size$ = new BehaviorSubject(10);
   protected readonly total$ = new BehaviorSubject(0);
@@ -58,6 +60,11 @@ export class TablePageComponent<T extends object> implements OnChanges {
   }
 
   ngOnChanges() {
+    this.items$ = this.loadItems();
+  }
+
+  protected onUpdateItems() {
+    this.loading$.next(true);
     this.items$ = this.loadItems();
   }
 

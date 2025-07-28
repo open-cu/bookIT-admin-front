@@ -8,6 +8,30 @@
   border-radius: 10px;
 }
 
+.table-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.table-title {
+  color: var(--text-primary);
+  margin: 0;
+  justify-self: flex-start;
+}
+
+.update-button {
+  color: var(--alternative-color);
+  font-size: 14px;
+  background: transparent;
+  border: none;
+  height: 19px;
+  width: min-content;
+  justify-self: flex-end;
+  align-self: center;
+}
+
 .table {
   inline-size: 100%;
 }

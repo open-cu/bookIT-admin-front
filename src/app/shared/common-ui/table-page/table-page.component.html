@@ -1,4 +1,8 @@
 <div class="table-container">
+  <div class="table-header">
+    <p class="h1 table-title">{{ tableTitle }}</p>
+    <button class="btn update-button" (click)="onUpdateItems()">Обновить</button>
+  </div>
   <tui-loader
     [overlay]="true"
     [showLoader]="(loading$ | async) ?? false"
