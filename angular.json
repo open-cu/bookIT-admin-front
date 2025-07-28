@@ -26,7 +26,9 @@
           "skipTests": true
         },
         "@schematics/angular:pipe": {
-          "skipTests": true
+          "skipTests": true,
+          "path": "/src/app/shared/pipes",
+          "typeSeparator": "."
         },
         "@schematics/angular:interceptor": {
           "skipTests": true

@@ -19,7 +19,7 @@ export class TicketService extends ApiService<Ticket> {
     return super.get(ticketId);
   }
 
-  override getList(params?: SortTicket) {
+  override getList(params?: Partial<SortTicket>) {
     return super.getList(params);
   }
 

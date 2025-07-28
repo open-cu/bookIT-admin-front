@@ -25,7 +25,6 @@ export class FilterBlockComponent implements OnInit {
 
   ngOnInit() {
     const formParams = new Map<string, FormControl<string | null>>();
-    console.log(this.fields);
     Object.entries(this.fields)
       .forEach(([key, _]) => formParams.set(key, new FormControl('')));
     this.formGroup = new FormGroup(Object.fromEntries(formParams));
