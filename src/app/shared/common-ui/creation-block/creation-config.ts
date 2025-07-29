@@ -1,0 +1,28 @@
+export interface CreationConfig {
+  options: CreationOptions,
+  title?: string,
+  button?: string
+}
+
+export type CreationOptions = CreationOption[]
+
+export interface SelectOption {
+  value: any
+  label?: string
+}
+
+export interface CreationOption {
+  key: string,
+  /* label as same as key by default */
+  value?: any,
+  label?: string,
+  placeholder?: string,
+  /* 'text' by default */
+  type?: 'text' | 'select' | 'images',
+  /* necessary only if type === 'select' */
+  options?: SelectOption[],
+}
+
+export type CreationReturn<T extends CreationOption[]> = {
+  [K in T[number]['key']]: any;
+};

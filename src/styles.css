@@ -5,15 +5,13 @@
 
 :root {
   box-sizing: border-box;
+  --top-layout-border: 20px;
+  --items-table-margin-top: 16px;
 }
 
 body {
   overflow: hidden;
   margin: 0;
-}
-
-button, a {
-  user-select: none;
 }
 
 button:active, a:active {
@@ -148,4 +146,8 @@ tui-avatar::before {
   min-width: 158px;
   justify-self: flex-end;
   align-items: center;
+}
+
+.items-table {
+  margin-top: var(--items-table-margin-top);
 }

@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnChanges} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnChanges, Output} from '@angular/core';
 import {BehaviorSubject, combineLatest, EMPTY, Observable, switchMap, tap} from 'rxjs';
 import {Pageable} from '../../../core/models/interfaces/pagination/pageable';
 import {catchError} from 'rxjs/operators';
@@ -9,26 +9,27 @@ import {
   TuiTablePaginationEvent, TuiTableTbody,
   TuiTableTd, TuiTableTh, TuiTableThGroup, TuiTableTr
 } from '@taiga-ui/addon-table';
-import {TuiLoader} from "@taiga-ui/core";
+import {TuiIcon, TuiLoader} from "@taiga-ui/core";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ColumnConfig} from "./column-config";
 
 @Component({
   selector: 'app-table-page',
-  imports: [
-    TuiTableDirective,
-    TuiLoader,
-    TuiTablePagination,
-    AsyncPipe,
-    TuiTableCell,
-    TuiTableTd,
-    TuiTableTh,
-    TuiTableThGroup,
-    TuiTableTbody,
-    TuiTableTr,
-    NgClass,
-  ],
+    imports: [
+        TuiTableDirective,
+        TuiLoader,
+        TuiTablePagination,
+        AsyncPipe,
+        TuiTableCell,
+        TuiTableTd,
+        TuiTableTh,
+        TuiTableThGroup,
+        TuiTableTbody,
+        TuiTableTr,
+        NgClass,
+        TuiIcon,
+    ],
   templateUrl: './table-page.component.html',
   styleUrl: './table-page.component.css'
 })
@@ -46,6 +47,7 @@ export class TablePageComponent<T extends object> implements OnChanges {
   public loadItemsFn!: (params: any) => Observable<Pageable<T>>;
 
   @Input('title') tableTitle = 'Таблица'
+  @Output('OnFilter') onFilterOpenedEmitter = new EventEmitter<void>();
 
   protected readonly page$ = new BehaviorSubject(0);
   protected readonly size$ = new BehaviorSubject(10);
@@ -64,6 +66,10 @@ export class TablePageComponent<T extends object> implements OnChanges {
   }
 
   protected onUpdateItems() {
+    this.updateItems();
+  }
+
+  protected updateItems() {
     this.loading$.next(true);
     this.items$ = this.loadItems();
   }
@@ -125,5 +131,9 @@ export class TablePageComponent<T extends object> implements OnChanges {
 
   protected getColumnsTitles() {
     return this.columnConfigs.map(column => column?.title ?? column.key);
+  }
+
+  protected onFilterOpened() {
+    this.onFilterOpenedEmitter.emit();
   }
 }

@@ -6,10 +6,11 @@ import {TuiAvatar} from '@taiga-ui/kit';
 import {APP_ROUTES} from '../../app.routes.paths';
 import {UserService} from '../../core/services/api/auth/user.service';
 import {UserNamePipe} from '../../shared/pipes/user-name.pipe';
-import {Observable} from 'rxjs';
 import {User} from '../../core/models/interfaces/users/user';
 import {AsyncPipe} from '@angular/common';
 import {AuthService} from '../../core/services/api/auth/auth.service';
+import {extractResolved} from '../../core/utils/extract-resolved';
+import {USER_DATA} from '../../core/resolvers/user-resolver';
 
 @Component({
   standalone: true,
@@ -85,7 +86,7 @@ export class MainLayoutComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  protected me$: Observable<User>;
+  protected me$ = extractResolved<User>(USER_DATA, false);
 
   constructor() {
     this.me$ = this.userService.getMe();

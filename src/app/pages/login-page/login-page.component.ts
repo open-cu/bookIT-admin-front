@@ -41,7 +41,7 @@ export class LoginPageComponent {
   private authService = inject(AuthService);
   private alertService = inject(TuiAlertService);
 
-  formatTelegram(event: Event) {
+  protected formatTelegram(event: Event) {
     const input = event.target as HTMLInputElement;
     let value = input.value;
 
@@ -52,17 +52,17 @@ export class LoginPageComponent {
     }
   }
 
-  protected getErrorMessage(formName: keyof typeof this.authForm.value) {
+  protected getErrorMessage(formName: keyof typeof this.authForm.controls) {
     return AppValidators.getErrorMessage(this.authForm.controls[formName].errors)
   }
 
-  protected isInvalidForm(formName: keyof typeof this.authForm.value) {
+  protected isInvalidForm(formName: keyof typeof this.authForm.controls) {
     const formControl = this.authForm.controls[formName];
     return !formControl || formControl.invalid && formControl.touched;
   }
 
   protected getControls() {
-    return Object.entries(this.authForm.controls) as [keyof typeof this.authForm.value,  FormControl<string | null>][];
+    return Object.entries(this.authForm.controls) as [keyof typeof this.authForm.controls,  FormControl<string | null>][];
   }
 
   onSubmit() {

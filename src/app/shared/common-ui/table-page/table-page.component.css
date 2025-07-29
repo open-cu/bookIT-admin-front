@@ -16,9 +16,19 @@
 }
 
 .table-title {
+  display: flex;
+  flex-direction: row;
   color: var(--text-primary);
   margin: 0;
   justify-self: flex-start;
+}
+
+.filter-button {
+  color: var(--text-primary);
+  border: none;
+  background: var(--background-secondary);
+  justify-self: flex-start;
+  margin-left: 8px;
 }
 
 .update-button {

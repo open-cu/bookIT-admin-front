@@ -52,5 +52,5 @@ footer {
 }
 
 main[tuiNavigationMain] {
-  border-top: 20px solid transparent;
+  border-top: var(--top-layout-border) solid transparent;
 }

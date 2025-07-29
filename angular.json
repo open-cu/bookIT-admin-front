@@ -41,8 +41,12 @@
         },
         "@schematics/angular:service": {
           "skipTests": true,
-          "path": "/src/app/core/services/",
+          "path": "/src/app/core/services",
           "type": "service"
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true,
+          "path": "/src/app/core/resolvers"
         }
       },
       "root": "",

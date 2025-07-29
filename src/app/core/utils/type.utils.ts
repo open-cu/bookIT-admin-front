@@ -94,4 +94,11 @@ export namespace TypeUtils {
   export function isEqual<T, K>(value: T, other: K): boolean {
     return _.isEqual(value, other);
   }
+
+  type EnumKeys<T> = Exclude<keyof T, number>;
+
+  export function getEnumKeys<T extends object>(enumObj: T): EnumKeys<T>[] {
+    return Object.keys(enumObj)
+      .filter(key => isNaN(Number(key))) as EnumKeys<T>[];
+  }
 }

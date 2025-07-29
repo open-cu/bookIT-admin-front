@@ -1,0 +1,50 @@
+<p class="h1 block-title">{{ context.data.title ?? 'Создание' }}</p>
+<form [formGroup]="creationForm" (ngSubmit)="onSubmit()" class="creation-block-form">
+  @for (config of context.data.options; track $index) {
+    <div class="input-container">
+      <label class="input-label" tuiLabel>{{ config.label ?? config.key }}</label>
+      @switch (config.type) {
+        @case ("select") {
+          <tui-textfield
+            tuiChevron
+            [stringify]="stringify"
+            [identityMatcher]="matcher"
+          >
+            @if (getFormControl(config.key).invalid) {
+              <label class="invalid-creation-input" tuiLabel>Это поле обязательно к заполнению</label>
+            }
+            <input
+              tuiSelect
+              [formControl]="getFormControl(config.key)"
+            />
+
+            <tui-data-list-wrapper
+              *tuiTextfieldDropdown
+              new
+              [items]="config.options ?? null"
+            />
+          </tui-textfield>
+        }
+        @default {
+          <tui-textfield>
+            @if (getFormControl(config.key).invalid) {
+              <label class="invalid-creation-input" tuiLabel>Это поле обязательно к заполнению</label>
+            }
+            <input
+              [placeholder]="config.placeholder ?? ''"
+              tuiTextfield
+              [invalid]="false"
+              [formControl]="getFormControl(config.key)"
+            />
+          </tui-textfield>
+        }
+      }
+    </div>
+  }
+  <button
+    type="submit"
+    tuiButton
+    class="create-button"
+    [disabled]="creationForm.invalid"
+  >{{ context.data.button ?? 'Создать' }}</button>
+</form>

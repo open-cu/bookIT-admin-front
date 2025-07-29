@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.block-title {
+  color: var(--text-primary);
+}
+
+.create-button {
+  height: 48px;
+  justify-self: right;
+  margin-top: 8px;
+}
+
+.creation-block-form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.input-label {
+  padding-left: 8px;
+}
+
+.invalid-creation-input {
+  color: var(--tui-text-negative) !important;
+}
