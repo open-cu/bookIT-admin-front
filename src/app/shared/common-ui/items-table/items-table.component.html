@@ -1,0 +1,74 @@
+<div class="table-container">
+  <div class="table-header">
+    <p class="h1 table-title">
+      {{ tableTitle }}
+      <button class="filter-button" (click)="onFilterOpened()">
+        <tui-icon icon="list-filter"></tui-icon>
+      </button>
+    </p>
+    <button class="btn update-button" (click)="updateItems()">Обновить</button>
+  </div>
+  <tui-loader
+    [overlay]="true"
+    [showLoader]="(loading$ | async) ?? false"
+  >
+    <table
+      tuiTable
+      class="table"
+      [columns]="getColumnsKeys()"
+    >
+      <thead>
+      <tr tuiThGroup>
+        @for (column of getColumnsTitles(); track $index) {
+          <th tuiTh [resizable]="true">{{ column }}</th>
+        }
+      </tr>
+      </thead>
+      @let data = (items$ | async)?.content ?? [];
+      <tbody tuiTbody [data]="data">
+        @for (item of data; track $index) {
+          <tr tuiTr>
+            @let tableRows = getRows(item);
+            @for (value of tableRows; track i; let i = $index) {
+              <td
+                *tuiCell="value[0]"
+                tuiTd
+                [ngClass]="getCellClasses(value[1], tableRows, columnConfigs[i])"
+                [innerHTML]="getCellValue(value[1], tableRows, columnConfigs[i])"
+              ></td>
+            }
+            @if (isEditable || isDeletable) {
+              <td tuiTd *tuiCell="editingBlockKey" class="editing-cell">
+                <div class="editing-block">
+                  @if (isDeletable) {
+                    <button class="delete-item-button" (click)="onDeleteEmitter.emit(tableRows)">
+                      <tui-icon icon="@tui.trash"></tui-icon>
+                    </button>
+                  }
+                  @if (isEditable) {
+                    <button class="edit-item-button" (click)="onEditEmitter.emit(tableRows)">
+                      <tui-icon icon="@tui.pencil"></tui-icon>
+                    </button>
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+      <tr>
+        <td [colSpan]="columnConfigs.length">
+          <tui-table-pagination
+            class="tui-space_top-2"
+            [page]="(page$ | async) ?? 0"
+            [size]="(size$ | async) ?? 0"
+            [total]="(total$ | async) ?? 0"
+            (paginationChange)="onPagination($event)"
+          />
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+  </tui-loader>
+</div>
