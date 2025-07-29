@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {Ticket} from '../../core/models/interfaces/tickets/ticket';
 import {TicketService} from '../../core/services/api/ticket.service';
 import {SortTicket} from '../../core/models/interfaces/tickets/sort-ticket';
-import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
+import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
 import {TicketType} from '../../core/models/enums/ticket-type';
 import {TypeUtils} from '../../core/utils/type.utils';
 import getEnumKeys = TypeUtils.getEnumKeys;
@@ -48,6 +48,7 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
   constructor() {
     super();
     this.userService.getMe().subscribe(user => this.creationConfig.options[0].value = user.id);
+    markAsRequired(this.creationConfig);
   }
 
   override loadItemsFn = (params: Partial<SortTicket>) => {

@@ -3,15 +3,15 @@ import {TablePageComponent} from "../../shared/common-ui/table-page/table-page.c
 import {Ticket} from '../../core/models/interfaces/tickets/ticket';
 import {Area} from '../../core/models/interfaces/areas/area';
 import {FilterOptions, FilterResult} from '../../shared/common-ui/filter-block/filter-config';
-import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
+import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
 import {TypeUtils} from '../../core/utils/type.utils';
 import getEnumKeys = TypeUtils.getEnumKeys;
 import {AreaType} from '../../core/models/enums/area-type';
 import {AreaService} from '../../core/services/api/area.service';
 import {SortArea} from '../../core/models/interfaces/areas/sort-area';
-import {CreateArea} from '../../core/models/interfaces/areas/create-area';
 import {UpdateArea} from '../../core/models/interfaces/areas/update-area';
-import {AREA_COLUMNS_CONFIG, AREA_FILTER_OPTIONS} from './area-columns.config';
+import {AREA_COLUMNS_CONFIG, AREA_FILTER_OPTIONS, CreateAreaFlat} from './area-columns.config';
+import {Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-area-page',
@@ -29,14 +29,25 @@ export class AreaPageComponent extends TablePageComponent<Area>  {
     button: 'Создать помещение',
     title: 'Создание помещение',
     options: [
-      {key: 'userId'},
-      {key: 'areaId'},
+      {key: 'name'},
+      {key: 'description'},
       {
         key: 'type',
         type: 'select',
         options: getEnumKeys(AreaType).map(key => ({value: key})),
       },
-      {key: 'description'},
+      {
+        key: 'features',
+        type: 'multiple',
+        placeholder: 'Enter'
+      },
+      {
+        key: 'capacity',
+        type: 'number',
+        validators: Validators.min(1)
+      },
+      {key: 'status'},
+      {key: 'photos', type: 'multiple'}
     ],
   };
 
@@ -46,14 +57,16 @@ export class AreaPageComponent extends TablePageComponent<Area>  {
 
   constructor() {
     super();
+    markAsRequired(this.creationConfig, ['features', 'photos']);
   }
 
   override loadItemsFn = (params: Partial<SortArea>) => {
     return this.areaService.getList(params);
   }
 
-  override createItemFn = (item: CreateArea) => {
-    return this.areaService.post(item);
+  override createItemFn = (item: CreateAreaFlat) => {
+    const { photos, ...area  } = item;
+    return this.areaService.post({createAreaRequest: area, photos: photos});
   }
 
   override deleteItemFn = (item: Ticket) => {

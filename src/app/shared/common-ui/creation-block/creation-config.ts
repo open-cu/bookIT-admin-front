@@ -1,3 +1,7 @@
+import {ValidatorFn, Validators} from '@angular/forms';
+import {TypeUtils} from '../../../core/utils/type.utils';
+import toArray = TypeUtils.toArray;
+
 export interface CreationConfig {
   options: CreationOptions,
   title?: string,
@@ -11,7 +15,7 @@ export interface SelectOption {
   label?: string
 }
 
-export type OptionType = 'text' | 'select' | 'images';
+export type OptionType = 'text' | 'select' | 'images' | 'multiple' | 'number';
 
 export interface CreationOption {
   key: string,
@@ -19,6 +23,7 @@ export interface CreationOption {
   value?: any,
   label?: string,
   placeholder?: string,
+  validators?: ValidatorFn | ValidatorFn[],
   /* 'text' by default */
   type?: OptionType,
   /* necessary only if type === 'select' */
@@ -28,3 +33,18 @@ export interface CreationOption {
 export type CreationReturn<T extends CreationOptions> = {
   [K in T[number]['key']]: any;
 };
+
+export function markAsRequired(config: CreationConfig, excludes?: string[] | string) {
+  const excludedList = toArray(excludes);
+  config.options
+    .filter(option => !excludedList.includes(option.key))
+    .forEach(option => {
+      let validators = toArray(option.validators);
+      const required = Validators.required;
+      if (!validators.includes(required)) {
+        validators.push(required)
+      }
+      option.validators = validators;
+    });
+  return config;
+}

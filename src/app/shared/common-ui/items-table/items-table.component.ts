@@ -16,20 +16,20 @@ import {ColumnConfig, TableRow} from "./column-config";
 
 @Component({
   selector: 'app-items-table',
-    imports: [
-        TuiTableDirective,
-        TuiLoader,
-        TuiTablePagination,
-        AsyncPipe,
-        TuiTableCell,
-        TuiTableTd,
-        TuiTableTh,
-        TuiTableThGroup,
-        TuiTableTbody,
-        TuiTableTr,
-        NgClass,
-        TuiIcon,
-    ],
+  imports: [
+    TuiTableDirective,
+    TuiLoader,
+    TuiTablePagination,
+    AsyncPipe,
+    TuiTableCell,
+    TuiTableTd,
+    TuiTableTh,
+    TuiTableThGroup,
+    TuiTableTbody,
+    TuiTableTr,
+    NgClass,
+    TuiIcon,
+  ],
   templateUrl: './items-table.component.html',
   styleUrl: './items-table.component.css'
 })
@@ -60,7 +60,7 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
   protected readonly loading$ = new BehaviorSubject(false);
   protected items$: Observable<Pageable<T>>;
 
-  protected readonly refresh$ = new BehaviorSubject<void>(undefined);
+  private readonly refresh$ = new BehaviorSubject<void>(undefined);
   private readonly destroy$ = new Subject<void>();
 
   private sanitizer = inject(DomSanitizer);

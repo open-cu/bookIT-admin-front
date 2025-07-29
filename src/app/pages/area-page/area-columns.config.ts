@@ -1,5 +1,6 @@
 import {ColumnConfig} from '../../shared/common-ui/items-table/column-config';
 import {FilterOptions} from '../../shared/common-ui/filter-block/filter-config';
+import {CreateArea} from '../../core/models/interfaces/areas/create-area';
 
 export const AREA_COLUMNS_CONFIG: ColumnConfig[] = [
   {
@@ -23,3 +24,5 @@ export const AREA_FILTER_OPTIONS: FilterOptions = [
     placeholder: 'Поиск по описанию'
   },
 ];
+
+export type CreateAreaFlat = CreateArea['createAreaRequest'] & Pick<CreateArea, 'photos'>;

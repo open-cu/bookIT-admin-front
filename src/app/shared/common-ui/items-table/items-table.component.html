@@ -20,42 +20,47 @@
       <thead>
       <tr tuiThGroup>
         @for (column of getColumnsTitles(); track $index) {
-          <th tuiTh [resizable]="true">{{ column }}</th>
+          <th
+            tuiTh
+            [sticky]="true"
+            [resizable]="true"
+          >{{ column }}</th>
         }
       </tr>
       </thead>
+
       @let data = (items$ | async)?.content ?? [];
       <tbody tuiTbody [data]="data">
-        @for (item of data; track $index) {
-          <tr tuiTr>
-            @let tableRows = getRows(item);
-            @for (value of tableRows; track i; let i = $index) {
-              <td
-                *tuiCell="value[0]"
-                tuiTd
-                [ngClass]="getCellClasses(value[1], tableRows, columnConfigs[i])"
-                [innerHTML]="getCellValue(value[1], tableRows, columnConfigs[i])"
-              ></td>
-            }
-            @if (isEditable || isDeletable) {
-              <td tuiTd *tuiCell="editingBlockKey" class="editing-cell">
-                <div class="editing-block">
-                  @if (isDeletable) {
-                    <button class="delete-item-button" (click)="onDeleteEmitter.emit(tableRows)">
-                      <tui-icon icon="@tui.trash"></tui-icon>
-                    </button>
-                  }
-                  @if (isEditable) {
-                    <button class="edit-item-button" (click)="onEditEmitter.emit(tableRows)">
-                      <tui-icon icon="@tui.pencil"></tui-icon>
-                    </button>
-                  }
-                </div>
-              </td>
-            }
-          </tr>
-        }
-      </tbody>
+          @for (item of data; track $index) {
+            <tr tuiTr>
+              @let tableRows = getRows(item);
+              @for (value of tableRows; track i; let i = $index) {
+                <td
+                  *tuiCell="value[0]"
+                  tuiTd
+                  [ngClass]="getCellClasses(value[1], tableRows, columnConfigs[i])"
+                  [innerHTML]="getCellValue(value[1], tableRows, columnConfigs[i])"
+                ></td>
+              }
+              @if (isEditable || isDeletable) {
+                <td tuiTd *tuiCell="editingBlockKey" class="editing-cell">
+                  <div class="editing-block">
+                    @if (isDeletable) {
+                      <button class="delete-item-button" (click)="onDeleteEmitter.emit(tableRows)">
+                        <tui-icon icon="@tui.trash"></tui-icon>
+                      </button>
+                    }
+                    @if (isEditable) {
+                      <button class="edit-item-button" (click)="onEditEmitter.emit(tableRows)">
+                        <tui-icon icon="@tui.pencil"></tui-icon>
+                      </button>
+                    }
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
       <tfoot>
       <tr>
         <td [colSpan]="columnConfigs.length">

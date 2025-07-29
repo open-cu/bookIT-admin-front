@@ -4,6 +4,8 @@
   padding: 20px;
   row-gap: 20px;
   border-radius: 10px;
+  --input-flex-basis: 250px;
+  --input-min-width: 200px;
 }
 
 .filter-title {
@@ -14,11 +16,15 @@
 .input-container {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   column-gap: 48px;
+  row-gap: 12px;
 }
 
 .filter-input {
-  width: 100%;
+  flex: 1 1 var(--input-flex-basis);
+  min-width: var(--input-min-width);
+  max-width: 100%;
 }
 
 .filter-button {

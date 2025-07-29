@@ -11,28 +11,37 @@ export class AppValidators {
   }
 }
 
+const errorMessages = new Map<string, (details: any) => string>([
+  ['required', () => 'Это поле обязательно для заполнения'],
+  ['min', (details) => {
+    const { min, actual } = details;
+    return `Минимальное значение: ${min}, введено: ${actual}`;
+  }],
+  ['max', (details) => {
+    const { max, actual } = details;
+    return `Максимальное значение: ${max}, введено: ${actual}`;
+  }],
+  ['minlength', (details) => {
+    const { requiredLength, actualLength } = details;
+    return `Минимум ${requiredLength} символов (сейчас ${actualLength})`;
+  }],
+  ['maxlength', (details) => {
+    const { requiredLength, actualLength } = details;
+    return `Максимум ${requiredLength} символов (сейчас ${actualLength})`;
+  }],
+  ['pattern', () => 'Поле содержит недопустимые символы']
+]);
 
 function getErrorMessage(errors: ValidationErrors | null) {
   if (!errors) {
     return '';
   }
 
-  if (errors['required']) {
-    return 'Это поле обязательно для заполнения';
-  }
-
-  if (errors['minlength']) {
-    const { requiredLength, actualLength } = errors['minlength'];
-    return `Минимум ${requiredLength} символов (сейчас ${actualLength})`;
-  }
-
-  if (errors['maxlength']) {
-    const { requiredLength, actualLength } = errors['maxlength'];
-    return `Максимум ${requiredLength} символов (сейчас ${actualLength})`;
-  }
-
-  if (errors['pattern']) {
-    return 'Поле содержит недопустимые символы';
+  for (const [error, message] of errorMessages) {
+    const details = errors[error];
+    if (details) {
+      return message(details);
+    }
   }
 
   return 'Недопустимое значение';

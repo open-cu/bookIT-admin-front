@@ -10,8 +10,10 @@
             [stringify]="stringify"
             [identityMatcher]="matcher"
           >
-            @if (getFormControl(config.key).invalid) {
-              <label class="invalid-creation-input" tuiLabel>Это поле обязательно к заполнению</label>
+            @if (isError(getFormControl(config.key))) {
+              <label class="invalid-creation-input" tuiLabel>
+                {{ getError(getFormControl(config.key)) }}
+              </label>
             }
             <input
               tuiSelect
@@ -25,10 +27,51 @@
             />
           </tui-textfield>
         }
+        @case ("multiple") {
+          <tui-textfield
+            multi
+            tuiTextfieldSize="l"
+          >
+            @if (isError(getFormControl(config.key))) {
+              <label class="invalid-creation-input" tuiLabel>
+                {{ getError(getFormControl(config.key)) }}
+              </label>
+            }
+            <input
+              [placeholder]="config.placeholder ?? ''"
+              tuiInputChip
+              [unique]="false"
+              [separator]="chipSep"
+              [formControl]="getFormControl(config.key)"
+            />
+            <tui-input-chip *tuiItem />
+          </tui-textfield>
+        }
+        @case ("number") {
+          <tui-textfield>
+            @if (isError(getFormControl(config.key))) {
+              <label class="invalid-creation-input" tuiLabel>
+                {{ getError(getFormControl(config.key)) }}
+              </label>
+            }
+            <input
+              tuiInputNumber
+              [placeholder]="config.placeholder ?? ''"
+              [max]="1000000"
+              [min]="0"
+              [step]="1"
+              [formControl]="getFormControl(config.key)"
+              (keydown.arrowDown)="onNumericStep(getFormControl(config.key), -1)"
+              (keydown.arrowUp)="onNumericStep(getFormControl(config.key), +1)"
+            />
+          </tui-textfield>
+        }
         @default {
           <tui-textfield>
-            @if (getFormControl(config.key).invalid) {
-              <label class="invalid-creation-input" tuiLabel>Это поле обязательно к заполнению</label>
+            @if (isError(getFormControl(config.key))) {
+              <label class="invalid-creation-input" tuiLabel>
+                {{ getError(getFormControl(config.key)) }}
+              </label>
             }
             <input
               [placeholder]="config.placeholder ?? ''"
