@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {CreationConfig, CreationOptions, CreationReturn, OptionType} from './creation-config';
+import {CreationConfig, CreationOptions, CreationReturn, OptionType, SelectOption} from './creation-config';
 import {TuiButton, TuiDialogContext, TuiLabel} from '@taiga-ui/core';
 import {injectContext} from '@taiga-ui/polymorpheus';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -63,11 +63,31 @@ export class CreationBlockComponent {
     }
   }
 
+  private transformValue(value: any, type: OptionType | undefined): any {
+    switch (type) {
+      case 'select':
+        return (value as SelectOption).value;
+      default:
+        return value;
+    }
+  }
+
+  private transformToSubmit() {
+    for (const configItem of this.context.data.options) {
+      const value = this.creationForm.controls[configItem.key].value;
+      const newValue = this.transformValue(value, configItem.type);
+      if (value !== newValue) {
+        this.creationForm.controls[configItem.key].patchValue(newValue);
+      }
+    }
+  }
+
   protected onSubmit() {
     if (this.creationForm.invalid) {
       this.creationForm.markAllAsTouched();
     }
     if (this) {
+      this.transformToSubmit();
       this.context.completeWith(this.creationForm.value);
     }
   }

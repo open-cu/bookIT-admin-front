@@ -12,6 +12,7 @@ import {TICKETS_FILTER_OPTIONS, TICKETS_COLUMN_CONFIG} from './tickets.config';
 import {TablePageComponent} from '../../shared/common-ui/table-page/table-page.component';
 import {PatchTicket} from '../../core/models/interfaces/tickets/patch-ticket';
 import {FilterOptions, FilterResult} from '../../shared/common-ui/filter-block/filter-config';
+import {AreaService} from '../../core/services/api/area.service';
 
 @Component({
   selector: 'app-tickets-page',
@@ -29,25 +30,44 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
     button: 'Создать тикет',
     title: 'Создание тикета',
     options: [
-      {key: 'userId'},
-      {key: 'areaId'},
+      {
+        key: 'userId',
+        label: 'id пользователя'
+      },
+      {
+        key: 'areaId',
+        label: 'Помещение',
+        type: 'select',
+      },
       {
         key: 'type',
+        label: 'Тип',
         type: 'select',
         options: getEnumKeys(TicketType).map(key => ({value: key})),
       },
-      {key: 'description'},
+      {
+        key: 'description',
+        label: 'Описание',
+        value: ''
+      },
     ],
   };
 
   override columns = TICKETS_COLUMN_CONFIG;
 
   private ticketService = inject(TicketService);
+  private areaService = inject(AreaService);
   private userService = inject(UserService);
 
   constructor() {
     super();
-    this.userService.getMe().subscribe(user => this.creationConfig.options[0].value = user.id);
+    this.userService.getMe()
+      .subscribe(user => this.creationConfig.options[0].value = user.id);
+    this.areaService.getList()
+      .subscribe(
+        areas => this.creationConfig.options[1].options = areas.content
+          .map(area => ({value: area.id, label: area.name}))
+      );
     markAsRequired(this.creationConfig, 'description');
   }
 
