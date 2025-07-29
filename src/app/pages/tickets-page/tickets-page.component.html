@@ -1,25 +1,14 @@
-<header class="page-header">
-  <p class="h1 page-title">{{ isFilterOpened ? 'Тикеты' : '' }}</p>
-  <button
-    tuiButton
-    appearance="info"
-    class="btn create-item-btn"
-    (click)="onCreateNewItem()"
-  >Создать тикет</button>
-</header>
-@if (isFilterOpened) {
-  <app-filter-block
-    [fields]="fieldsPlaceholders"
-    filterText="Найти тикет"
-    title="Поиск по тикетам"
-    (onFilter)="fields = changeFilter($event)"
-  ></app-filter-block>
-}
-
 <app-table-page
   title="Тикеты"
-  class="items-table"
+  filterButton="Найти тикет"
+  filterTitle="Поиск тикета"
   [columns]="columns"
-  [loadFn]="fetchItems"
-  (OnFilter)="isFilterOpened = !isFilterOpened"
+  [createFn]="createItemFn"
+  [deleteFn]="deleteItemFn"
+  [editFn]="editItemFn"
+  [loadFn]="loadItemsFn"
+  [filterOptions]="filterOptions"
+  [creationConfig]="creationConfig"
+  [editionConfig]="editionConfig"
+  [deletionConfig]="deletionConfig"
 ></app-table-page>

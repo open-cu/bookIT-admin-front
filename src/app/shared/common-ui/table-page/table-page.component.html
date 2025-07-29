@@ -1,58 +1,29 @@
-<div class="table-container">
-  <div class="table-header">
-    <p class="h1 table-title">
-      {{ tableTitle }}
-      <button class="filter-button" (click)="onFilterOpened()">
-        <tui-icon icon="list-filter"></tui-icon>
-      </button>
-    </p>
-    <button class="btn update-button" (click)="onUpdateItems()">Обновить</button>
-  </div>
-  <tui-loader
-    [overlay]="true"
-    [showLoader]="(loading$ | async) ?? false"
-  >
-    <table
-      tuiTable
-      class="table"
-      [columns]="getColumnsKeys()"
-    >
-      <thead>
-      <tr tuiThGroup>
-        @for (column of getColumnsTitles(); track $index) {
-          <th tuiTh [resizable]="true">{{ column }}</th>
-        }
-      </tr>
-      </thead>
-      @let data = (items$ | async)?.content ?? [];
-      <tbody tuiTbody [data]="data">
-        @for (item of data; track $index) {
-          <tr tuiTr>
-            @let tableRows = getRows(item);
-            @for (value of tableRows; track i; let i = $index) {
-              <td
-                *tuiCell="value[0]"
-                tuiTd
-                [ngClass]="getCellClasses(value[1], tableRows, columnConfigs[i])"
-                [innerHTML]="getCellValue(value[1], tableRows, columnConfigs[i])"
-              ></td>
-            }
-          </tr>
-        }
-      </tbody>
-      <tfoot>
-      <tr>
-        <td [colSpan]="columnConfigs.length">
-          <tui-table-pagination
-            class="tui-space_top-2"
-            [page]="(page$ | async) ?? 0"
-            [size]="(size$ | async) ?? 0"
-            [total]="(total$ | async) ?? 0"
-            (paginationChange)="onPagination($event)"
-          />
-        </td>
-      </tr>
-      </tfoot>
-    </table>
-  </tui-loader>
-</div>
+<header class="page-header">
+  <p class="h1 page-title">{{ isFilterOpened ? title : '' }}</p>
+  @if (canCreate) {
+    <button
+      tuiButton
+      appearance="info"
+      class="btn create-item-btn"
+      (click)="onCreateNewItem()"
+    >{{ creationConfig.button ?? creationConfig.title ?? '' }}</button>
+  }
+</header>
+@if (isFilterOpened) {
+  <app-filter-block
+    [filterOptions]="filterOptions"
+    [filterText]="filterButton"
+    [title]="filterTitle"
+    (onFilter)="filterResult = changeFilter($event)"
+  ></app-filter-block>
+}
+
+<app-items-table
+  [title]="title"
+  class="items-table"
+  [columns]="columns"
+  [loadFn]="loadItemsFn"
+  (OnFilter)="isFilterOpened = !isFilterOpened"
+  (OnDelete)="onDeleteItem($event)"
+  (OnEdit)="onEditItem($event)"
+></app-items-table>

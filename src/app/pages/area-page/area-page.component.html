@@ -1,17 +1,14 @@
-<header class="page-header">
-  <p class="h1 page-title">Тикеты</p>
-  <button tuiButton appearance="info" class="btn create-item-btn">Создать тикет</button>
-</header>
-<app-filter-block
-  [fields]="fieldsPlaceholders"
-  filterText="Найти тикет"
-  title="Поиск по тикетам"
-  (onFilter)="fields = changeFilter($event)"
-></app-filter-block>
-
 <app-table-page
   title="Помещения"
-  [style.margin-top]="'16px'"
-  [columns]="AREA_COLUMNS_CONFIG"
-  [loadFn]="fetchItems"
+  filterButton="Найти помещение"
+  filterTitle="Поиск тикета"
+  [columns]="columns"
+  [createFn]="createItemFn"
+  [deleteFn]="deleteItemFn"
+  [editFn]="editItemFn"
+  [loadFn]="loadItemsFn"
+  [filterOptions]="filterOptions"
+  [creationConfig]="creationConfig"
+  [editionConfig]="editionConfig"
+  [deletionConfig]="deletionConfig"
 ></app-table-page>

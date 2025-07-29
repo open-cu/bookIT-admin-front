@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {TuiButton, TuiTextfieldComponent, TuiTextfieldDirective} from '@taiga-ui/core';
-
-type recordLike = {[key: string]: string | undefined};
+import {FilterOptions, FilterResult, FilterType} from './filter-config';
 
 @Component({
   selector: 'app-filter-block',
@@ -18,26 +17,36 @@ type recordLike = {[key: string]: string | undefined};
 export class FilterBlockComponent implements OnInit {
   @Input() title: string = 'Фильтр';
   @Input() filterText: string = 'Найти';
-  @Input({required: true}) fields!: recordLike;
-  @Output('onFilter') onFilterEmitter = new EventEmitter<recordLike>();
+  @Input({required: true}) filterOptions!: FilterOptions;
+
+  @Output('onFilter')
+  onFilterEmitter = new EventEmitter<FilterResult<typeof this.filterOptions>>();
 
   protected formGroup!: FormGroup;
 
   ngOnInit() {
     const formParams = new Map<string, FormControl<string | null>>();
-    Object.entries(this.fields)
-      .forEach(([key, _]) => formParams.set(key, new FormControl('')));
+    this.filterOptions
+      .forEach(option => {
+        let defaultValue = option.value ?? this.getDefaultValue(option.type);
+        formParams.set(option.key, new FormControl(defaultValue))
+      });
     this.formGroup = new FormGroup(Object.fromEntries(formParams));
   }
 
-  protected getEntries() {
-    return Object.entries(this.fields);
+  private getDefaultValue(type: FilterType | undefined): string | null {
+    if (!type || type === 'text') {
+      return '';
+    }
+    if (type === 'date-range') {
+      return null;
+    }
+    return null;
   }
 
   protected getControl(formName: keyof typeof this.formGroup.controls) {
     return this.formGroup.controls[formName] as FormControl<string>;
   }
-
 
   protected onFindButton() {
     this.onFilterEmitter.emit(this.formGroup.value);

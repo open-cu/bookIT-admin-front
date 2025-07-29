@@ -11,6 +11,8 @@ export interface SelectOption {
   label?: string
 }
 
+export type OptionType = 'text' | 'select' | 'images';
+
 export interface CreationOption {
   key: string,
   /* label as same as key by default */
@@ -18,11 +20,11 @@ export interface CreationOption {
   label?: string,
   placeholder?: string,
   /* 'text' by default */
-  type?: 'text' | 'select' | 'images',
+  type?: OptionType,
   /* necessary only if type === 'select' */
   options?: SelectOption[],
 }
 
-export type CreationReturn<T extends CreationOption[]> = {
+export type CreationReturn<T extends CreationOptions> = {
   [K in T[number]['key']]: any;
 };

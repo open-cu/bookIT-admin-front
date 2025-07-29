@@ -1,13 +1,17 @@
 <p class="h1 filter-title">{{ title }}</p>
 <div class="input-container">
-  @for (entry of getEntries(); track $index) {
-    <tui-textfield class="filter-input">
-      <input
-        [placeholder]="entry[1]"
-        tuiTextfield
-        [formControl]="getControl(entry[0])"
-      />
-    </tui-textfield>
+  @for (option of filterOptions; track $index) {
+    @switch (option.type) {
+      @default {
+        <tui-textfield class="filter-input">
+          <input
+            [placeholder]="option.placeholder ?? ''"
+            tuiTextfield
+            [formControl]="getControl(option.key)"
+          />
+        </tui-textfield>
+      }
+    }
   }
 </div>
 <button class="filter-button" (click)="onFindButton()" tuiButton>{{ filterText }}</button>

@@ -1,0 +1,10 @@
+{
+  "LECTURE_HALL": "Лекторий",
+  "MEETING_ROOM": "Переговорная",
+  "WORKPLACE": "Главный зал",
+
+  "CLEANING": "Уборка",
+  "REPAIR": "Ремонт",
+  "MAINTENANCE": "Поддержка",
+  "OTHER": "Другое"
+}

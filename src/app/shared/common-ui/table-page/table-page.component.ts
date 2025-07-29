@@ -1,139 +1,77 @@
-import {Component, EventEmitter, inject, Input, OnChanges, Output} from '@angular/core';
-import {BehaviorSubject, combineLatest, EMPTY, Observable, switchMap, tap} from 'rxjs';
-import {Pageable} from '../../../core/models/interfaces/pagination/pageable';
-import {catchError} from 'rxjs/operators';
-import {
-  TuiTableCell,
-  TuiTableDirective,
-  TuiTablePagination,
-  TuiTablePaginationEvent, TuiTableTbody,
-  TuiTableTd, TuiTableTh, TuiTableThGroup, TuiTableTr
-} from '@taiga-ui/addon-table';
-import {TuiIcon, TuiLoader} from "@taiga-ui/core";
-import {AsyncPipe, NgClass} from "@angular/common";
-import {DomSanitizer} from "@angular/platform-browser";
-import {ColumnConfig} from "./column-config";
+import {Component, Input} from '@angular/core';
+import {CreationConfig} from '../creation-block/creation-config';
+import {TuiButton, tuiDialog} from '@taiga-ui/core';
+import {CreationBlockComponent} from '../creation-block/creation-block.component';
+import {EMPTY, Observable, switchMap} from 'rxjs';
+import {ColumnConfig} from '../items-table/column-config';
+import {ItemsTableComponent} from '../items-table/items-table.component';
+import {FilterBlockComponent} from '../filter-block/filter-block.component';
+import {DeletionBlockComponent} from '../deletion-block/deletion-block.component';
+import {DeletionConfig} from '../deletion-block/deletion-config';
+import {FilterOptions, FilterResult} from '../filter-block/filter-config';
 
 @Component({
   selector: 'app-table-page',
-    imports: [
-        TuiTableDirective,
-        TuiLoader,
-        TuiTablePagination,
-        AsyncPipe,
-        TuiTableCell,
-        TuiTableTd,
-        TuiTableTh,
-        TuiTableThGroup,
-        TuiTableTbody,
-        TuiTableTr,
-        NgClass,
-        TuiIcon,
-    ],
+  imports: [
+    FilterBlockComponent,
+    ItemsTableComponent,
+    TuiButton
+  ],
   templateUrl: './table-page.component.html',
   styleUrl: './table-page.component.css'
 })
-export class TablePageComponent<T extends object> implements OnChanges {
-  @Input({
-    required: true,
-    alias: 'columns'
-  })
-  public columnConfigs!: ColumnConfig[];
+export class TablePageComponent<T extends object> extends ItemsTableComponent<T> {
+  @Input('createFn') createItemFn: (item: any) => Observable<Partial<T>> = () => EMPTY;
+  @Input('editFn') editItemFn: (id: string, item: any) => Observable<Partial<T>> = () => EMPTY;
+  @Input('deleteFn') deleteItemFn: (item: any) => Observable<void> = () => EMPTY;
 
-  @Input({
-    required: true,
-    alias: 'loadFn'
-  })
-  public loadItemsFn!: (params: any) => Observable<Pageable<T>>;
+  @Input() title: string = '';
+  @Input() filterButton: string = 'Найти';
+  @Input() filterTitle: string = 'Поиск';
 
-  @Input('title') tableTitle = 'Таблица'
-  @Output('OnFilter') onFilterOpenedEmitter = new EventEmitter<void>();
+  @Input() filterOptions!: FilterOptions;
 
-  protected readonly page$ = new BehaviorSubject(0);
-  protected readonly size$ = new BehaviorSubject(10);
-  protected readonly total$ = new BehaviorSubject(0);
-  protected readonly loading$ = new BehaviorSubject(false);
-  protected items$: Observable<Pageable<T>>;
+  @Input() columns!: ColumnConfig[];
 
-  private sanitizer = inject(DomSanitizer);
+  @Input() creationConfig!: CreationConfig;
+  @Input() editionConfig!: CreationConfig;
+  @Input() deletionConfig!: DeletionConfig;
+  @Input() canCreate = true;
 
-  constructor() {
-    this.items$ = this.loadItems();
-  }
+  private readonly creationDialog = tuiDialog(CreationBlockComponent, {
+    dismissible: true,
+  });
+  private readonly editionDialog = tuiDialog(CreationBlockComponent, {
+    dismissible: true,
+  });
+  private readonly deletionDialog = tuiDialog(DeletionBlockComponent, {
+    dismissible: true,
+  });
 
-  ngOnChanges() {
-    this.items$ = this.loadItems();
-  }
+  protected isFilterOpened = false;
+  protected filterResult!: FilterResult<typeof this.filterOptions>;
 
-  protected onUpdateItems() {
-    this.updateItems();
-  }
-
-  protected updateItems() {
-    this.loading$.next(true);
-    this.items$ = this.loadItems();
-  }
-
-  private loadItems() {
-    return combineLatest([this.page$, this.size$]).pipe(
-      tap(() => this.loading$.next(true)),
-      switchMap(([page, size]) =>
-        this.loadItemsFn({ size, page }).pipe(
-          tap(response => {
-            this.total$.next(response.totalElements);
-            this.loading$.next(false);
-          }),
-          catchError(error => {
-            this.loading$.next(false);
-            console.error('Data loading error: ', error);
-            return EMPTY;
-          })
-        )
+  protected onCreateNewItem() {
+    this.creationDialog(this.creationConfig)
+      .pipe(
+        switchMap(item => item ? this.createItemFn(item) : EMPTY)
       )
-    );
+      .subscribe(() => this.updateItems());
   }
 
-  protected onPagination({page, size}: TuiTablePaginationEvent): void {
-    this.page$.next(page);
-    this.size$.next(size);
+  protected onEditItem(item: any) {
+    this.editionDialog(this.editionConfig)
+      .pipe(
+        switchMap(value => value ? this.editItemFn(item.id, value) : EMPTY)
+      )
+      .subscribe(() => this.updateItems());
   }
 
-  protected getRows(obj: object) {
-    return Object.entries(obj);
-  }
-
-  protected changeFilter(source: any) {
-    this.page$.next(0);
-    return source;
-  }
-
-  protected getCellValue(value: any, row: [string, any][], column: ColumnConfig) {
-    const rawValue = value;
-
-    if (column.render) {
-      return this.sanitizer.bypassSecurityTrustHtml(
-          column.render(rawValue, row)
-      );
-    }
-    return rawValue;
-  }
-
-  protected getCellClasses(value: any, row: [string, any][], column: ColumnConfig) {
-    if (typeof column.cssClass === 'function') {
-      return column.cssClass(value, row);
-    }
-    return column.cssClass ?? '';
-  }
-
-  protected getColumnsKeys() {
-    return this.columnConfigs.map(column => column.key);
-  }
-
-  protected getColumnsTitles() {
-    return this.columnConfigs.map(column => column?.title ?? column.key);
-  }
-
-  protected onFilterOpened() {
-    this.onFilterOpenedEmitter.emit();
+  protected onDeleteItem(item: any) {
+    this.deletionDialog(this.deletionConfig)
+      .pipe(
+        switchMap(result => result ? this.deleteItemFn(item) : EMPTY)
+      )
+      .subscribe(() => this.updateItems());
   }
 }
