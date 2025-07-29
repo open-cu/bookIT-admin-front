@@ -48,7 +48,7 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
   constructor() {
     super();
     this.userService.getMe().subscribe(user => this.creationConfig.options[0].value = user.id);
-    markAsRequired(this.creationConfig);
+    markAsRequired(this.creationConfig, 'description');
   }
 
   override loadItemsFn = (params: Partial<SortTicket>) => {

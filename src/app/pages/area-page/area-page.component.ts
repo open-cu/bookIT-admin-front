@@ -12,6 +12,7 @@ import {SortArea} from '../../core/models/interfaces/areas/sort-area';
 import {UpdateArea} from '../../core/models/interfaces/areas/update-area';
 import {AREA_COLUMNS_CONFIG, AREA_FILTER_OPTIONS, CreateAreaFlat} from './area-columns.config';
 import {Validators} from '@angular/forms';
+import {AreaStatus} from '../../core/models/enums/area-status';
 
 @Component({
   selector: 'app-area-page',
@@ -46,8 +47,15 @@ export class AreaPageComponent extends TablePageComponent<Area>  {
         type: 'number',
         validators: Validators.min(1)
       },
-      {key: 'status'},
-      {key: 'photos', type: 'multiple'}
+      {
+        key: 'status',
+        type: 'select',
+        options: getEnumKeys(AreaStatus).map(key => ({value: key})),
+      },
+      {
+        key: 'photos',
+        type: 'images'
+      }
     ],
   };
 

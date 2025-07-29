@@ -1,0 +1,17 @@
+<tui-textfield
+  tuiChevron
+  [stringify]="stringify"
+  [identityMatcher]="matcher"
+>
+  <tui-error [error]="errorMessage"/>
+  <input
+    tuiSelect
+    [formControl]="formControl"
+    [invalid]="isInvalid"
+  />
+  <tui-data-list-wrapper
+    *tuiTextfieldDropdown
+    new
+    [items]="options"
+  />
+</tui-textfield>

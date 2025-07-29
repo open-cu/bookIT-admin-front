@@ -1,0 +1,15 @@
+<tui-textfield
+  multi
+  tuiTextfieldSize="l"
+>
+  <tui-error [error]="errorMessage"/>
+  <input
+    [placeholder]="placeholder"
+    tuiInputChip
+    [unique]="unique"
+    [separator]="separator"
+    [formControl]="formControl"
+    [invalid]="isInvalid"
+  />
+  <tui-input-chip *tuiItem />
+</tui-textfield>

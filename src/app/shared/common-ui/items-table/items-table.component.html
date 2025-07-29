@@ -38,8 +38,8 @@
                 <td
                   *tuiCell="value[0]"
                   tuiTd
-                  [ngClass]="getCellClasses(value[1], tableRows, columnConfigs[i])"
-                  [innerHTML]="getCellValue(value[1], tableRows, columnConfigs[i])"
+                  [ngClass]="getCellClasses(value[1], columnConfigs[i])"
+                  [innerHTML]="getCellValue(value[1], columnConfigs[i])"
                 ></td>
               }
               @if (isEditable || isDeletable) {

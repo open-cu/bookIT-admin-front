@@ -121,20 +121,20 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
     return source;
   }
 
-  protected getCellValue(value: any, row: [string, any][], column: ColumnConfig) {
+  protected getCellValue(value: any, column: ColumnConfig) {
     const rawValue = value;
 
     if (column.render) {
       return this.sanitizer.bypassSecurityTrustHtml(
-          column.render(rawValue, row)
+          column.render(rawValue)
       );
     }
     return rawValue;
   }
 
-  protected getCellClasses(value: any, row: [string, any][], column: ColumnConfig) {
+  protected getCellClasses(value: any, column: ColumnConfig) {
     if (typeof column.cssClass === 'function') {
-      return column.cssClass(value, row);
+      return column.cssClass(value);
     }
     return column.cssClass ?? '';
   }

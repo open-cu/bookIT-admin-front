@@ -1,10 +1,12 @@
 import {telegramValidator} from './telegram.validator';
 import {nameValidator} from './name.validator';
 import {ValidationErrors} from '@angular/forms';
+import {maxFilesLengthValidator} from './max-files-length.validator';
 
 export class AppValidators {
   static telegram = telegramValidator();
   static name = (required?: boolean) => nameValidator(required);
+  static maxFilesLength = (maxLength: number) => maxFilesLengthValidator(maxLength);
 
   static getErrorMessage(errors: ValidationErrors | null) {
     return getErrorMessage(errors);

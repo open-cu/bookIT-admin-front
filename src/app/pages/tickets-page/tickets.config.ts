@@ -4,7 +4,7 @@ import {FilterOptions} from '../../shared/common-ui/filter-block/filter-config';
 export const TICKETS_COLUMN_CONFIG: ColumnConfig[] = [
   {
     key: "id",
-    render: (value, row) => `<p class="cell-id">${value}</p>`
+    render: value => `<p class="cell-id">${value}</p>`
   },
   {key: "userId"},
   {key: "areaId"},

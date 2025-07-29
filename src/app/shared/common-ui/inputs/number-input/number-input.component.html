@@ -1,0 +1,14 @@
+<tui-textfield>
+  <tui-error [error]="errorMessage"/>
+  <input
+    tuiInputNumber
+    [placeholder]="placeholder"
+    [min]="min"
+    [max]="max"
+    [step]="step"
+    [formControl]="formControl"
+    [invalid]="isInvalid"
+    (keydown.arrowDown)="onNumericStep(-step)"
+    (keydown.arrowUp)="onNumericStep(+step)"
+  />
+</tui-textfield>
