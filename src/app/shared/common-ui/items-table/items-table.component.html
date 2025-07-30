@@ -10,7 +10,7 @@
   </div>
   <tui-loader
     [overlay]="true"
-    [showLoader]="(loading$ | async) ?? false"
+    [showLoader]="isLoading()"
   >
     <table
       tuiTable

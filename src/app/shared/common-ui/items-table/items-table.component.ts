@@ -1,4 +1,14 @@
-import {Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component, effect,
+  EventEmitter,
+  inject,
+  Input, model,
+  OnChanges,
+  OnDestroy,
+  Output, signal
+} from '@angular/core';
 import {BehaviorSubject, combineLatest, EMPTY, Observable, Subject, switchMap, takeUntil, tap} from 'rxjs';
 import {Pageable} from '../../../core/models/interfaces/pagination/pageable';
 import {catchError} from 'rxjs/operators';
@@ -13,6 +23,7 @@ import {TuiIcon, TuiLoader} from "@taiga-ui/core";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ColumnConfig, TableRow} from "./column-config";
+import {QueryParams} from '../../../core/services/api/api.service';
 
 @Component({
   selector: 'app-items-table',
@@ -31,7 +42,8 @@ import {ColumnConfig, TableRow} from "./column-config";
     TuiIcon,
   ],
   templateUrl: './items-table.component.html',
-  styleUrl: './items-table.component.css'
+  styleUrl: './items-table.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemsTableComponent<T extends object> implements OnChanges, OnDestroy {
   @Input({
@@ -45,29 +57,39 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
     alias: 'loadFn'
   })
   public loadItemsFn!: (params: any) => Observable<Pageable<T>>;
-
   @Input('title') tableTitle = 'Таблица'
   @Input('editable') isEditable = false;
   @Input('deletable') isDeletable = false;
 
-  @Output('OnFilter') onFilterOpenedEmitter = new EventEmitter<void>();
+  @Output('OnFilterOpened') onFilterOpenedEmitter = new EventEmitter<void>();
   @Output('OnEdit') onEditEmitter = new EventEmitter<TableRow>();
   @Output('OnDelete') onDeleteEmitter = new EventEmitter<TableRow>();
+
+  public additionalParams = model<QueryParams>({}, {alias: 'params'});
 
   protected readonly page$ = new BehaviorSubject(0);
   protected readonly size$ = new BehaviorSubject(10);
   protected readonly total$ = new BehaviorSubject(0);
-  protected readonly loading$ = new BehaviorSubject(false);
-  protected items$: Observable<Pageable<T>>;
+  protected readonly isLoading = signal(false);
+  protected items$!: Observable<Pageable<T>>;
 
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
   private readonly destroy$ = new Subject<void>();
 
   private sanitizer = inject(DomSanitizer);
+  private changeDetectorRef = inject(ChangeDetectorRef);
   protected readonly editingBlockKey = 'editing' as const;
 
   constructor() {
-    this.items$ = this.loadItems();
+    effect(() => {
+      if (!this.isLoading()) {
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+    effect(() => {
+      this.updateItems();
+      this.items$ = this.loadItems();
+    });
   }
 
   ngOnChanges() {
@@ -81,6 +103,7 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
 
   protected updateItems() {
     this.refresh$.next();
+    this.isLoading.set(true);
   }
 
   private loadItems() {
@@ -90,15 +113,14 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
       this.refresh$
     ]).pipe(
       takeUntil(this.destroy$),
-      tap(() => this.loading$.next(true)),
       switchMap(([page, size]) =>
-        this.loadItemsFn({ size, page }).pipe(
+        this.loadItemsFn({ size, page, ...this.additionalParams() }).pipe(
           tap(response => {
             this.total$.next(response.totalElements);
-            this.loading$.next(false);
+            this.isLoading.set(false);
           }),
           catchError(error => {
-            this.loading$.next(false);
+            this.isLoading.set(false);
             console.error('Data loading error: ', error);
             return EMPTY;
           })
@@ -114,11 +136,6 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
 
   protected getRows(obj: object) {
     return Object.entries(obj);
-  }
-
-  protected changeFilter(source: any) {
-    this.page$.next(0);
-    return source;
   }
 
   protected getCellValue(value: any, column: ColumnConfig) {

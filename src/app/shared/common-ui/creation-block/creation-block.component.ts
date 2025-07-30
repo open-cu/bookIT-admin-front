@@ -1,15 +1,11 @@
 import {Component} from '@angular/core';
-import {CreationConfig, CreationOptions, CreationReturn, OptionType, SelectOption} from './creation-config';
+import {CreationConfig, CreationOptions, CreationReturn} from './creation-config';
 import {TuiButton, TuiDialogContext, TuiLabel} from '@taiga-ui/core';
 import {injectContext} from '@taiga-ui/polymorpheus';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TypeUtils} from '../../../core/utils/type.utils';
 import toArray = TypeUtils.toArray;
-import {SingleSelectInputComponent} from '../inputs/single-select-input/single-select-input.component';
-import {ChipInputComponent} from '../inputs/chip-input/chip-input.component';
-import {NumberInputComponent} from '../inputs/number-input/number-input.component';
-import {FileInputComponent} from '../inputs/file-input/file-input.component';
-import {TextInputComponent} from '../inputs/text-input/text-input.component';
+import {InputContainerComponent} from '../inputs/input-container/input-container.component';
 
 type CreationContext = TuiDialogContext<CreationReturn<CreationOptions>, CreationConfig>
 
@@ -20,11 +16,7 @@ type CreationContext = TuiDialogContext<CreationReturn<CreationOptions>, Creatio
     TuiButton,
     FormsModule,
     TuiLabel,
-    SingleSelectInputComponent,
-    ChipInputComponent,
-    NumberInputComponent,
-    FileInputComponent,
-    TextInputComponent,
+    InputContainerComponent,
   ],
   templateUrl: './creation-block.component.html',
   styleUrl: './creation-block.component.css'
@@ -41,45 +33,11 @@ export class CreationBlockComponent {
     const formGroupConfig: Record<string, FormControl> = {};
 
     for (const configItem of this.context.data.options) {
-      const initialValue = configItem.value ?? this.getDefaultValue(configItem.type);
+      const initialValue = configItem.value ?? null;
       formGroupConfig[configItem.key] = new FormControl(initialValue, toArray(configItem.validators));
     }
 
     this.creationForm = new FormGroup(formGroupConfig);
-  }
-
-  private getDefaultValue(type: OptionType | undefined): any {
-    switch (type) {
-      case 'select':
-        return undefined;
-      case 'multiple':
-        return new Array<string>();
-      case 'number':
-        return null;
-      case 'images':
-        return new Array<File>();
-      default:
-        return '';
-    }
-  }
-
-  private transformValue(value: any, type: OptionType | undefined): any {
-    switch (type) {
-      case 'select':
-        return (value as SelectOption).value;
-      default:
-        return value;
-    }
-  }
-
-  private transformToSubmit() {
-    for (const configItem of this.context.data.options) {
-      const value = this.creationForm.controls[configItem.key].value;
-      const newValue = this.transformValue(value, configItem.type);
-      if (value !== newValue) {
-        this.creationForm.controls[configItem.key].patchValue(newValue);
-      }
-    }
   }
 
   protected onSubmit() {
@@ -87,7 +45,6 @@ export class CreationBlockComponent {
       this.creationForm.markAllAsTouched();
     }
     if (this) {
-      this.transformToSubmit();
       this.context.completeWith(this.creationForm.value);
     }
   }

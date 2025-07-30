@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {Ticket} from '../../core/models/interfaces/tickets/ticket';
 import {TicketService} from '../../core/services/api/ticket.service';
-import {SortTicket} from '../../core/models/interfaces/tickets/sort-ticket';
 import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
 import {TicketType} from '../../core/models/enums/ticket-type';
 import {TypeUtils} from '../../core/utils/type.utils';
@@ -13,6 +12,7 @@ import {TablePageComponent} from '../../shared/common-ui/table-page/table-page.c
 import {PatchTicket} from '../../core/models/interfaces/tickets/patch-ticket';
 import {FilterOptions, FilterResult} from '../../shared/common-ui/filter-block/filter-config';
 import {AreaService} from '../../core/services/api/area.service';
+import {SortPage} from '../../core/models/interfaces/pagination/sort-page';
 
 @Component({
   selector: 'app-tickets-page',
@@ -71,7 +71,7 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
     markAsRequired(this.creationConfig, 'description');
   }
 
-  override loadItemsFn = (params: Partial<SortTicket>) => {
+  override loadItemsFn = (params: SortPage) => {
     return this.ticketService.getList(params);
   }
 
@@ -85,5 +85,15 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
 
   override editItemFn = (id: string, item: PatchTicket) => {
     return this.ticketService.patch(id, item);
+  }
+
+  override transformParamsFn = (params: any) => {
+    const { areaId, type, date: dateRange, ...result } = params;
+    return {
+      areaId: this.extractFromSelect(areaId),
+      type: this.extractFromSelect(type),
+      ...this.extractFromDayRange(dateRange),
+      ...result
+    };
   }
 }

@@ -1,0 +1,36 @@
+@switch (inputType) {
+  @case ("select") {
+    <app-single-select-input
+      [control]="formControl"
+      [placeholder]="placeholder"
+      [options]="additionalParams.select.options"
+    ></app-single-select-input>
+  }
+  @case ("multiple") {
+    <app-chip-input
+      [control]="formControl"
+      [placeholder]="placeholder"
+    ></app-chip-input>
+  }
+  @case ("number") {
+    <app-number-input
+      [control]="formControl"
+      [placeholder]="placeholder"
+      [min]="additionalParams.number.min"
+      [max]="additionalParams.number.max"
+      [step]="additionalParams.number.step"
+    ></app-number-input>
+  }
+  @case ("images") {
+    <app-image-input
+      [control]="formControl"
+      [placeholder]="placeholder"
+    ></app-image-input>
+  }
+  @default {
+    <app-text-input
+      [control]="formControl"
+      [placeholder]="placeholder"
+    ></app-text-input>
+  }
+}

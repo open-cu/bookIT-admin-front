@@ -1,16 +1,16 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {TuiButton, TuiTextfieldComponent, TuiTextfieldDirective} from '@taiga-ui/core';
-import {FilterOptions, FilterResult, FilterType} from './filter-config';
+import {TuiButton} from '@taiga-ui/core';
+import {FilterOptions, FilterResult} from './filter-config';
+import {InputContainerComponent} from "../inputs/input-container/input-container.component";
 
 @Component({
   selector: 'app-filter-block',
-  imports: [
-    ReactiveFormsModule,
-    TuiTextfieldComponent,
-    TuiTextfieldDirective,
-    TuiButton
-  ],
+    imports: [
+        ReactiveFormsModule,
+        TuiButton,
+        InputContainerComponent
+    ],
   templateUrl: './filter-block.component.html',
   styleUrl: './filter-block.component.css'
 })
@@ -19,33 +19,23 @@ export class FilterBlockComponent implements OnInit {
   @Input() filterText: string = 'Найти';
   @Input({required: true}) filterOptions!: FilterOptions;
 
-  @Output('onFilter')
+  @Output('onFilterItems')
   onFilterEmitter = new EventEmitter<FilterResult<typeof this.filterOptions>>();
 
   protected formGroup!: FormGroup;
 
   ngOnInit() {
-    const formParams = new Map<string, FormControl<string | null>>();
+    const formParams = new Map<string, FormControl<any | null>>();
     this.filterOptions
       .forEach(option => {
-        let defaultValue = option.value ?? this.getDefaultValue(option.type);
+        let defaultValue = option.value ?? null;
         formParams.set(option.key, new FormControl(defaultValue))
       });
     this.formGroup = new FormGroup(Object.fromEntries(formParams));
   }
 
-  private getDefaultValue(type: FilterType | undefined): string | null {
-    if (!type || type === 'text') {
-      return '';
-    }
-    if (type === 'date-range') {
-      return null;
-    }
-    return null;
-  }
-
-  protected getControl(formName: keyof typeof this.formGroup.controls) {
-    return this.formGroup.controls[formName] as FormControl<string>;
+  protected getFormControl(formName: keyof typeof this.formGroup.controls) {
+    return this.formGroup.controls[formName] as FormControl<any>;
   }
 
   protected onFindButton() {

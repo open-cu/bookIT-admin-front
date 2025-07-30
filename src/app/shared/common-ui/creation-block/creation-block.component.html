@@ -5,41 +5,15 @@
       <label class="input-label" tuiLabel>{{ config.label ?? config.key }}</label>
       @let placeholder = config.placeholder ?? '';
       @let control = getFormControl(config.key);
-      @switch (config.type) {
-        @case ("select") {
-          <app-single-select-input
-            [control]="control"
-            [placeholder]="placeholder"
-            [options]="config.options ?? []"
-          ></app-single-select-input>
-        }
-        @case ("multiple") {
-          <app-chip-input
-            [control]="control"
-            [placeholder]="placeholder"
-          ></app-chip-input>
-        }
-        @case ("number") {
-          <app-number-input
-            [control]="control"
-            [placeholder]="placeholder"
-            [min]="0"
-            [max]="1000000"
-          ></app-number-input>
-        }
-        @case ("images") {
-          <app-file-input
-            [control]="control"
-            [placeholder]="placeholder"
-          ></app-file-input>
-        }
-        @default {
-          <app-text-input
-            [control]="control"
-            [placeholder]="placeholder"
-          ></app-text-input>
-        }
-      }
+      <app-input-container
+        [type]="config.type ?? 'text'"
+        [control]="control"
+        [placeholder]="placeholder"
+        [params]="{
+          select: { options: config.options ?? [] },
+          number: { min: 0, max: 1000000 }
+        }"
+      ></app-input-container>
     </div>
   }
   <button

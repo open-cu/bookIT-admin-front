@@ -14,7 +14,7 @@ import {InputComponent} from '../input.component';
 import {map} from 'rxjs';
 
 @Component({
-  selector: 'app-file-input',
+  selector: 'app-image-input',
     imports: [
         AsyncPipe,
         ReactiveFormsModule,
@@ -26,10 +26,10 @@ import {map} from 'rxjs';
         TuiInputFiles,
         TuiInputFilesDirective
     ],
-  templateUrl: './file-input.component.html',
-  styleUrl: './file-input.component.css'
+  templateUrl: './image-input.component.html',
+  styleUrl: './image-input.component.css'
 })
-export class FileInputComponent extends InputComponent<File[]>{
+export class ImageInputComponent extends InputComponent<File[]>{
   protected readonly accepted$ = this.formControl.valueChanges.pipe(
     map(() => tuiFilesAccepted(this.formControl)),
   );

@@ -1,17 +1,20 @@
 <p class="h1 filter-title">{{ title }}</p>
 <div class="input-container">
   @for (option of filterOptions; track $index) {
-    @switch (option.type) {
-      @default {
-        <tui-textfield class="filter-input">
-          <input
-            [placeholder]="option.placeholder ?? ''"
-            tuiTextfield
-            [formControl]="getControl(option.key)"
-          />
-        </tui-textfield>
-      }
-    }
+    <div class="filter-input">
+      @let placeholder = option.placeholder ?? '';
+      @let control = getFormControl(option.key);
+
+      <app-input-container
+        [type]="option.type ?? 'text'"
+        [control]="control"
+        [placeholder]="placeholder"
+        [params]="{
+          select: { options: option.options ?? [] },
+          number: { min: 0, max: 1000000 }
+        }"
+      ></app-input-container>
+    </div>
   }
 </div>
 <button class="filter-button" (click)="onFindButton()" tuiButton>{{ filterText }}</button>

@@ -14,7 +14,7 @@
     [filterOptions]="filterOptions"
     [filterText]="filterButton"
     [title]="filterTitle"
-    (onFilter)="filterResult = changeFilter($event)"
+    (onFilterItems)="onUpdateFilters($event)"
   ></app-filter-block>
 }
 
@@ -22,8 +22,9 @@
   [title]="title"
   class="items-table"
   [columns]="columns"
-  [loadFn]="loadItemsFn"
-  (OnFilter)="isFilterOpened = !isFilterOpened"
+  [loadFn]="transformRequestFn"
+  (OnFilterOpened)="isFilterOpened = !isFilterOpened"
   (OnDelete)="onDeleteItem($event)"
   (OnEdit)="onEditItem($event)"
+  [(params)]="filterResult"
 ></app-items-table>

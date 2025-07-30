@@ -101,4 +101,35 @@ export namespace TypeUtils {
     return Object.keys(enumObj)
       .filter(key => isNaN(Number(key))) as EnumKeys<T>[];
   }
+
+  export function compactObject<T extends Record<string, any>>(obj: T): Partial<T> {
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+        acc[key as keyof T] = value;
+      }
+      return acc;
+    }, {} as Partial<T>);
+  }
+
+  export function getSelf<T>(value: T): T {
+    return value;
+  }
+
+  export function transformParam<T, U extends any[], R>(
+    targetFn: (...args: U) => R,
+    transform: (value: T) => T,
+    paramIndex: number = 0,
+  ): (...args: U) => R {
+    return (...args: U): R => {
+      if (paramIndex < 0 || paramIndex >= args.length) {
+        throw new Error(`Invalid parameter index: ${paramIndex}`);
+      }
+
+      const newArgs = [...args] as U;
+
+      newArgs[paramIndex] = transform(newArgs[paramIndex] as unknown as T) as unknown as U[typeof paramIndex];
+
+      return targetFn(...newArgs);
+    };
+  }
 }

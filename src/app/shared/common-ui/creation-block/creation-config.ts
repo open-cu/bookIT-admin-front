@@ -1,6 +1,7 @@
 import {ValidatorFn, Validators} from '@angular/forms';
 import {TypeUtils} from '../../../core/utils/type.utils';
 import toArray = TypeUtils.toArray;
+import {InputType} from '../inputs/input-container/input-container.component';
 
 export interface CreationConfig {
   options: CreationOptions,
@@ -15,8 +16,6 @@ export interface SelectOption {
   label?: string
 }
 
-export type OptionType = 'text' | 'select' | 'images' | 'multiple' | 'number';
-
 export interface CreationOption {
   key: string,
   /* label as same as key by default */
@@ -25,7 +24,7 @@ export interface CreationOption {
   placeholder?: string,
   validators?: ValidatorFn | ValidatorFn[],
   /* 'text' by default */
-  type?: OptionType,
+  type?: InputType,
   /* necessary only if type === 'select' */
   options?: SelectOption[],
 }
