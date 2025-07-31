@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {CreationConfig} from '../creation-block/creation-config';
 import {TuiButton, tuiDialog} from '@taiga-ui/core';
 import {CreationBlockComponent} from '../creation-block/creation-block.component';
@@ -6,13 +6,14 @@ import {EMPTY, Observable, switchMap} from 'rxjs';
 import {ColumnConfig} from '../items-table/column-config';
 import {ItemsTableComponent} from '../items-table/items-table.component';
 import {FilterBlockComponent} from '../filter-block/filter-block.component';
-import {DeletionBlockComponent} from '../deletion-block/deletion-block.component';
-import {DeletionConfig} from '../deletion-block/deletion-config';
+import {DeletionConfig} from './deletion-config';
 import {FilterOptions, FilterResult} from '../filter-block/filter-config';
 import {TypeUtils} from '../../../core/utils/type.utils';
 import compactObject = TypeUtils.compactObject;
 import transformParam = TypeUtils.transformParam;
 import getSelf = TypeUtils.getSelf;
+import {TuiResponsiveDialogService} from '@taiga-ui/addon-mobile';
+import {TUI_CONFIRM} from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-table-page',
@@ -27,7 +28,7 @@ import getSelf = TypeUtils.getSelf;
 export class TablePageComponent<T extends object> extends ItemsTableComponent<T> implements OnInit {
   @Input('createFn') createItemFn: (item: any) => Observable<Partial<T>> = () => EMPTY;
   @Input('editFn') editItemFn: (item: any, patch: any) => Observable<Partial<T>> = () => EMPTY;
-  @Input('deleteFn') deleteItemFn: (item: any) => Observable<void> = () => EMPTY;
+  @Input('deleteFn') deleteItemFn: (item: any) => Observable<string> = () => EMPTY;
   @Input() transformParamsFn: (params: any) => any = getSelf;
 
   @Input() title: string = '';
@@ -51,9 +52,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   private readonly editionDialog = tuiDialog(CreationBlockComponent, {
     dismissible: true,
   });
-  private readonly deletionDialog = tuiDialog(DeletionBlockComponent, {
-    dismissible: true,
-  });
+  private dialogService = inject(TuiResponsiveDialogService);
 
   protected isFilterOpened = false;
   protected transformRequestFn!: typeof this.loadItemsFn;
@@ -100,12 +99,20 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
 
   protected onDeleteItem(tableRaw: any) {
     const item = Object.fromEntries(tableRaw);
-    this.deletionDialog(this.deletionConfig)
+    const { label, ...other } = this.deletionConfig;
+    // to swap buttons in template
+    [other.yes, other.no] = [other.no ?? 'Нет', other.yes ?? 'Да'];
+    this.dialogService
+      .open<boolean>(TUI_CONFIRM, {
+        label: label,
+        size: 's',
+        data: other,
+      })
       .pipe(
-        switchMap(result => result
+        switchMap(result => !result
           ? transformParam(this.deleteItemFn, this.transformWithCompactFn)(item)
           : EMPTY
-        )
+        ),
       )
       .subscribe(() => this.updateItems());
   }

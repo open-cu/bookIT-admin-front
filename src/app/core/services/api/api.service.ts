@@ -33,6 +33,6 @@ export abstract class ApiService<T = void> {
   }
 
   protected delete(id: string) {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.baseUrl}/${id}`, {responseType: 'text'});
   }
 }
