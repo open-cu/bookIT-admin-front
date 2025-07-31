@@ -9,7 +9,17 @@
   display: none !important;
 }
 
+.open-sidebar-button {
+  border: none;
+  background: transparent;
+  transform: translateY(-24px);
+  tui-icon {
+    color: var(--icon-secondary);
+  }
+}
+
 .logo-container {
+  display: flex;
   padding-top: 24px;
   text-align: center;
 }
@@ -53,4 +63,7 @@ footer {
 
 main[tuiNavigationMain] {
   border-top: var(--top-layout-border) solid transparent;
+  flex: 1; /* Занимает всё свободное пространство */
+  min-height: 0; /* Разрешаем сжатие контента */
+  overflow: auto;
 }

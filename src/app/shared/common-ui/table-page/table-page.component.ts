@@ -1,4 +1,12 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {
+  Component, computed, effect,
+  ElementRef,
+  inject,
+  Input,
+  OnInit,
+  signal,
+  ViewChild
+} from '@angular/core';
 import {CreationConfig} from '../creation-block/creation-config';
 import {TuiButton, tuiDialog} from '@taiga-ui/core';
 import {CreationBlockComponent} from '../creation-block/creation-block.component';
@@ -14,13 +22,15 @@ import transformParam = TypeUtils.transformParam;
 import getSelf = TypeUtils.getSelf;
 import {TuiResponsiveDialogService} from '@taiga-ui/addon-mobile';
 import {TUI_CONFIRM} from '@taiga-ui/kit';
+import {WaResizeObserver} from '@ng-web-apis/resize-observer';
 
 @Component({
   selector: 'app-table-page',
   imports: [
     FilterBlockComponent,
     ItemsTableComponent,
-    TuiButton
+    TuiButton,
+    WaResizeObserver,
   ],
   templateUrl: './table-page.component.html',
   styleUrl: './table-page.component.css'
@@ -44,6 +54,8 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   @Input() deletionConfig!: DeletionConfig;
   @Input() canCreate = true;
 
+  @ViewChild('itemsTable') itemsTableElement!: ElementRef<HTMLElement>;
+
   protected filterResult: FilterResult<typeof this.filterOptions> = {};
 
   private readonly creationDialog = tuiDialog(CreationBlockComponent, {
@@ -54,13 +66,34 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   });
   private dialogService = inject(TuiResponsiveDialogService);
 
-  protected isFilterOpened = false;
+  protected isFilterOpened = signal(false);
   protected transformRequestFn!: typeof this.loadItemsFn;
   private transformWithCompactFn!: typeof this.transformParamsFn;
+  protected tableBlockSize = computed<string>(() => `calc(100vh - ${220 + this.filterHeight()}px)`);
+  protected filterHeight = signal<number>(0);
 
-  ngOnInit() {
+  constructor() {
+    super();
+    effect(() => {
+      if (!this.isFilterOpened()) {
+        this.filterHeight.set(0);
+      }
+    });
+  }
+
+  override ngOnInit() {
+    super.ngOnInit();
     this.transformWithCompactFn = (params: any) => compactObject(this.transformParamsFn(params));
     this.transformRequestFn = transformParam(this.loadItemsFn, this.transformWithCompactFn);
+  }
+
+  protected onFilterOpenClick() {
+    this.isFilterOpened.update(value => !value);
+  }
+
+  protected onFilterResize(entry: readonly ResizeObserverEntry[]) {
+    const blockSize = entry[0].borderBoxSize[0].blockSize;
+    this.filterHeight.set(blockSize);
   }
 
   protected onCreateNewItem() {
@@ -77,7 +110,6 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   protected onEditItem(tableRaw: any) {
     const item = Object.fromEntries(tableRaw);
     const config = this.patchConfigWithItem(this.editionConfig, item);
-    console.log(config);
     this.editionDialog(config)
       .pipe(
         switchMap(value => value

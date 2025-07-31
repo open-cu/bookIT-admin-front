@@ -17,13 +17,11 @@ import {FilterOptions, FilterResult} from '../../shared/common-ui/filter-block/f
 import {AreaService} from '../../core/services/api/area.service';
 import {SortPage} from '../../core/models/interfaces/pagination/sort-page';
 import {DatePipe} from '@angular/common';
-import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-tickets-page',
   imports: [
     TablePageComponent,
-    FormsModule
   ],
   templateUrl: './tickets-page.component.html',
   styleUrl: './tickets-page.component.css'
@@ -51,7 +49,7 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
           .map(area => ({value: area.id, label: area.name}))
       );
     markAsRequired(this.creationConfig, 'description');
-    markAsRequired(this.editionConfig);
+    markAsRequired(this.editionConfig, 'description');
   }
 
   override loadItemsFn = (params: SortPage) => {

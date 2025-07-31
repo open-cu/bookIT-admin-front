@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TuiButton} from '@taiga-ui/core';
 import {FilterOptions, FilterResult} from './filter-config';
 import {InputContainerComponent} from "../inputs/input-container/input-container.component";
@@ -7,8 +7,9 @@ import {InputContainerComponent} from "../inputs/input-container/input-container
 @Component({
   selector: 'app-filter-block',
     imports: [
-        ReactiveFormsModule,
+        FormsModule,
         TuiButton,
+        ReactiveFormsModule,
         InputContainerComponent
     ],
   templateUrl: './filter-block.component.html',
@@ -22,16 +23,19 @@ export class FilterBlockComponent implements OnInit {
   @Output('onFilterItems')
   onFilterEmitter = new EventEmitter<FilterResult<typeof this.filterOptions>>();
 
-  protected formGroup!: FormGroup;
+  protected formGroup: FormGroup = new FormGroup({});
+  protected isInitialized = false;
 
   ngOnInit() {
-    const formParams = new Map<string, FormControl<any | null>>();
-    this.filterOptions
-      .forEach(option => {
-        let defaultValue = option.value ?? null;
-        formParams.set(option.key, new FormControl(defaultValue))
-      });
-    this.formGroup = new FormGroup(Object.fromEntries(formParams));
+    this.createFormGroup();
+    this.isInitialized = true;
+  }
+
+  private createFormGroup() {
+    this.filterOptions.forEach(option => {
+      let defaultValue = option.value ?? null;
+      this.formGroup.setControl(option.key, new FormControl(defaultValue));
+    });
   }
 
   protected getFormControl(formName: keyof typeof this.formGroup.controls) {

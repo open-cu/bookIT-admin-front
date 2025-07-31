@@ -1,15 +1,16 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, effect,
+  Component,
   EventEmitter,
   inject,
   Input, model,
   OnChanges,
   OnDestroy,
-  Output, signal
+  OnInit,
+  Output, signal, WritableSignal
 } from '@angular/core';
-import {BehaviorSubject, combineLatest, EMPTY, Observable, Subject, switchMap, tap} from 'rxjs';
+import {BehaviorSubject, combineLatest, delay, EMPTY, Observable, Subject, switchMap, tap} from 'rxjs';
 import {Pageable} from '../../../core/models/interfaces/pagination/pageable';
 import {catchError} from 'rxjs/operators';
 import {
@@ -19,7 +20,7 @@ import {
   TuiTablePaginationEvent, TuiTableTbody,
   TuiTableTd, TuiTableTh, TuiTableThGroup, TuiTableTr
 } from '@taiga-ui/addon-table';
-import {TuiIcon, TuiLoader} from "@taiga-ui/core";
+import {TuiIcon, TuiLoader, TuiScrollbar} from "@taiga-ui/core";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ColumnConfig, TableRow} from "./column-config";
@@ -41,12 +42,13 @@ import {toObservable} from '@angular/core/rxjs-interop';
     TuiTableTr,
     NgClass,
     TuiIcon,
+    TuiScrollbar,
   ],
   templateUrl: './items-table.component.html',
   styleUrl: './items-table.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemsTableComponent<T extends object> implements OnChanges, OnDestroy {
+export class ItemsTableComponent<T extends object> implements OnInit, OnChanges, OnDestroy {
   @Input({
     required: true,
     alias: 'columns'
@@ -72,9 +74,9 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
   protected readonly size$ = new BehaviorSubject(10);
   protected readonly total$ = new BehaviorSubject(0);
   protected readonly isLoading = signal(false);
-  protected items$: Observable<Pageable<T>>;
+  protected items$!: Observable<Pageable<T>>;
 
-  private readonly refresh$ = new BehaviorSubject<number>(Date.now());
+  private readonly refresh$ = new BehaviorSubject<void>(undefined);
   private readonly destroy$ = new Subject<void>();
   private readonly params$ = toObservable(this.additionalParams);
   private readonly request$ = combineLatest([
@@ -85,16 +87,12 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
   ]);
 
   private sanitizer = inject(DomSanitizer);
-  private changeDetectorRef = inject(ChangeDetectorRef);
+  protected cdr = inject(ChangeDetectorRef);
   protected readonly editingBlockKey = 'editing' as const;
+  @Input() updateSignal!: WritableSignal<boolean>;
 
-  constructor() {
+  ngOnInit() {
     this.items$ = this.loadItems();
-    effect(() => {
-      if (!this.isLoading()) {
-        this.changeDetectorRef.markForCheck();
-      }
-    });
   }
 
   ngOnChanges() {
@@ -107,12 +105,15 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
   }
 
   protected updateItems() {
-    this.refresh$.next(Date.now());
+    this.ngOnInit();
+    this.refresh$.next();
+    this.cdr.markForCheck();
   }
 
   private loadItems() {
     return this.request$.pipe(
       tap(() => this.isLoading.set(true)),
+      delay(200),
       switchMap(([page, size, params]) =>
         this.loadItemsFn({ size, page, ...params }).pipe(
           tap(response => {

@@ -1,8 +1,6 @@
-import { Component, Input, forwardRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  NG_VALIDATORS,
   FormControl,
   ValidationErrors,
   AbstractControl,
@@ -12,20 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { AppValidators } from '../../validators/app.validators';
 
 @Component({
-  selector: 'app-filter-block',
   template: '',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => InputComponent),
-      multi: true,
-    }
-  ]
 })
 export abstract class InputComponent<T> implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input() externalControl?: FormControl<T | null>;

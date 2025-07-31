@@ -1,9 +1,8 @@
 <header
   class="nav-header"
   tuiNavigationHeader
->
-</header>
-<div class="side-bar-block">
+></header>
+<div class="side-bar-block" #sidebar>
   <aside [tuiNavigationAside]="true" tuiTheme="light">
     <header class="logo-container">
       <img
@@ -37,6 +36,6 @@
     </footer>
   </aside>
 </div>
-<main tuiNavigationMain>
+<main tuiNavigationMain #tuiMainComponent>
   <router-outlet></router-outlet>
 </main>

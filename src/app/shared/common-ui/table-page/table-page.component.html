@@ -1,5 +1,5 @@
 <header class="page-header">
-  <p class="h1 page-title">{{ isFilterOpened ? title : '' }}</p>
+  <p class="h1 page-title">{{ isFilterOpened() ? title : '' }}</p>
   @if (canCreate) {
     <button
       tuiButton
@@ -9,23 +9,25 @@
     >{{ creationConfig.button ?? creationConfig.title ?? '' }}</button>
   }
 </header>
-@if (isFilterOpened) {
+@if (isFilterOpened()) {
   <app-filter-block
     [filterOptions]="filterOptions"
     [filterText]="filterButton"
     [title]="filterTitle"
     (onFilterItems)="onUpdateFilters($event)"
+    (waResizeObserver)="onFilterResize($event)"
   ></app-filter-block>
 }
-
 <app-items-table
+  [style.--table-block-size]="tableBlockSize()"
+  #itemsTable
   class="items-table"
   [title]="title"
   [columns]="columns"
   [loadFn]="transformRequestFn"
   [editable]="isEditable"
   [deletable]="isDeletable"
-  (OnFilterOpened)="isFilterOpened = !isFilterOpened"
+  (OnFilterOpened)="onFilterOpenClick()"
   (OnDelete)="onDeleteItem($event)"
   (OnEdit)="onEditItem($event)"
   [(params)]="filterResult"

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {TuiAsideComponent, tuiLayoutIconsProvider, TuiNavigation} from '@taiga-ui/layout';
 import {TuiButton, TuiIcon} from '@taiga-ui/core';
@@ -85,6 +85,9 @@ export class MainLayoutComponent {
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  @ViewChild('sidebar') sidebarElement!: ElementRef<HTMLElement>;
+  @ViewChild('tuiMainComponent') mainElement!: ElementRef<HTMLElement>;
 
   protected me$ = extractResolved<User>(USER_DATA, false);
 

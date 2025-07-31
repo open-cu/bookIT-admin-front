@@ -20,12 +20,12 @@ import {NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/fo
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputComponent),
+      useExisting: forwardRef(() => DateRangeInputComponent),
       multi: true,
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => InputComponent),
+      useExisting: forwardRef(() => DateRangeInputComponent),
       multi: true,
     }
   ]
