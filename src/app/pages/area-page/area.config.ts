@@ -6,6 +6,7 @@ import {AreaType} from '../../core/models/enums/area-type';
 import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
 import {DeletionConfig} from '../../shared/common-ui/table-page/deletion-config';
 import {UpdateArea} from '../../core/models/interfaces/areas/update-area';
+import {Image} from '../../core/models/interfaces/images/image';
 
 export const AREA_COLUMNS_CONFIG: ColumnConfig[] = [
   {
@@ -18,8 +19,22 @@ export const AREA_COLUMNS_CONFIG: ColumnConfig[] = [
     render: value => `<p class="cell-description">${value}</p>`
   },
   {key: "type"},
-  {key: "features"},
-  {key: "photos"},
+  {
+    key: "features",
+    render: (value: string[]) => value.length === 0 ? '——' : ''
+  },
+  {
+    key: "images",
+    render: (value: Image[]) => {
+      if (value.length === 0) {
+        return '——';
+      }
+      let lines = value
+        .map(image => `<p>${image.key}</p>`)
+        .join();
+      return `<div class="cell-lines">${lines}</div>`;
+    }
+  },
   {key: "capacity"}
 ];
 
@@ -57,7 +72,7 @@ export const AREA_CREATION_CONFIG: CreationConfig = {
     {
       key: 'features',
       label: 'Особенности',
-      type: 'multiple',
+      type: 'chips',
       placeholder: 'Enter'
     },
     {

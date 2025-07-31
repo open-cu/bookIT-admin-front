@@ -30,12 +30,20 @@ import {InputComponent} from '../input.component';
 export class NumberInputComponent extends InputComponent<number> {
   @Input({required: true}) max!: number;
   @Input({required: true}) min!: number;
-  @Input() step: number = 1;
+  @Input() step: number | undefined = 1;
 
   protected onNumericStep(number: number) {
     const value = this.control.value;
-    if (!value) {
+    if (value === null) {
       this.control.patchValue(number >= 0 ? this.min : this.max);
+      return;
+    }
+    if (value === this.max && number >= 0) {
+      this.control.patchValue(this.min);
+      return;
+    }
+    if (value === this.min && number < 0) {
+      this.control.patchValue(this.max);
       return;
     }
     this.control.patchValue(value + number);

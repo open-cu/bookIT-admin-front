@@ -5,7 +5,8 @@ import {TuiError} from "@taiga-ui/core";
 import {
   TuiFieldErrorPipe,
   TuiFile,
-  TuiFileRejectedPipe, tuiFilesAccepted,
+  TuiFileRejectedPipe,
+  tuiFilesAccepted,
   TuiFilesComponent,
   TuiInputFiles,
   TuiInputFilesDirective

@@ -7,7 +7,7 @@ import {ImageInputComponent} from '../image-input/image-input.component';
 import {DateRangeInputComponent} from '../date-range-input/date-range-input.component';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 
-export type InputType = 'text' | 'dateRange' | 'select' | 'images' | 'multiple' | 'number';
+export type InputType = 'text' | 'dateRange' | 'select' | 'multiple-select' | 'images' | 'chips' | 'number';
 
 @Component({
   selector: 'app-input-container',
