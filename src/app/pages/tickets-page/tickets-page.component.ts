@@ -1,19 +1,19 @@
 import {Component, inject} from '@angular/core';
 import {Ticket} from '../../core/models/interfaces/tickets/ticket';
 import {TicketService} from '../../core/services/api/ticket.service';
-import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
+import {markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
 import {CreateTicket} from '../../core/models/interfaces/tickets/create-ticket';
 import {UserService} from '../../core/services/api/auth/user.service';
 import {
-  TICKETS_FILTER_OPTIONS,
   TICKETS_COLUMN_CONFIG,
   TICKETS_CREATION_CONFIG,
+  TICKETS_DELETION_CONFIG,
   TICKETS_EDITION_CONFIG,
-  TICKETS_DELETION_CONFIG
+  TICKETS_FILTER_OPTIONS
 } from './tickets.config';
 import {TablePageComponent} from '../../shared/common-ui/table-page/table-page.component';
 import {PatchTicket} from '../../core/models/interfaces/tickets/patch-ticket';
-import {FilterOptions, FilterResult} from '../../shared/common-ui/filter-block/filter-config';
+import {FilterResult} from '../../shared/common-ui/filter-block/filter-config';
 import {AreaService} from '../../core/services/api/area.service';
 import {SortPage} from '../../core/models/interfaces/pagination/sort-page';
 import {DatePipe} from '@angular/common';
@@ -28,9 +28,9 @@ import {DatePipe} from '@angular/common';
 })
 export class TicketsPageComponent extends TablePageComponent<Ticket> {
   override filterResult: FilterResult<typeof this.filterOptions> = {};
-  override filterOptions: FilterOptions = TICKETS_FILTER_OPTIONS;
+  override filterOptions = TICKETS_FILTER_OPTIONS;
   override columns = TICKETS_COLUMN_CONFIG;
-  override creationConfig: CreationConfig = TICKETS_CREATION_CONFIG
+  override creationConfig = TICKETS_CREATION_CONFIG
   override editionConfig = TICKETS_EDITION_CONFIG;
   override deletionConfig = TICKETS_DELETION_CONFIG;
 

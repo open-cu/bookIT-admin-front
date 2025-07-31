@@ -3,4 +3,5 @@ import {AreaType} from '../../enums/area-type';
 
 export interface SortArea extends SortPage {
   type: AreaType,
+  areaName: string,
 }

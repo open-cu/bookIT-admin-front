@@ -1,14 +1,17 @@
 <app-table-page
   title="Помещения"
   filterButton="Найти помещение"
-  filterTitle="Поиск тикета"
+  filterTitle="Поиск помещения"
   [columns]="columns"
   [createFn]="createItemFn"
   [deleteFn]="deleteItemFn"
   [editFn]="editItemFn"
   [loadFn]="loadItemsFn"
+  [transformParamsFn]="transformParamsFn"
   [filterOptions]="filterOptions"
   [creationConfig]="creationConfig"
   [editionConfig]="editionConfig"
   [deletionConfig]="deletionConfig"
+  [editable]="true"
+  [deletable]="true"
 ></app-table-page>
