@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, forwardRef} from '@angular/core';
 import {AsyncPipe} from "@angular/common";
-import {ReactiveFormsModule} from "@angular/forms";
+import {NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule} from "@angular/forms";
 import {TuiError} from "@taiga-ui/core";
 import {
   TuiFieldErrorPipe,
@@ -27,11 +27,23 @@ import {map} from 'rxjs';
         TuiInputFilesDirective
     ],
   templateUrl: './image-input.component.html',
-  styleUrl: './image-input.component.css'
+  styleUrl: './image-input.component.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ImageInputComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => ImageInputComponent),
+      multi: true,
+    }
+  ]
 })
 export class ImageInputComponent extends InputComponent<File[]>{
-  protected readonly accepted$ = this.formControl.valueChanges.pipe(
-    map(() => tuiFilesAccepted(this.formControl)),
+  protected readonly accepted$ = this.control.valueChanges.pipe(
+    map(() => tuiFilesAccepted(this.control)),
   );
 
   protected rejected: readonly File[] = [];
@@ -42,8 +54,8 @@ export class ImageInputComponent extends InputComponent<File[]>{
 
   protected onRemove(file: File): void {
     this.rejected = this.rejected.filter((rejected) => rejected !== file);
-    this.formControl.setValue(
-      this.formControl.value?.filter((current) => current !== file) ?? [],
+    this.control.setValue(
+      this.control.value?.filter((current) => current !== file) ?? [],
     );
   }
 }

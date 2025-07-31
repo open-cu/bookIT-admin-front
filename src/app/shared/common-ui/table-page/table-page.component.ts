@@ -1,5 +1,5 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
-import {CreationConfig, SelectOption} from '../creation-block/creation-config';
+import {Component, Input, OnInit} from '@angular/core';
+import {CreationConfig} from '../creation-block/creation-config';
 import {TuiButton, tuiDialog} from '@taiga-ui/core';
 import {CreationBlockComponent} from '../creation-block/creation-block.component';
 import {EMPTY, Observable, switchMap} from 'rxjs';
@@ -11,8 +11,6 @@ import {DeletionConfig} from '../deletion-block/deletion-config';
 import {FilterOptions, FilterResult} from '../filter-block/filter-config';
 import {TypeUtils} from '../../../core/utils/type.utils';
 import compactObject = TypeUtils.compactObject;
-import {TuiDayRange} from '@taiga-ui/cdk';
-import {DatePipe} from '@angular/common';
 import transformParam = TypeUtils.transformParam;
 import getSelf = TypeUtils.getSelf;
 
@@ -28,7 +26,7 @@ import getSelf = TypeUtils.getSelf;
 })
 export class TablePageComponent<T extends object> extends ItemsTableComponent<T> implements OnInit {
   @Input('createFn') createItemFn: (item: any) => Observable<Partial<T>> = () => EMPTY;
-  @Input('editFn') editItemFn: (id: string, item: any) => Observable<Partial<T>> = () => EMPTY;
+  @Input('editFn') editItemFn: (item: any, patch: any) => Observable<Partial<T>> = () => EMPTY;
   @Input('deleteFn') deleteItemFn: (item: any) => Observable<void> = () => EMPTY;
   @Input() transformParamsFn: (params: any) => any = getSelf;
 
@@ -61,8 +59,6 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   protected transformRequestFn!: typeof this.loadItemsFn;
   private transformWithCompactFn!: typeof this.transformParamsFn;
 
-  private dataPipe = inject(DatePipe);
-
   ngOnInit() {
     this.transformWithCompactFn = (params: any) => compactObject(this.transformParamsFn(params));
     this.transformRequestFn = transformParam(this.loadItemsFn, this.transformWithCompactFn);
@@ -79,18 +75,31 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
       .subscribe(() => this.updateItems());
   }
 
-  protected onEditItem(item: any) {
-    this.editionDialog(this.editionConfig)
+  protected onEditItem(tableRaw: any) {
+    const item = Object.fromEntries(tableRaw);
+    const config = this.patchConfigWithItem(this.editionConfig, item);
+    console.log(config);
+    this.editionDialog(config)
       .pipe(
         switchMap(value => value
-          ? transformParam(this.editItemFn, this.transformWithCompactFn)(item.id, value)
+          ? transformParam(this.editItemFn, this.transformWithCompactFn)(item, value)
           : EMPTY
         )
       )
       .subscribe(() => this.updateItems());
   }
 
-  protected onDeleteItem(item: any) {
+  private patchConfigWithItem(config: CreationConfig, item: any): CreationConfig {
+    for (let option of config.options) {
+      if (item[option.key] !== undefined && item[option.key] !== null) {
+        option.value = item[option.key];
+      }
+    }
+    return config;
+  }
+
+  protected onDeleteItem(tableRaw: any) {
+    const item = Object.fromEntries(tableRaw);
     this.deletionDialog(this.deletionConfig)
       .pipe(
         switchMap(result => result
@@ -103,22 +112,5 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
 
   protected onUpdateFilters(filters: typeof this.filterResult) {
     this.filterResult = compactObject(filters);
-  }
-
-  protected extractFromSelect(selected: SelectOption | undefined) {
-    if (!selected) {
-      return undefined;
-    }
-    return selected.value;
-  }
-
-  protected extractFromDayRange(dayRange: TuiDayRange | undefined) {
-    if (!dayRange) {
-      return undefined;
-    }
-    const [startDate, endDate] = dayRange
-      .toArray()
-      .map(date => this.dataPipe.transform(date.toLocalNativeDate(), 'y-MM-dd'))
-    return {startDate, endDate};
   }
 }

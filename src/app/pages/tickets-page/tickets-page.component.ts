@@ -2,62 +2,44 @@ import {Component, inject} from '@angular/core';
 import {Ticket} from '../../core/models/interfaces/tickets/ticket';
 import {TicketService} from '../../core/services/api/ticket.service';
 import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
-import {TicketType} from '../../core/models/enums/ticket-type';
-import {TypeUtils} from '../../core/utils/type.utils';
-import getEnumKeys = TypeUtils.getEnumKeys;
 import {CreateTicket} from '../../core/models/interfaces/tickets/create-ticket';
 import {UserService} from '../../core/services/api/auth/user.service';
-import {TICKETS_FILTER_OPTIONS, TICKETS_COLUMN_CONFIG} from './tickets.config';
+import {
+  TICKETS_FILTER_OPTIONS,
+  TICKETS_COLUMN_CONFIG,
+  TICKETS_CREATION_CONFIG,
+  TICKETS_EDITION_CONFIG,
+  TICKETS_DELETION_CONFIG
+} from './tickets.config';
 import {TablePageComponent} from '../../shared/common-ui/table-page/table-page.component';
 import {PatchTicket} from '../../core/models/interfaces/tickets/patch-ticket';
 import {FilterOptions, FilterResult} from '../../shared/common-ui/filter-block/filter-config';
 import {AreaService} from '../../core/services/api/area.service';
 import {SortPage} from '../../core/models/interfaces/pagination/sort-page';
+import {DatePipe} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-tickets-page',
   imports: [
-    TablePageComponent
+    TablePageComponent,
+    FormsModule
   ],
   templateUrl: './tickets-page.component.html',
   styleUrl: './tickets-page.component.css'
 })
 export class TicketsPageComponent extends TablePageComponent<Ticket> {
-  override filterOptions: FilterOptions = TICKETS_FILTER_OPTIONS;
   override filterResult: FilterResult<typeof this.filterOptions> = {};
-
-  override creationConfig: CreationConfig = {
-    button: 'Создать тикет',
-    title: 'Создание тикета',
-    options: [
-      {
-        key: 'userId',
-        label: 'id пользователя'
-      },
-      {
-        key: 'areaId',
-        label: 'Помещение',
-        type: 'select',
-      },
-      {
-        key: 'type',
-        label: 'Тип',
-        type: 'select',
-        options: getEnumKeys(TicketType).map(key => ({value: key})),
-      },
-      {
-        key: 'description',
-        label: 'Описание',
-        value: ''
-      },
-    ],
-  };
-
+  override filterOptions: FilterOptions = TICKETS_FILTER_OPTIONS;
   override columns = TICKETS_COLUMN_CONFIG;
+  override creationConfig: CreationConfig = TICKETS_CREATION_CONFIG
+  override editionConfig = TICKETS_EDITION_CONFIG;
+  override deletionConfig = TICKETS_DELETION_CONFIG;
 
   private ticketService = inject(TicketService);
   private areaService = inject(AreaService);
   private userService = inject(UserService);
+  private datePipe= inject(DatePipe);
 
   constructor() {
     super();
@@ -69,6 +51,7 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
           .map(area => ({value: area.id, label: area.name}))
       );
     markAsRequired(this.creationConfig, 'description');
+    markAsRequired(this.editionConfig);
   }
 
   override loadItemsFn = (params: SortPage) => {
@@ -83,16 +66,18 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
     return this.ticketService.delete(item.id);
   }
 
-  override editItemFn = (id: string, item: PatchTicket) => {
-    return this.ticketService.patch(id, item);
+  override editItemFn = (item: any, patch: PatchTicket) => {
+    return this.ticketService.patch(item['id'], patch);
   }
 
   override transformParamsFn = (params: any) => {
-    const { areaId, type, date: dateRange, ...result } = params;
+    const { date: dateRange, ...result } = params;
+    const dateArray= dateRange
+      ? dateRange.map((date: Date)  => this.datePipe.transform(date, 'y-MM-dd')!) as string[]
+      : [null, null];
     return {
-      areaId: this.extractFromSelect(areaId),
-      type: this.extractFromSelect(type),
-      ...this.extractFromDayRange(dateRange),
+      startDate: dateArray[0],
+      endDate: dateArray[1],
       ...result
     };
   }

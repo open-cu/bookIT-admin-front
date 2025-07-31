@@ -1,16 +1,30 @@
 import {ColumnConfig} from '../../shared/common-ui/items-table/column-config';
 import {FilterOptions} from '../../shared/common-ui/filter-block/filter-config';
 import {TicketType} from '../../core/models/enums/ticket-type';
-import {TypeUtils} from '../../core/utils/type.utils';
-import getEnumKeys = TypeUtils.getEnumKeys;
+import {createEnumOptions} from '../../core/utils/create-enum-options';
+import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
+import {DeletionConfig} from '../../shared/common-ui/deletion-block/deletion-config';
+import {AppValidators} from '../../shared/validators/app.validators';
+
+const ticketGroupValidator = AppValidators.requiredIfGroup({
+  description: (group) => {
+    return group.get('type')?.value === TicketType[TicketType.OTHER]
+  }
+});
 
 export const TICKETS_COLUMN_CONFIG: ColumnConfig[] = [
   {
     key: "id",
     render: value => `<p class="cell-id">${value}</p>`
   },
-  {key: "userId"},
-  {key: "areaId"},
+  {
+    key: "userId",
+    render: value => `<p class="cell-id">${value}</p>`
+  },
+  {
+    key: "areaId",
+    render: value => `<p class="cell-id">${value}</p>`
+  },
   {key: "type"},
   {key: "description"},
 ];
@@ -25,7 +39,7 @@ export const TICKETS_FILTER_OPTIONS: FilterOptions = [
     key: 'type',
     type: 'select',
     placeholder: 'Поиск по типу',
-    options: getEnumKeys(TicketType).map(key => ({value: key})),
+    options: createEnumOptions(TicketType),
   },
   {
     key: 'search',
@@ -33,3 +47,52 @@ export const TICKETS_FILTER_OPTIONS: FilterOptions = [
     placeholder: 'Поиск по описанию',
   }
 ];
+
+export const TICKETS_CREATION_CONFIG: CreationConfig = {
+  button: 'Создать тикет',
+  title: 'Создание тикета',
+  options: [
+    {
+      key: 'userId',
+      label: 'id пользователя'
+    },
+    {
+      key: 'areaId',
+      label: 'Помещение',
+      type: 'select',
+    },
+    {
+      key: 'type',
+      label: 'Тип',
+      type: 'select',
+      options: createEnumOptions(TicketType),
+    },
+    {
+      key: 'description',
+      label: 'Описание',
+    },
+  ],
+  validators: ticketGroupValidator
+};
+
+export const TICKETS_EDITION_CONFIG: CreationConfig = {
+  button: 'Изменить тикет',
+  title: 'Редатирование тикета',
+  options: [
+    {
+      key: 'type',
+      label: 'Тип',
+      type: 'select',
+      options: createEnumOptions(TicketType),
+    },
+    {
+      key: 'description',
+      label: 'Описание',
+    },
+  ],
+  validators: ticketGroupValidator
+}
+
+export const TICKETS_DELETION_CONFIG: DeletionConfig = {
+  message: 'Вы уверены, что хотите удалить этот тикет?'
+}

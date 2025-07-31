@@ -9,7 +9,7 @@ import {
   OnDestroy,
   Output, signal
 } from '@angular/core';
-import {BehaviorSubject, combineLatest, EMPTY, Observable, Subject, switchMap, takeUntil, tap} from 'rxjs';
+import {BehaviorSubject, combineLatest, EMPTY, Observable, Subject, switchMap, tap} from 'rxjs';
 import {Pageable} from '../../../core/models/interfaces/pagination/pageable';
 import {catchError} from 'rxjs/operators';
 import {
@@ -24,6 +24,7 @@ import {AsyncPipe, NgClass} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ColumnConfig, TableRow} from "./column-config";
 import {QueryParams} from '../../../core/services/api/api.service';
+import {toObservable} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-items-table',
@@ -71,29 +72,33 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
   protected readonly size$ = new BehaviorSubject(10);
   protected readonly total$ = new BehaviorSubject(0);
   protected readonly isLoading = signal(false);
-  protected items$!: Observable<Pageable<T>>;
+  protected items$: Observable<Pageable<T>>;
 
-  private readonly refresh$ = new BehaviorSubject<void>(undefined);
+  private readonly refresh$ = new BehaviorSubject<number>(Date.now());
   private readonly destroy$ = new Subject<void>();
+  private readonly params$ = toObservable(this.additionalParams);
+  private readonly request$ = combineLatest([
+    this.page$,
+    this.size$,
+    this.params$,
+    this.refresh$,
+  ]);
 
   private sanitizer = inject(DomSanitizer);
   private changeDetectorRef = inject(ChangeDetectorRef);
   protected readonly editingBlockKey = 'editing' as const;
 
   constructor() {
+    this.items$ = this.loadItems();
     effect(() => {
       if (!this.isLoading()) {
         this.changeDetectorRef.markForCheck();
       }
     });
-    effect(() => {
-      this.updateItems();
-      this.items$ = this.loadItems();
-    });
   }
 
   ngOnChanges() {
-    this.items$ = this.loadItems();
+    this.updateItems();
   }
 
   ngOnDestroy() {
@@ -102,19 +107,14 @@ export class ItemsTableComponent<T extends object> implements OnChanges, OnDestr
   }
 
   protected updateItems() {
-    this.refresh$.next();
-    this.isLoading.set(true);
+    this.refresh$.next(Date.now());
   }
 
   private loadItems() {
-    return combineLatest([
-      this.page$,
-      this.size$,
-      this.refresh$
-    ]).pipe(
-      takeUntil(this.destroy$),
-      switchMap(([page, size]) =>
-        this.loadItemsFn({ size, page, ...this.additionalParams() }).pipe(
+    return this.request$.pipe(
+      tap(() => this.isLoading.set(true)),
+      switchMap(([page, size, params]) =>
+        this.loadItemsFn({ size, page, ...params }).pipe(
           tap(response => {
             this.total$.next(response.totalElements);
             this.isLoading.set(false);

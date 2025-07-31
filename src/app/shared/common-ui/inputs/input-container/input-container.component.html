@@ -1,35 +1,41 @@
 @switch (inputType) {
   @case ("select") {
     <app-single-select-input
-      [control]="formControl"
+      [formControl]="usedControl"
       [placeholder]="placeholder"
-      [options]="additionalParams.select.options"
+      [options]="additionalParams.select?.options"
     ></app-single-select-input>
   }
   @case ("multiple") {
     <app-chip-input
-      [control]="formControl"
+      [formControl]="usedControl"
       [placeholder]="placeholder"
     ></app-chip-input>
   }
   @case ("number") {
     <app-number-input
-      [control]="formControl"
+      [formControl]="usedControl"
       [placeholder]="placeholder"
-      [min]="additionalParams.number.min"
-      [max]="additionalParams.number.max"
-      [step]="additionalParams.number.step"
+      [min]="additionalParams.number?.min"
+      [max]="additionalParams.number?.max"
+      [step]="additionalParams.number?.step"
     ></app-number-input>
   }
   @case ("images") {
     <app-image-input
-      [control]="formControl"
+      [formControl]="usedControl"
       [placeholder]="placeholder"
     ></app-image-input>
   }
+  @case ("dateRange") {
+    <app-date-range-input
+      [formControl]="usedControl"
+      [placeholder]="placeholder"
+    ></app-date-range-input>
+  }
   @default {
     <app-text-input
-      [control]="formControl"
+      [externalControl]="usedControl"
       [placeholder]="placeholder"
     ></app-text-input>
   }

@@ -37,7 +37,7 @@ export class CreationBlockComponent {
       formGroupConfig[configItem.key] = new FormControl(initialValue, toArray(configItem.validators));
     }
 
-    this.creationForm = new FormGroup(formGroupConfig);
+    this.creationForm = new FormGroup(formGroupConfig, this.context.data.validators);
   }
 
   protected onSubmit() {

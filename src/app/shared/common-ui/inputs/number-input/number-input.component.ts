@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {ReactiveFormsModule} from "@angular/forms";
+import {Component, forwardRef, Input} from '@angular/core';
+import {NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule} from "@angular/forms";
 import {TuiInputNumberDirective} from "@taiga-ui/kit";
 import {TuiError, TuiTextfieldComponent} from "@taiga-ui/core";
 import {InputComponent} from '../input.component';
@@ -13,7 +13,19 @@ import {InputComponent} from '../input.component';
     TuiError,
   ],
   templateUrl: './number-input.component.html',
-  styleUrl: './number-input.component.css'
+  styleUrl: './number-input.component.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NumberInputComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => NumberInputComponent),
+      multi: true,
+    }
+  ]
 })
 export class NumberInputComponent extends InputComponent<number> {
   @Input({required: true}) max!: number;
@@ -21,11 +33,11 @@ export class NumberInputComponent extends InputComponent<number> {
   @Input() step: number = 1;
 
   protected onNumericStep(number: number) {
-    const value = this.formControl.value;
+    const value = this.control.value;
     if (!value) {
-      this.formControl.patchValue(number >= 0 ? this.min : this.max);
+      this.control.patchValue(number >= 0 ? this.min : this.max);
       return;
     }
-    this.formControl.patchValue(value + number);
+    this.control.patchValue(value + number);
   }
 }

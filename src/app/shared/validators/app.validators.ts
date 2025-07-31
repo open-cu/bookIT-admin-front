@@ -2,11 +2,14 @@ import {telegramValidator} from './telegram.validator';
 import {nameValidator} from './name.validator';
 import {ValidationErrors} from '@angular/forms';
 import {maxFilesLengthValidator} from './max-files-length.validator';
+import {requiredIfGroupValidator, requiredIfOptions} from './required-if-group.validator';
 
 export class AppValidators {
   static telegram = telegramValidator();
   static name = (required?: boolean) => nameValidator(required);
   static maxFilesLength = (maxLength: number) => maxFilesLengthValidator(maxLength);
+  static requiredIfGroup =
+    (conditions: requiredIfOptions) => requiredIfGroupValidator(conditions);
 
   static getErrorMessage(errors: ValidationErrors | null) {
     return getErrorMessage(errors);

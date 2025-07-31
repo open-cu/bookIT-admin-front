@@ -19,10 +19,12 @@
 }
 
 <app-items-table
-  [title]="title"
   class="items-table"
+  [title]="title"
   [columns]="columns"
   [loadFn]="transformRequestFn"
+  [editable]="isEditable"
+  [deletable]="isDeletable"
   (OnFilterOpened)="isFilterOpened = !isFilterOpened"
   (OnDelete)="onDeleteItem($event)"
   (OnEdit)="onEditItem($event)"

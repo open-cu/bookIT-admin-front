@@ -3,7 +3,7 @@
     #validator="tuiInputFilesValidator"
     accept="image/*"
     tuiInputFiles
-    [formControl]="formControl"
+    [formControl]="control"
     [multiple]="true"
     (reject)="onReject($event)"
   />
@@ -26,5 +26,5 @@
 </tui-files>
 <tui-error
   [error]="['maxLength'] | tuiFieldError | async"
-  [formControl]="formControl"
+  [formControl]="control"
 />

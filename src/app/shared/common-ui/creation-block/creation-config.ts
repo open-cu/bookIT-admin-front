@@ -6,7 +6,8 @@ import {InputType} from '../inputs/input-container/input-container.component';
 export interface CreationConfig {
   options: CreationOptions,
   title?: string,
-  button?: string
+  button?: string,
+  validators?: ValidatorFn | ValidatorFn[],
 }
 
 export type CreationOptions = CreationOption[]

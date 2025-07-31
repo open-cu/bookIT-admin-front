@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, forwardRef} from '@angular/core';
 import {TuiError, TuiTextfieldComponent, TuiTextfieldDirective} from '@taiga-ui/core';
 import {InputComponent} from '../input.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-text-input',
@@ -12,7 +12,19 @@ import {ReactiveFormsModule} from '@angular/forms';
     TuiError
   ],
   templateUrl: './text-input.component.html',
-  styleUrl: './text-input.component.css'
+  styleUrl: './text-input.component.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TextInputComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => TextInputComponent),
+      multi: true,
+    }
+  ]
 })
 export class TextInputComponent extends InputComponent<string> {
 
