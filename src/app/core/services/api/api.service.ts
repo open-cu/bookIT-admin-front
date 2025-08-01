@@ -51,7 +51,10 @@ export abstract class ApiService<T = void> {
       if (value instanceof Date) {
         formData.append(key, value.toISOString());
       } else if (typeof value === 'object' && value !== null) {
-        formData.append(key, JSON.stringify(value));
+        formData.append(key, new Blob(
+          [JSON.stringify(value)],
+          {type: 'application/json'}
+        ));
       } else if (value !== null && value !== undefined) {
         formData.append(key, String(value));
       }

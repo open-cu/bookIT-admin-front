@@ -2,14 +2,15 @@ import {ColumnConfig} from '../../shared/common-ui/items-table/column-config';
 import {FilterOptions} from '../../shared/common-ui/filter-block/filter-config';
 import {CreateArea} from '../../core/models/interfaces/areas/create-area';
 import {createEnumOptions} from '../../core/utils/create-enum-options';
-import {AreaType} from '../../core/models/enums/area-type';
+import {AreaType} from '../../core/models/enums/areas/area-type';
 import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
 import {DeletionConfig} from '../../shared/common-ui/table-page/deletion-config';
 import {UpdateArea} from '../../core/models/interfaces/areas/update-area';
 import {Image} from '../../core/models/interfaces/images/image';
 import {imageToFile} from '../../core/utils/blob-format.utils';
+import {AreaFeature} from '../../core/models/enums/areas/area-feature';
 
-export const AREA_COLUMNS_CONFIG: ColumnConfig[] = [
+export const AREAS_COLUMNS_CONFIG: ColumnConfig[] = [
   {
     key: "id",
     render: value => `<p class="cell-id">${value}</p>`
@@ -41,7 +42,7 @@ export const AREA_COLUMNS_CONFIG: ColumnConfig[] = [
   {key: "capacity"}
 ];
 
-export const AREA_FILTER_OPTIONS: FilterOptions = [
+export const AREAS_FILTER_OPTIONS: FilterOptions = [
   {
     key: 'areaName',
     placeholder: 'Поиск по описанию'
@@ -54,8 +55,8 @@ export const AREA_FILTER_OPTIONS: FilterOptions = [
   }
 ];
 
-export const AREA_CREATION_CONFIG: CreationConfig = {
-  button: 'Создать',
+export const AREAS_CREATION_CONFIG: CreationConfig = {
+  button: 'Создать помещение',
   title: 'Создание помещения',
   options: [
     {
@@ -75,8 +76,8 @@ export const AREA_CREATION_CONFIG: CreationConfig = {
     {
       key: 'features',
       label: 'Особенности',
-      type: 'chips',
-      placeholder: 'Enter'
+      type: 'multiple-select',
+      options: createEnumOptions(AreaFeature),
     },
     {
       key: 'capacity',
@@ -92,7 +93,7 @@ export const AREA_CREATION_CONFIG: CreationConfig = {
   ],
 };
 
-export const AREA_EDITION_CONFIG: CreationConfig = {
+export const AREAS_EDITION_CONFIG: CreationConfig = {
   button: 'Изменить',
   title: 'Редатирование помещения',
   options: [
@@ -119,7 +120,7 @@ export const AREA_EDITION_CONFIG: CreationConfig = {
   ],
 }
 
-export const AREA_DELETION_CONFIG: DeletionConfig = {
+export const AREAS_DELETION_CONFIG: DeletionConfig = {
   label: 'Вы уверены, что хотите удалить это помещение?'
 }
 

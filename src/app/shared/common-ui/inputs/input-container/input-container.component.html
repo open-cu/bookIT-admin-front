@@ -6,6 +6,13 @@
       [options]="additionalParams.select?.options"
     ></app-single-select-input>
   }
+  @case ("multiple-select") {
+    <app-multiple-select-input
+      [formControl]="usedControl"
+      [placeholder]="placeholder"
+      [options]="additionalParams.select?.options"
+    ></app-multiple-select-input>
+  }
   @case ("chips") {
     <app-chip-input
       [formControl]="usedControl"
@@ -32,6 +39,18 @@
       [formControl]="usedControl"
       [placeholder]="placeholder"
     ></app-date-range-input>
+  }
+  @case ("dateTime") {
+    <app-date-time-input
+      [formControl]="usedControl"
+      [placeholder]="placeholder"
+    ></app-date-time-input>
+  }
+  @case ("date") {
+    <app-date-input
+      [formControl]="usedControl"
+      [placeholder]="placeholder"
+    ></app-date-input>
   }
   @default {
     <app-text-input

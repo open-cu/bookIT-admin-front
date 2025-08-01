@@ -1,4 +1,4 @@
-import {TicketType} from '../../enums/ticket-type';
+import {TicketType} from '../../enums/tickets/ticket-type';
 
 export interface CreateTicket {
   "userId": string,

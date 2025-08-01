@@ -1,11 +1,12 @@
-import {AreaType} from '../../enums/area-type';
+import {AreaType} from '../../enums/areas/area-type';
+import {AreaFeature} from '../../enums/areas/area-feature';
 
 export interface CreateArea {
   "createAreaRequest": {
     "name": string,
     "description": string,
     "type": AreaType,
-    "features": string[],
+    "features": AreaFeature[],
     "capacity": number,
     "status": string,
   },

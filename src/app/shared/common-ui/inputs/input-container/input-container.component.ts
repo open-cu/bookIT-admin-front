@@ -6,8 +6,11 @@ import {TextInputComponent} from '../text-input/text-input.component';
 import {ImageInputComponent} from '../image-input/image-input.component';
 import {DateRangeInputComponent} from '../date-range-input/date-range-input.component';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {MultipleSelectInputComponent} from '../multiple-select-input/multiple-select-input.component';
+import {DateTimeInputComponent} from '../date-time-input/date-time-input.component';
+import {DateInputComponent} from '../date-input/date-input.component';
 
-export type InputType = 'text' | 'dateRange' | 'select' | 'multiple-select' | 'images' | 'chips' | 'number';
+export type InputType = 'text' | 'date' | 'dateTime' | 'dateRange' | 'select' | 'multiple-select' | 'images' | 'chips' | 'number';
 
 @Component({
   selector: 'app-input-container',
@@ -19,6 +22,9 @@ export type InputType = 'text' | 'dateRange' | 'select' | 'multiple-select' | 'i
     ImageInputComponent,
     DateRangeInputComponent,
     ReactiveFormsModule,
+    MultipleSelectInputComponent,
+    DateTimeInputComponent,
+    DateInputComponent,
   ],
   templateUrl: './input-container.component.html',
   styleUrl: './input-container.component.css',

@@ -1,4 +1,4 @@
-import {AreaType} from '../../enums/area-type';
+import {AreaType} from '../../enums/areas/area-type';
 
 export interface UpdateArea {
   "updateAreaRequest": {

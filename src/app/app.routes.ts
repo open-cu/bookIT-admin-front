@@ -4,8 +4,9 @@ import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {APP_ROUTES} from './app.routes.paths';
 import {LoginPageComponent} from './pages/login-page/login-page.component';
 import {TicketsPageComponent} from './pages/tickets-page/tickets-page.component';
-import {AreaPageComponent} from './pages/area-page/area-page.component';
+import {AreasPageComponent} from './pages/areas-page/areas-page.component';
 import {USER_DATA, userResolver} from './core/resolvers/user-resolver';
+import {BookingsPageComponent} from './pages/bookings-page/bookings-page.component';
 
 export const routes: Routes = [
   {path: APP_ROUTES.LOGIN, component: LoginPageComponent},
@@ -16,7 +17,8 @@ export const routes: Routes = [
     children: [
       {path: '', redirectTo: APP_ROUTES.TICKETS, pathMatch: 'full'},
       {path: APP_ROUTES.TICKETS, component: TicketsPageComponent},
-      {path: APP_ROUTES.AREAS, component: AreaPageComponent},
+      {path: APP_ROUTES.AREAS, component: AreasPageComponent},
+      {path: APP_ROUTES.BOOKINGS, component: BookingsPageComponent},
     ]
   },
   {path: '**', component: NotFoundPageComponent}

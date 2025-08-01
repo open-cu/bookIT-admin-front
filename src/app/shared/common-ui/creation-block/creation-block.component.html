@@ -1,6 +1,6 @@
 <p class="h1 block-title">{{ context.data.title ?? 'Создание' }}</p>
 <form [formGroup]="creationForm" (ngSubmit)="onSubmit()" class="creation-block-form">
-  @for (config of context.data.options; track $index) {
+  @for (config of currentOptions; track $index) {
     <div class="input-container">
       <label class="input-label" tuiLabel>{{ config.label ?? config.key }}</label>
       @let placeholder = config.placeholder ?? '';

@@ -7,32 +7,34 @@ import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-bl
 import {AreaService} from '../../core/services/api/area.service';
 import {SortArea} from '../../core/models/interfaces/areas/sort-area';
 import {
-  AREA_COLUMNS_CONFIG,
-  AREA_CREATION_CONFIG,
-  AREA_DELETION_CONFIG,
-  AREA_EDITION_CONFIG,
-  AREA_FILTER_OPTIONS,
+  AREAS_COLUMNS_CONFIG,
+  AREAS_CREATION_CONFIG,
+  AREAS_DELETION_CONFIG,
+  AREAS_EDITION_CONFIG,
+  AREAS_FILTER_OPTIONS,
   CreateAreaFlat,
   UpdateAreaFlat
-} from './area.config';
+} from './areas.config';
 import {Image} from '../../core/models/interfaces/images/image';
 import {imageToFile} from '../../core/utils/blob-format.utils';
+import {AreaType} from '../../core/models/enums/areas/area-type';
+import {AreaStatus} from '../../core/models/enums/areas/area-status';
 
 @Component({
-  selector: 'app-area-page',
+  selector: 'app-areas-page',
     imports: [
         TablePageComponent
     ],
-  templateUrl: './area-page.component.html',
-  styleUrl: './area-page.component.css'
+  templateUrl: './areas-page.component.html',
+  styleUrl: './areas-page.component.css'
 })
-export class AreaPageComponent extends TablePageComponent<Area>  {
+export class AreasPageComponent extends TablePageComponent<Area> {
   override filterResult: FilterResult<typeof this.filterOptions> = {};
-  override filterOptions = AREA_FILTER_OPTIONS;
-  override columns = AREA_COLUMNS_CONFIG;
-  override creationConfig = AREA_CREATION_CONFIG
-  override editionConfig = AREA_EDITION_CONFIG;
-  override deletionConfig = AREA_DELETION_CONFIG;
+  override filterOptions = AREAS_FILTER_OPTIONS;
+  override columns = AREAS_COLUMNS_CONFIG;
+  override creationConfig = AREAS_CREATION_CONFIG
+  override editionConfig = AREAS_EDITION_CONFIG;
+  override deletionConfig = AREAS_DELETION_CONFIG;
 
   private areaService = inject(AreaService);
 
@@ -47,7 +49,7 @@ export class AreaPageComponent extends TablePageComponent<Area>  {
 
   override createItemFn = (item: CreateAreaFlat) => {
     const { photos, ...area  } = item;
-    return this.areaService.post({createAreaRequest: area, photos});
+    return this.areaService.post({createAreaRequest: { ...area, status: AreaStatus[AreaStatus.AVAILABLE] }, photos});
   }
 
   override deleteItemFn = (item: Ticket) => {

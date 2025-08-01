@@ -2,12 +2,15 @@ import {ValidatorFn, Validators} from '@angular/forms';
 import {TypeUtils} from '../../../core/utils/type.utils';
 import toArray = TypeUtils.toArray;
 import {InputType} from '../inputs/input-container/input-container.component';
+import {Observable} from 'rxjs';
 
 export interface CreationConfig {
   options: CreationOptions,
   title?: string,
   button?: string,
   validators?: ValidatorFn | ValidatorFn[],
+  dependsOn?: string[],
+  loadOptions?: (values: Record<string, any>) => Observable<SelectOption[]>,
 }
 
 export type CreationOptions = CreationOption[]
@@ -28,6 +31,10 @@ export interface CreationOption {
   type?: InputType,
   /* necessary only if type === 'select' */
   options?: SelectOption[],
+  /* mark that this option depends on some other (necessary only type === 'select') */
+  dependsOn?: string[],
+  /* load options when keys from 'dependsOn' changes (necessary only type === 'select') */
+  loadOptions?: (values: Record<string, any>) => Observable<SelectOption[]>,
 }
 
 export type CreationReturn<T extends CreationOptions> = {

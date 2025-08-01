@@ -77,7 +77,15 @@ export class LoginPageComponent {
       first_name: formData.firstName!,
       last_name: formData.lastName ?? undefined,
     }).subscribe({
-      next: () => this.router.navigate(['/']).then(),
+      next: () => {
+        this.authService.complete({
+          firstName: 'Some',
+          lastName: 'User',
+          email: 'email@gmail.com',
+          phone: '+78115678945'
+        }).subscribe();
+        this.router.navigate(['/']).then();
+      },
       error: () => this.alertService.open(
         'Произошла ошибка. Повторите попытку позже.',
         {

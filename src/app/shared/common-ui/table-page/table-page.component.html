@@ -6,7 +6,7 @@
       appearance="info"
       class="btn create-item-btn"
       (click)="onCreateNewItem()"
-    >{{ creationConfig.button ?? creationConfig.title ?? '' }}</button>
+    >{{ createButton ?? creationConfig.button ?? 'Создать' }}</button>
   }
 </header>
 @if (isFilterOpened()) {
@@ -22,7 +22,7 @@
   [style.--table-block-size]="tableBlockSize()"
   #itemsTable
   class="items-table"
-  [title]="title"
+  [title]="tableTitle"
   [columns]="columns"
   [loadFn]="transformRequestFn"
   [editable]="isEditable"

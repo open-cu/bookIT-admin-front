@@ -1,6 +1,6 @@
 import {ColumnConfig} from '../../shared/common-ui/items-table/column-config';
 import {FilterOptions} from '../../shared/common-ui/filter-block/filter-config';
-import {TicketType} from '../../core/models/enums/ticket-type';
+import {TicketType} from '../../core/models/enums/tickets/ticket-type';
 import {createEnumOptions} from '../../core/utils/create-enum-options';
 import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
 import {DeletionConfig} from '../../shared/common-ui/table-page/deletion-config';

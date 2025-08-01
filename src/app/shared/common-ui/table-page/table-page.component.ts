@@ -42,9 +42,11 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   @Input() transformParamsFn: (params: any) => any = getSelf;
   @Input() transformPatchFn: (config: CreationConfig, item: any) => any = getSelf;
 
+  @Input() override tableTitle: string = '';
   @Input() title: string = '';
   @Input() filterButton: string = 'Найти';
   @Input() filterTitle: string = 'Поиск';
+  @Input() createButton?: string;
 
   @Input() filterOptions!: FilterOptions;
 
