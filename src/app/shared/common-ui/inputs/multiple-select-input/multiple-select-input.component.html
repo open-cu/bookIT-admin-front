@@ -1,0 +1,20 @@
+<tui-textfield
+  tuiChevron
+  multi
+  [stringify]="stringify"
+  [identityMatcher]="matcher"
+>
+  <tui-error [error]="errorMessage"/>
+  <input
+    tuiSelectLike
+    tuiInputChip
+    [formControl]="control"
+    [invalid]="isInvalid"
+  />
+  <tui-data-list-wrapper
+    *tuiTextfieldDropdown
+    new
+    tuiMultiSelectGroup
+    [items]="options"
+  />
+</tui-textfield>
