@@ -6,5 +6,5 @@ export interface UpdateArea {
     "type": AreaType,
     "capacity": number
   },
-  "photos": string[]
+  "photos": File[]
 }

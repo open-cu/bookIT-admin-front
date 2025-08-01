@@ -21,19 +21,34 @@ export function base64ToBlob(base64Data: string, contentType: string): Blob {
   return new Blob(byteArrays, { type: contentType });
 }
 
+
 export function imageToFile(image: Image): File {
-  const blob = base64ToBlob(image.base64Data, image.contentType);
-
-  const fileName = image.key.split('/').pop() || 'file';
-
-  return new File(
-    [blob],
-    fileName,
-    {
-      type: image.contentType,
-      lastModified: new Date(image.lastModified).getTime()
-    }
+  const byteCharacters = atob(
+    image.base64Data.includes('base64,')
+      ? image.base64Data.split(',')[1]
+      : image.base64Data
   );
+
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+    const slice = byteCharacters.slice(offset, offset + 1024);
+    const byteNumbers = new Array(slice.length);
+
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    byteArrays.push(new Uint8Array(byteNumbers));
+  }
+
+  const blob = new Blob(byteArrays, { type: image.contentType });
+
+  const filename = image.key.split('/').pop() || `file-${Date.now()}`;
+
+  return new File([blob], filename, {
+    type: image.contentType,
+    lastModified: new Date(image.lastModified).getTime() || Date.now()
+  });
 }
 
 export async function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {

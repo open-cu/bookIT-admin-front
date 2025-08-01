@@ -17,15 +17,15 @@ import {map} from 'rxjs';
 @Component({
   selector: 'app-image-input',
     imports: [
-        AsyncPipe,
-        ReactiveFormsModule,
-        TuiError,
-        TuiFieldErrorPipe,
-        TuiFile,
-        TuiFileRejectedPipe,
-        TuiFilesComponent,
-        TuiInputFiles,
-        TuiInputFilesDirective
+      AsyncPipe,
+      ReactiveFormsModule,
+      TuiError,
+      TuiFieldErrorPipe,
+      TuiFile,
+      TuiFileRejectedPipe,
+      TuiFilesComponent,
+      TuiInputFiles,
+      TuiInputFilesDirective
     ],
   templateUrl: './image-input.component.html',
   styleUrl: './image-input.component.css',

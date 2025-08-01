@@ -7,6 +7,7 @@ import {CreationConfig} from '../../shared/common-ui/creation-block/creation-con
 import {DeletionConfig} from '../../shared/common-ui/table-page/deletion-config';
 import {UpdateArea} from '../../core/models/interfaces/areas/update-area';
 import {Image} from '../../core/models/interfaces/images/image';
+import {imageToFile} from '../../core/utils/blob-format.utils';
 
 export const AREA_COLUMNS_CONFIG: ColumnConfig[] = [
   {
@@ -29,10 +30,12 @@ export const AREA_COLUMNS_CONFIG: ColumnConfig[] = [
       if (value.length === 0) {
         return '——';
       }
-      let lines = value
-        .map(image => `<p>${image.key}</p>`)
-        .join();
-      return `<div class="cell-lines">${lines}</div>`;
+      let lines: string[] = [];
+      for (const image of value) {
+        const link = URL.createObjectURL(imageToFile(image));
+        lines.push(`<a href="${link}">${image.key}</a>`);
+      }
+      return `<div class="cell-lines">${lines.join()}</div>`;
     }
   },
   {key: "capacity"}

@@ -3,7 +3,7 @@ import {TablePageComponent} from "../../shared/common-ui/table-page/table-page.c
 import {Ticket} from '../../core/models/interfaces/tickets/ticket';
 import {Area} from '../../core/models/interfaces/areas/area';
 import {FilterResult} from '../../shared/common-ui/filter-block/filter-config';
-import {markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
+import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
 import {AreaService} from '../../core/services/api/area.service';
 import {SortArea} from '../../core/models/interfaces/areas/sort-area';
 import {
@@ -15,6 +15,8 @@ import {
   CreateAreaFlat,
   UpdateAreaFlat
 } from './area.config';
+import {Image} from '../../core/models/interfaces/images/image';
+import {imageToFile} from '../../core/utils/blob-format.utils';
 
 @Component({
   selector: 'app-area-page',
@@ -55,5 +57,15 @@ export class AreaPageComponent extends TablePageComponent<Area>  {
   override editItemFn = (item: any, patch: UpdateAreaFlat) => {
     const { photos, ...area  } = patch;
     return this.areaService.put(item['id'], {updateAreaRequest: area, photos});
+  }
+
+  override transformPatchFn = (config: CreationConfig, item: any) => {
+    let photos = config.options.find(option => option.key === 'photos');
+    if (!photos) {
+      return config;
+    }
+    photos.value = (item['images'] as Image[]).map(imageToFile);
+
+    return config;
   }
 }

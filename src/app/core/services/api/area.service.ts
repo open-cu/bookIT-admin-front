@@ -24,10 +24,10 @@ export class AreaService extends ApiService<Area> {
   }
 
   override post(area: CreateArea) {
-    return super.post(area);
+    return super.post(this.convertToFormData(area, 'photos'));
   }
 
   override put(areaId: string, area: UpdateArea) {
-    return super.put(areaId, area);
+    return super.put(areaId, this.convertToFormData(area, 'photos'));
   }
 }

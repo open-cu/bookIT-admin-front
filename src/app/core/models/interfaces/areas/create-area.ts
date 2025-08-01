@@ -9,5 +9,5 @@ export interface CreateArea {
     "capacity": number,
     "status": string,
   },
-  "photos": string[]
+  "photos": File[]
 }

@@ -40,6 +40,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   @Input('editFn') editItemFn: (item: any, patch: any) => Observable<Partial<T>> = () => EMPTY;
   @Input('deleteFn') deleteItemFn: (item: any) => Observable<string> = () => EMPTY;
   @Input() transformParamsFn: (params: any) => any = getSelf;
+  @Input() transformPatchFn: (config: CreationConfig, item: any) => any = getSelf;
 
   @Input() title: string = '';
   @Input() filterButton: string = 'Найти';
@@ -126,14 +127,16 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
         option.value = item[option.key];
       }
     }
-    return config;
+    return this.transformPatchFn(config, item);
   }
 
   protected onDeleteItem(tableRaw: any) {
     const item = Object.fromEntries(tableRaw);
     const { label, ...other } = this.deletionConfig;
+
     // to swap buttons in template
     [other.yes, other.no] = [other.no ?? 'Нет', other.yes ?? 'Да'];
+
     this.dialogService
       .open<boolean>(TUI_CONFIRM, {
         label: label,
