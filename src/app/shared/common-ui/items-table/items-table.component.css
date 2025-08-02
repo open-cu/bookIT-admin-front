@@ -46,6 +46,11 @@
   align-self: center;
 }
 
+.table-scrollbar {
+  inline-size: var(--table-inline-size);
+  block-size: var(--table-block-size);
+}
+
 .table {
   inline-size: 100%;
   block-size: 100%;

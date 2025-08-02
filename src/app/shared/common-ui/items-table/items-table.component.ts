@@ -4,21 +4,27 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input, model,
+  Input,
+  model,
   OnChanges,
   OnDestroy,
   OnInit,
-  Output, signal, WritableSignal
+  Output,
+  signal
 } from '@angular/core';
-import {BehaviorSubject, combineLatest, delay, EMPTY, Observable, Subject, switchMap, tap} from 'rxjs';
+import {BehaviorSubject, combineLatest, delay, EMPTY, Observable, Subject, switchMap, takeUntil, tap} from 'rxjs';
 import {Pageable} from '../../../core/models/interfaces/pagination/pageable';
 import {catchError} from 'rxjs/operators';
 import {
   TuiTableCell,
   TuiTableDirective,
   TuiTablePagination,
-  TuiTablePaginationEvent, TuiTableTbody,
-  TuiTableTd, TuiTableTh, TuiTableThGroup, TuiTableTr
+  TuiTablePaginationEvent,
+  TuiTableTbody,
+  TuiTableTd,
+  TuiTableTh,
+  TuiTableThGroup,
+  TuiTableTr
 } from '@taiga-ui/addon-table';
 import {TuiIcon, TuiLoader, TuiScrollbar} from "@taiga-ui/core";
 import {AsyncPipe, NgClass} from "@angular/common";
@@ -63,6 +69,8 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
   @Input('title') tableTitle = 'Таблица'
   @Input('editable') isEditable = false;
   @Input('deletable') isDeletable = false;
+  @Input() paramsToQuery: string[] | boolean = false;
+  @Input('trackFn') itemTrackBy?: (item: T) => any;
 
   @Output('OnFilterOpened') onFilterOpenedEmitter = new EventEmitter<void>();
   @Output('OnEdit') onEditEmitter = new EventEmitter<TableRow>();
@@ -70,26 +78,26 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
 
   public additionalParams = model<QueryParams>({}, {alias: 'params'});
 
-  protected readonly page$ = new BehaviorSubject(0);
-  protected readonly size$ = new BehaviorSubject(10);
-  protected readonly total$ = new BehaviorSubject(0);
+  protected readonly page = signal(0);
+  protected readonly size = signal(10);
+  protected readonly total = signal(0);
   protected readonly isLoading = signal(false);
-  protected items$!: Observable<Pageable<T>>;
 
+  protected items$!: Observable<Pageable<T>>;
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
   private readonly destroy$ = new Subject<void>();
-  private readonly params$ = toObservable(this.additionalParams);
   private readonly request$ = combineLatest([
-    this.page$,
-    this.size$,
-    this.params$,
+    toObservable(this.page),
+    toObservable(this.size),
+    toObservable(this.additionalParams),
     this.refresh$,
-  ]);
+  ]).pipe(
+    takeUntil(this.destroy$)
+  );
 
   private sanitizer = inject(DomSanitizer);
   protected cdr = inject(ChangeDetectorRef);
-  protected readonly editingBlockKey = 'editing' as const;
-  @Input() updateSignal!: WritableSignal<boolean>;
+  protected readonly EDITING_BLOCK_KEY = 'editing' as const;
 
   ngOnInit() {
     this.items$ = this.loadItems();
@@ -114,10 +122,12 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
     return this.request$.pipe(
       tap(() => this.isLoading.set(true)),
       delay(200),
-      switchMap(([page, size, params]) =>
-        this.loadItemsFn({ size, page, ...params }).pipe(
+      switchMap(([page, size, params]) => {
+        const queryParams = { size, page, ...params };
+
+        return this.loadItemsFn(queryParams).pipe(
           tap(response => {
-            this.total$.next(response.totalElements);
+            this.total.set(response.totalElements);
             this.isLoading.set(false);
           }),
           catchError(error => {
@@ -126,13 +136,15 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
             return EMPTY;
           })
         )
-      )
+      }
+
+      ),
     );
   }
 
-  protected onPagination({page, size}: TuiTablePaginationEvent): void {
-    this.page$.next(page);
-    this.size$.next(size);
+  protected onPaginationChange({page, size}: TuiTablePaginationEvent) {
+    this.page.set(page);
+    this.size.set(size);
   }
 
   protected getRows(obj: object) {
@@ -160,7 +172,7 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
   protected getColumnsKeys() {
     const res = this.columnConfigs.map(column => column.key);
     if (this.isEditable || this.isDeletable) {
-      res.push(this.editingBlockKey);
+      res.push(this.EDITING_BLOCK_KEY);
     }
     return res;
   }
@@ -171,9 +183,5 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
       res.push('');
     }
     return res;
-  }
-
-  protected onFilterOpened() {
-    this.onFilterOpenedEmitter.emit();
   }
 }

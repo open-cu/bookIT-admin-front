@@ -40,7 +40,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   @Input('editFn') editItemFn: (item: any, patch: any) => Observable<Partial<T>> = () => EMPTY;
   @Input('deleteFn') deleteItemFn: (item: any) => Observable<string> = () => EMPTY;
   @Input() transformParamsFn: (params: any) => any = getSelf;
-  @Input() transformPatchFn: (config: CreationConfig, item: any) => any = getSelf;
+  @Input() transformPatchFn: (config: CreationConfig, item: any) => CreationConfig = getSelf;
 
   @Input() override tableTitle: string = '';
   @Input() title: string = '';
@@ -113,6 +113,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   protected onEditItem(tableRaw: any) {
     const item = Object.fromEntries(tableRaw);
     const config = this.patchConfigWithItem(this.editionConfig, item);
+    console.log(config);
     this.editionDialog(config)
       .pipe(
         switchMap(value => value

@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {FilterResult} from '../../shared/common-ui/filter-block/filter-config';
-import {markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
+import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
 import {TablePageComponent} from '../../shared/common-ui/table-page/table-page.component';
 import {Booking} from '../../core/models/interfaces/bookings/booking';
 import {
@@ -46,13 +46,14 @@ export class BookingsPageComponent extends TablePageComponent<Booking> {
     this.areaService.getList().pipe(
       map(res => res.content)
     ).subscribe(
-      areas => areas
-        .forEach(area => {
+      areas => {
+        areas.forEach(area => {
           let option = {value: area.id, label: area.name,};
           this.filterOptions[1].options!.push(option);
           this.creationConfig.options[1].options!.push(option);
           this.editionConfig.options[0].options!.push(option);
         })
+      }
     );
   }
 
@@ -73,8 +74,15 @@ export class BookingsPageComponent extends TablePageComponent<Booking> {
   }
 
   override transformParamsFn = (params: any) => {
-    console.log(this.parseTimeIntervals(params));
     return this.parseTimeIntervals(params);
+  }
+
+  override transformPatchFn = (config: CreationConfig, item: any) => {
+    return {
+      ...config,
+      intervals: [],
+      date: new Date(item.startTime)
+    };
   }
 
   private parseTimeIntervals = (params: any) => {

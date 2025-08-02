@@ -44,6 +44,7 @@ export class CreationBlockComponent implements OnInit {
   constructor() {
     this.currentOptions = this.context.data.options.map(opt => ({ ...opt }));
     this.initFormGroup();
+    this.setupDynamicDependencies();
   }
 
   ngOnInit() {
@@ -70,7 +71,6 @@ export class CreationBlockComponent implements OnInit {
     });
 
     this.creationForm = new FormGroup(formGroupConfig, this.context.data.validators);
-    this.setupDynamicDependencies();
   }
 
   private setupDynamicDependencies() {
@@ -105,13 +105,12 @@ export class CreationBlockComponent implements OnInit {
 
         /* TODO: hide all exceptions or configure field updates */
         baseStream.pipe(
-          switchMap(values => configItem.loadOptions!(values).pipe(
-            catchError(() => of([]))
-          )),
-          takeUntilDestroyed(this.destroyRef)
-        ).subscribe(newOptions => {
-          this.updateFieldOptions(configItem.key, newOptions);
-        });
+          switchMap(values => configItem.loadOptions!(values)),
+          takeUntilDestroyed(this.destroyRef),
+          catchError(() => of([])),
+        ).subscribe(
+          newOptions => this.updateFieldOptions(configItem.key, newOptions)
+        );
       });
   }
 

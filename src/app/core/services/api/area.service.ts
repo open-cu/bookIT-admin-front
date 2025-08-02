@@ -24,8 +24,7 @@ export class AreaService extends ApiService<Area> {
   }
 
   override post(area: CreateArea) {
-    let form = this.convertToFormData(area, 'photos');
-    return this.http.post<Area>(`${this.baseUrl}`, form);
+    return super.post(this.convertToFormData(area, 'photos'));
   }
 
   override put(areaId: string, area: UpdateArea) {

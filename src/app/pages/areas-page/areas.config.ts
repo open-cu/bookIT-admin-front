@@ -23,7 +23,12 @@ export const AREAS_COLUMNS_CONFIG: ColumnConfig[] = [
   {key: "type"},
   {
     key: "features",
-    render: (value: string[]) => value.length === 0 ? '——' : ''
+    render: (value: string[]) => {
+      if (value.length === 0) {
+        return '——'
+      }
+      return '';
+    }
   },
   {
     key: "images",

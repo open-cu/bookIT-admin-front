@@ -2,7 +2,7 @@
   <div class="table-header">
     <p class="h1 table-title">
       {{ tableTitle }}
-      <button class="filter-button" (click)="onFilterOpened()">
+      <button class="filter-button" (click)="onFilterOpenedEmitter.emit()">
         <tui-icon icon="list-filter"></tui-icon>
       </button>
     </p>
@@ -12,11 +12,7 @@
     [overlay]="true"
     [showLoader]="isLoading()"
   >
-    <tui-scrollbar
-      [hidden]="true"
-      [style.inline-size]="'var(--table-inline-size)'"
-      [style.block-size]="'var(--table-block-size)'"
-    >
+    <tui-scrollbar class="table-scrollbar" [hidden]="true">
     <table
       tuiTable
       class="table"
@@ -35,7 +31,7 @@
       </thead>
       @let data = (items$ | async)?.content ?? [];
       <tbody tuiTbody [data]="data">
-        @for (item of data; track $index) {
+        @for (item of data; track itemTrackBy ? itemTrackBy(item) : $index) {
           <tr tuiTr>
             @let tableRows = getRows(item);
             @for (value of tableRows; track i; let i = $index) {
@@ -47,7 +43,7 @@
               ></td>
             }
             @if (isEditable || isDeletable) {
-              <td tuiTd *tuiCell="editingBlockKey" class="editing-cell">
+              <td tuiTd *tuiCell="EDITING_BLOCK_KEY" class="editing-cell">
                 <div class="editing-block">
                   @if (isDeletable) {
                     <button class="delete-item-button" (click)="onDeleteEmitter.emit(tableRows)">
@@ -74,10 +70,10 @@
         <td [colSpan]="columnConfigs.length">
           <tui-table-pagination
             class="tui-space_top-2"
-            [page]="(page$ | async) ?? 0"
-            [size]="(size$ | async) ?? 0"
-            [total]="(total$ | async) ?? 0"
-            (paginationChange)="onPagination($event)"
+            [page]="page()"
+            [size]="size()"
+            [total]="total()"
+            (paginationChange)="onPaginationChange($event)"
           />
         </td>
       </tr>
