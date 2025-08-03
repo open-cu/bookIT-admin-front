@@ -14,7 +14,6 @@ import {
 import {TablePageComponent} from '../../../shared/common-ui/table-page/table-page.component';
 import {PatchTicket} from '../../../core/models/interfaces/tickets/patch-ticket';
 import {FilterResult} from '../../../shared/common-ui/filter-block/filter-config';
-import {SortPage} from '../../../core/models/interfaces/pagination/sort-page';
 import {DatePipe} from '@angular/common';
 import {SortTicket} from '../../../core/models/interfaces/tickets/sort-ticket';
 
@@ -43,7 +42,7 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
     markAsRequired(this.editionConfig, 'description');
   }
 
-  override loadItemsFn = (params: SortPage) => {
+  override loadItemsFn = (params: SortTicket) => {
     return this.ticketService.getList(params);
   }
 

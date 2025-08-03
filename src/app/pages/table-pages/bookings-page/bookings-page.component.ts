@@ -57,7 +57,7 @@ export class BookingsPageComponent extends TablePageComponent<Booking> {
     );
   }
 
-  override loadItemsFn = (params: Partial<SortBooking>) => {
+  override loadItemsFn = (params: SortBooking) => {
     return this.bookingService.getList(params);
   }
 

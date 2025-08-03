@@ -8,6 +8,7 @@ import {AreasPageComponent} from './pages/table-pages/areas-page/areas-page.comp
 import {USER_DATA, userResolver} from './core/resolvers/user-resolver';
 import {BookingsPageComponent} from './pages/table-pages/bookings-page/bookings-page.component';
 import {UsersPageComponent} from './pages/table-pages/users-page/users-page.component';
+import {AdminsPageComponent} from './pages/table-pages/admins-page/admins-page.component';
 
 export const routes: Routes = [
   {path: APP_ROUTES.LOGIN, component: LoginPageComponent},
@@ -21,6 +22,8 @@ export const routes: Routes = [
       {path: APP_ROUTES.AREAS, component: AreasPageComponent},
       {path: APP_ROUTES.BOOKINGS, component: BookingsPageComponent},
       {path: APP_ROUTES.USERS, component: UsersPageComponent},
+
+      {path: APP_ROUTES.ADMINS, component: AdminsPageComponent},
     ]
   },
   {path: '**', component: NotFoundPageComponent}

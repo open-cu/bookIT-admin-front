@@ -33,7 +33,8 @@ export class CreationBlockComponent {
   private destroyRef = inject(DestroyRef);
 
   constructor() {
-    this.currentOptions = [...this.context.data.options];
+    this.currentOptions = [...this.context.data.options]
+      .filter(option => option.disabled === undefined || !option.disabled);
     this.initForm();
     this.setupOptionsLoading();
     this.loadInitialValues();

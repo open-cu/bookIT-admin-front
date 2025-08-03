@@ -40,7 +40,7 @@ export class AreasPageComponent extends TablePageComponent<Area> {
     markAsRequired(this.creationConfig, ['features', 'photos']);
   }
 
-  override loadItemsFn = (params: Partial<SortArea>) => {
+  override loadItemsFn = (params: SortArea) => {
     return this.areaService.getList(params);
   }
 

@@ -7,7 +7,7 @@ import {UserRole} from '../../../core/models/enums/users/user-role';
 import {UserStatus} from '../../../core/models/enums/users/user-status';
 import {Validators} from '@angular/forms';
 
-export const USERS_COLUMN_CONFIG: ColumnConfig[] = [
+export const ADMINS_COLUMN_CONFIG: ColumnConfig[] = [
   {
     key: "id",
     render: CellRenders.withStyle('cell-id')
@@ -40,20 +40,21 @@ export const USERS_COLUMN_CONFIG: ColumnConfig[] = [
   },
 ];
 
-export const USERS_FILTER_OPTIONS: FilterOptions = [
+export const ADMINS_FILTER_OPTIONS: FilterOptions = [
   {
     key: 'role',
     placeholder: 'Поиск по роли',
     type: 'multipleSelect',
-    options: createEnumOptions(UserRole),
+    options: createEnumOptions(UserRole)
+      .filter(role => role.value.toString() !== UserRole[UserRole.ROLE_USER]),
   },
   {
     key: 'search',
-    placeholder: 'Поиск пользователя',
+    placeholder: 'Поиск администратора',
   },
 ];
 
-export const USERS_EDITION_CONFIG: CreationConfig = {
+export const ADMINS_EDITION_CONFIG: CreationConfig = {
   button: 'Изменить пользователя',
   title: 'Редатирование пользователя',
   options: [

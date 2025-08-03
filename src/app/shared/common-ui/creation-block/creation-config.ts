@@ -34,6 +34,7 @@ export interface CreationOption {
   dependsOn?: string[],
   /* load options when keys from 'dependsOn' changes (necessary only type === 'select') */
   loadOptions?: (values: Record<string, any>) => Observable<SelectOption[]>,
+  disabled?: boolean,
 }
 
 export type CreationReturn<T extends CreationOptions> = {
