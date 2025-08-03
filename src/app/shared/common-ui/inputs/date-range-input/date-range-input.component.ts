@@ -1,6 +1,6 @@
 import {Component, forwardRef} from '@angular/core';
-import { TuiDay, TuiDayRange } from '@taiga-ui/cdk';
-import { InputComponent } from '../input.component';
+import {TuiDay, TuiDayRange} from '@taiga-ui/cdk';
+import {InputComponent} from '../input.component';
 import {TuiCalendarRange, tuiCreateDefaultDayRangePeriods, TuiInputDateRangeDirective} from '@taiga-ui/kit';
 import {TuiError, TuiTextfieldComponent, TuiTextfieldDropdownDirective} from '@taiga-ui/core';
 import {NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/forms';
