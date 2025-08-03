@@ -1,6 +1,7 @@
 @import "@taiga-ui/core/styles/taiga-ui-theme.less";
 @import "@taiga-ui/core/styles/taiga-ui-fonts.less";
 @import 'palette.less';
+@import 'cells.css';
 
 :root {
   box-sizing: border-box;

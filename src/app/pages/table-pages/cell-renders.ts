@@ -4,6 +4,8 @@ import {TypeUtils} from '../../core/utils/type.utils';
 import toArray = TypeUtils.toArray;
 import {Image} from '../../core/models/interfaces/images/image';
 import {imageToFile} from '../../core/utils/file-format.utils';
+import {TableRow} from '../../shared/common-ui/items-table/column-config';
+import {random} from 'lodash';
 
 export class CellRenders {
 
@@ -40,6 +42,20 @@ export class CellRenders {
         return `<a href="${link}">${item.key}</a>`
       });
       return `<div class="cell-lines">${lines.join()}</div>`;
+    }
+  }
+
+  static asUrlImage(nameKey?: string, prefix?: string) {
+    return (value: string | null, _: number, raw: TableRow) => {
+      if (value === null) {
+        return '——'
+      }
+      const fileName = nameKey
+        ? raw.find(item => item[0] === nameKey)?.at(1)
+        : undefined;
+      const link = (prefix ?? '') + value;
+      const name = fileName ?? random(false);
+      return `<a href="${link}">${name}</a>`
     }
   }
 }

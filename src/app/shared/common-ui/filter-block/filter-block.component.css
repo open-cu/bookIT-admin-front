@@ -30,6 +30,6 @@
 .filter-button {
   margin: 0;
   justify-self: center;
-  width: 158px;
+  min-width: 150px;
   height: 44px !important;
 }

@@ -1,0 +1,15 @@
+<app-table-page
+  title="Пользователи"
+  tableTitle="Список пользователей"
+  filterButton="Найти пользователя"
+  filterTitle="Поиск пользователя"
+  [columns]="columns"
+  [editFn]="editItemFn"
+  [loadFn]="loadItemsFn"
+  [transformPatchFn]="transformPatchFn"
+  [filterOptions]="filterOptions"
+  [editionConfig]="editionConfig"
+  [creatable]="false"
+  [editable]="true"
+  [deletable]="false"
+></app-table-page>

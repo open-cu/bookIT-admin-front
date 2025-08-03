@@ -120,16 +120,4 @@ export namespace TypeUtils {
       return targetFn(...newArgs);
     };
   }
-
-  export function findIndex<T>(
-    array: T[],
-    condition: (item: T, index: number, array: T[]) => boolean
-  ): number {
-    for (let i = 0; i < array.length; i++) {
-      if (condition(array[i], i, array)) {
-        return i;
-      }
-    }
-    return -1;
-  }
 }

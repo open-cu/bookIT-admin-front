@@ -56,7 +56,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   @Input() creationConfig!: CreationConfig;
   @Input() editionConfig!: CreationConfig;
   @Input() deletionConfig!: DeletionConfig;
-  @Input() canCreate = true;
+  @Input('creatable') canCreate = true;
 
   @ViewChild('itemsTable') itemsTableElement!: ElementRef<HTMLElement>;
 

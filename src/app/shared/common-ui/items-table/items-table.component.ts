@@ -27,7 +27,7 @@ import {
   TuiTableTr
 } from '@taiga-ui/addon-table';
 import {TuiIcon, TuiLoader, TuiScrollbar} from "@taiga-ui/core";
-import {AsyncPipe, NgClass} from "@angular/common";
+import {AsyncPipe, NgClass, NgStyle} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ColumnConfig, TableRow} from "./column-config";
 import {QueryParams} from '../../../core/services/api/api.service';
@@ -35,6 +35,7 @@ import {toObservable} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-items-table',
+  standalone: true,
   imports: [
     TuiTableDirective,
     TuiLoader,
@@ -49,6 +50,7 @@ import {toObservable} from '@angular/core/rxjs-interop';
     NgClass,
     TuiIcon,
     TuiScrollbar,
+    NgStyle,
   ],
   templateUrl: './items-table.component.html',
   styleUrl: './items-table.component.css',
@@ -66,7 +68,7 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
     alias: 'loadFn'
   })
   public loadItemsFn!: (params: any) => Observable<Pageable<T>>;
-  @Input('title') tableTitle = 'Таблица'
+  @Input('title') tableTitle = 'Таблица';
   @Input('editable') isEditable = false;
   @Input('deletable') isDeletable = false;
   @Input() paramsToQuery: string[] | boolean = false;
@@ -149,12 +151,12 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
     return Object.entries(obj);
   }
 
-  protected getCellValue(value: any, column: ColumnConfig) {
+  protected getCellValue(value: any, i: number, raw: TableRow, column: ColumnConfig) {
     const rawValue = value;
 
     if (column.render) {
       return this.sanitizer.bypassSecurityTrustHtml(
-          column.render(rawValue)
+        column.render(rawValue, i, raw)
       );
     }
     return rawValue;
@@ -181,5 +183,16 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
       res.push('');
     }
     return res;
+  }
+
+  protected isColumnDisabled(index: number): boolean {
+    return this.columnConfigs[index]?.disabled === true;
+  }
+
+  protected isColumnVisible(index: number): boolean {
+    if (index >= this.columnConfigs.length) {
+      return this.isEditable || this.isDeletable;
+    }
+    return !this.isColumnDisabled(index);
   }
 }

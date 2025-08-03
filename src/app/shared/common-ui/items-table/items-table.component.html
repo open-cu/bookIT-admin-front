@@ -13,61 +13,67 @@
     [showLoader]="isLoading()"
   >
     <tui-scrollbar class="table-scrollbar" [hidden]="true">
-    <table
-      tuiTable
-      class="table"
-      [columns]="getColumnsKeys()"
-    >
-      <thead>
-      <tr tuiThGroup>
-        @for (column of getColumnsTitles(); track $index) {
-          <th
-            tuiTh
-            [sticky]="true"
-            [resizable]="true"
-          >{{ column }}</th>
-        }
-      </tr>
-      </thead>
-      @let data = (items$ | async)?.content ?? [];
-      <tbody tuiTbody [data]="data">
-        @for (item of data; track itemTrackBy ? itemTrackBy(item) : $index) {
-          <tr tuiTr>
-            @let tableRows = getRows(item);
-            @for (value of tableRows; track i; let i = $index) {
-              <td
-                *tuiCell="value[0]"
-                tuiTd
-                [ngClass]="getCellClasses(value[1], columnConfigs[i])"
-                [innerHTML]="getCellValue(value[1], columnConfigs[i])"
-              ></td>
-            }
-            @if (isEditable || isDeletable) {
-              <td tuiTd *tuiCell="EDITING_BLOCK_KEY" class="editing-cell">
-                <div class="editing-block">
-                  @if (isDeletable) {
-                    <button class="delete-item-button" (click)="onDeleteEmitter.emit(tableRows)">
-                      <tui-icon icon="@tui.trash"></tui-icon>
-                    </button>
-                  }
-                  @if (isEditable) {
-                    <button class="edit-item-button" (click)="onEditEmitter.emit(tableRows)">
-                      <tui-icon icon="@tui.pencil"></tui-icon>
-                    </button>
-                  }
-                </div>
-              </td>
-            }
-          </tr>
-        }
-      </tbody>
-
-    </table>
+      <table
+        tuiTable
+        class="table"
+        [columns]="getColumnsKeys()"
+      >
+        <thead>
+        <tr tuiThGroup>
+          @for (column of getColumnsTitles(); track i; let i = $index) {
+            <th
+              tuiTh
+              [sticky]="true"
+              [resizable]="true"
+              [ngStyle]="{ display: isColumnVisible(i) ? 'table-cell' : 'none' }"
+            >{{ column }}</th>
+          }
+        </tr>
+        </thead>
+        @let data = (items$ | async)?.content ?? [];
+        <tbody tuiTbody [data]="data">
+          @for (item of data; track itemTrackBy ? itemTrackBy(item) : $index) {
+            <tr tuiTr>
+              @let tableRows = getRows(item);
+              @for (value of tableRows; track i; let i = $index) {
+                <td
+                  *tuiCell="value[0]"
+                  tuiTd
+                  [ngStyle]="{ display: isColumnVisible(i) ? 'table-cell' : 'none' }"
+                  [ngClass]="getCellClasses(value[1], columnConfigs[i])"
+                  [innerHTML]="getCellValue(value[1], i, tableRows, columnConfigs[i])"
+                ></td>
+              }
+              @if (isEditable || isDeletable) {
+                <td
+                  tuiTd
+                  *tuiCell="EDITING_BLOCK_KEY"
+                  class="editing-cell"
+                  [style.display]="isColumnVisible(columnConfigs.length) ? 'table-cell' : 'none'"
+                >
+                  <div class="editing-block">
+                    @if (isDeletable) {
+                      <button class="delete-item-button" (click)="onDeleteEmitter.emit(tableRows)">
+                        <tui-icon icon="@tui.trash"></tui-icon>
+                      </button>
+                    }
+                    @if (isEditable) {
+                      <button class="edit-item-button" (click)="onEditEmitter.emit(tableRows)">
+                        <tui-icon icon="@tui.pencil"></tui-icon>
+                      </button>
+                    }
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
     </tui-scrollbar>
     <table [style.inline-size.%]="100">
       <tfoot class="table-foot">
       <tr>
-        <td [colSpan]="columnConfigs.length">
+        <td [colSpan]="getColumnsKeys().length">
           <tui-table-pagination
             class="tui-space_top-2"
             [page]="page()"

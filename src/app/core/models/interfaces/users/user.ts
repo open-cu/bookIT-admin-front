@@ -1,3 +1,6 @@
+import {UserRole} from '../../enums/users/user-role';
+import {UserStatus} from '../../enums/users/user-status';
+
 export interface User {
   "id": string,
   "tgId": number,
@@ -6,9 +9,9 @@ export interface User {
   "photoUrl": string,
   "email": string,
   "phone": string,
-  "status": string,
+  "status": UserStatus,
   "createdAt": string,
   "updatedAt": string,
   "username": string,
-  "roles": string[]
+  "roles": UserRole[]
 }
