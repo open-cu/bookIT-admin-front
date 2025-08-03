@@ -1,10 +1,13 @@
-import {ColumnConfig} from '../../shared/common-ui/items-table/column-config';
-import {FilterOptions} from '../../shared/common-ui/filter-block/filter-config';
-import {TicketType} from '../../core/models/enums/tickets/ticket-type';
-import {createEnumOptions} from '../../core/utils/create-enum-options';
-import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
-import {DeletionConfig} from '../../shared/common-ui/table-page/deletion-config';
-import {AppValidators} from '../../shared/validators/app.validators';
+import {ColumnConfig} from '../../../shared/common-ui/items-table/column-config';
+import {FilterOptions} from '../../../shared/common-ui/filter-block/filter-config';
+import {TicketType} from '../../../core/models/enums/tickets/ticket-type';
+import {createEnumOptions} from '../../../core/utils/create-enum-options';
+import {CreationConfig} from '../../../shared/common-ui/creation-block/creation-config';
+import {DeletionConfig} from '../../../shared/common-ui/table-page/deletion-config';
+import {AppValidators} from '../../../shared/validators/app.validators';
+import {getAreaOptions, getMyId} from '../common-reactive-values';
+import {CellRenders} from '../cell-renders';
+import {SortTicket} from '../../../core/models/interfaces/tickets/sort-ticket';
 
 const ticketGroupValidator = AppValidators.requiredIfGroup({
   description: (group) => {
@@ -15,15 +18,15 @@ const ticketGroupValidator = AppValidators.requiredIfGroup({
 export const TICKETS_COLUMN_CONFIG: ColumnConfig[] = [
   {
     key: "id",
-    render: value => `<p class="cell-id">${value}</p>`
+    render: CellRenders.withStyle('cell-id')
   },
   {
     key: "userId",
-    render: value => `<p class="cell-id">${value}</p>`
+    render: CellRenders.withStyle('cell-id')
   },
   {
     key: "areaId",
-    render: value => `<p class="cell-id">${value}</p>`
+    render: CellRenders.withStyle('cell-id')
   },
   {key: "type"},
   {key: "description"},
@@ -54,12 +57,14 @@ export const TICKETS_CREATION_CONFIG: CreationConfig = {
   options: [
     {
       key: 'userId',
-      label: 'id пользователя'
+      label: 'id пользователя',
+      loadValue: getMyId,
     },
     {
       key: 'areaId',
       label: 'Помещение',
       type: 'select',
+      loadOptions: getAreaOptions,
     },
     {
       key: 'type',
@@ -97,3 +102,7 @@ export const TICKETS_EDITION_CONFIG: CreationConfig = {
 export const TICKETS_DELETION_CONFIG: DeletionConfig = {
   label: 'Вы уверены, что хотите удалить этот тикет?'
 }
+
+export type TicketParams = Omit<SortTicket, 'startDate' | 'endDate'> & {
+  date: Date[],
+};

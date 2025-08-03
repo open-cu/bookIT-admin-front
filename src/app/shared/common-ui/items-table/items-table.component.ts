@@ -136,9 +136,7 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
             return EMPTY;
           })
         )
-      }
-
-      ),
+      }),
     );
   }
 

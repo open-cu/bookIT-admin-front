@@ -9,19 +9,12 @@
   display: none !important;
 }
 
-.open-sidebar-button {
-  border: none;
-  background: transparent;
-  transform: translateY(-24px);
-  tui-icon {
-    color: var(--icon-secondary);
-  }
-}
-
 .logo-container {
   display: flex;
-  padding-top: 24px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   text-align: center;
+  justify-content: center;
 }
 
 aside::before,

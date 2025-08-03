@@ -1,145 +1,174 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
-import {CreationConfig, CreationOptions, CreationReturn, SelectOption} from './creation-config';
+import {Component, DestroyRef, inject} from '@angular/core';
+import {CreationConfig, CreationOptions, SelectOption} from './creation-config';
 import {TuiButton, TuiDialogContext, TuiLabel} from '@taiga-ui/core';
 import {injectContext} from '@taiga-ui/polymorpheus';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {TypeUtils} from '../../../core/utils/type.utils';
-import toArray = TypeUtils.toArray;
 import {InputContainerComponent} from '../inputs/input-container/input-container.component';
-import {
-  combineLatest,
-  debounceTime,
-  delay,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  startWith,
-  switchMap, take
-} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {combineLatest, filter, map, Observable, of} from 'rxjs';
+import {catchError, distinctUntilChanged, finalize, startWith, switchMap, take, tap} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import toArray = TypeUtils.toArray;
 
-type CreationContext = TuiDialogContext<CreationReturn<CreationOptions>, CreationConfig>
+type CreationContext = TuiDialogContext<any, CreationConfig>;
 
 @Component({
   selector: 'app-creation-block',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
-    TuiButton,
-    FormsModule,
-    TuiLabel,
     InputContainerComponent,
+    TuiLabel,
+    TuiButton,
   ],
   templateUrl: './creation-block.component.html',
-  styleUrl: './creation-block.component.css'
+  styleUrls: ['./creation-block.component.css']
 })
-export class CreationBlockComponent implements OnInit {
+export class CreationBlockComponent {
   public readonly context = injectContext<CreationContext>();
   protected creationForm!: FormGroup;
-
   protected currentOptions: CreationOptions;
+  protected loadingStates: Record<string, boolean> = {};
+
   private destroyRef = inject(DestroyRef);
 
   constructor() {
-    this.currentOptions = this.context.data.options.map(opt => ({ ...opt }));
-    this.initFormGroup();
-    this.setupDynamicDependencies();
+    this.currentOptions = [...this.context.data.options];
+    this.initForm();
+    this.setupOptionsLoading();
+    this.loadInitialValues();
   }
 
-  ngOnInit() {
-    this.currentOptions
-      .filter(opt => opt.loadOptions && (!opt.dependsOn || opt.dependsOn.length === 0))
-      .forEach(configItem => {
-        configItem.loadOptions!({})
-          .pipe(take(1), catchError(() => of([])))
-          .subscribe(options => {
-            this.updateFieldOptions(configItem.key, options);
-          });
-      });
-  }
-
-  private initFormGroup() {
-    this.currentOptions = this.context.data.options.map(opt => ({ ...opt }));
-
+  private initForm() {
     const formGroupConfig: Record<string, FormControl> = {};
-    this.currentOptions.forEach(configItem => {
+
+    for (const configItem of this.currentOptions) {
+      const initialValue = configItem.loadValue ? null : configItem.value ?? null;
       formGroupConfig[configItem.key] = new FormControl(
-        configItem.value ?? null,
+        initialValue,
         toArray(configItem.validators)
       );
-    });
+    }
 
-    this.creationForm = new FormGroup(formGroupConfig, this.context.data.validators);
+    this.creationForm = new FormGroup(
+      formGroupConfig,
+      toArray(this.context.data.validators)
+    );
   }
 
-  private setupDynamicDependencies() {
-    this.currentOptions
-      .filter(opt => opt.loadOptions)
-      .forEach(configItem => {
-        const dependencies = configItem.dependsOn || [];
-        const dependentControls = dependencies
-          .map(key => this.creationForm.get(key))
-          .filter(Boolean) as FormControl[];
+  private setupOptionsLoading() {
+    for (const configItem of this.currentOptions) {
+      if (!configItem.loadOptions) continue;
 
-        let baseStream: Observable<any>;
+      const { key, dependsOn: dependencies = [] } = configItem;
+      const dependencyKeys = dependencies.filter(dep =>
+        this.creationForm.get(dep) !== null
+      );
 
-        if (dependentControls.length > 0) {
-          baseStream = combineLatest(
-            dependentControls.map(control =>
-              control.valueChanges.pipe(
-                startWith(control.value),
-                distinctUntilChanged()
-              )
-            )
-          ).pipe(
-            debounceTime(300),
-            map(values => dependencies.reduce((acc, key, i) => {
-              acc[key] = values[i];
-              return acc;
-            }, {} as Record<string, any>))
+      if (dependencyKeys.length === 0) {
+        this.loadFieldOptionsOnce(key, configItem.loadOptions);
+        continue;
+      }
+
+      const dependencyStreams = dependencyKeys.map(depKey =>
+        this.creationForm.get(depKey)!.valueChanges.pipe(
+          startWith(this.creationForm.get(depKey)!.value),
+          distinctUntilChanged()
+        )
+      );
+
+      combineLatest(dependencyStreams).pipe(
+        map(values => {
+          const dependencyValues = Object.fromEntries(
+            dependencyKeys.map((key, i) => [key, values[i]])
           );
-        } else {
-          baseStream = of({}).pipe(delay(0));
-        }
-
-        /* TODO: hide all exceptions or configure field updates */
-        baseStream.pipe(
-          switchMap(values => configItem.loadOptions!(values)),
-          takeUntilDestroyed(this.destroyRef),
+          return {
+            values: dependencyValues,
+            allValid: dependencyKeys.every(key => dependencyValues[key] != null)
+          };
+        }),
+        tap(({ allValid }) => !allValid && this.updateFieldOptions(key, [])),
+        filter(({ allValid }) => allValid),
+        tap(() => this.loadingStates[key] = true),
+        switchMap(({ values }) => configItem.loadOptions!(values).pipe(
           catchError(() => of([])),
-        ).subscribe(
-          newOptions => this.updateFieldOptions(configItem.key, newOptions)
-        );
+          finalize(() => this.loadingStates[key] = false)
+        )),
+        takeUntilDestroyed(this.destroyRef)
+      ).subscribe(options => this.updateFieldOptions(key, options));
+    }
+  }
+
+  private loadFieldOptionsOnce(key: string, loader: (values: Record<string, any>) => Observable<SelectOption[]>) {
+    this.loadingStates[key] = true;
+
+    loader({}).pipe(
+      take(1),
+      catchError(() => of([])),
+      finalize(() => this.loadingStates[key] = false),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(options => {
+      this.updateFieldOptions(key, options);
+      const value = this.context.data.options
+        .find(option => option.key === key)
+        ?.value ?? null;
+      setTimeout(() => this.getFormControl(key).setValue(value), 1);
+    });
+  }
+
+  private loadInitialValues() {
+    for (const configItem of this.currentOptions) {
+      if (!configItem.loadValue) {
+        continue;
+      }
+
+      const { key } = configItem;
+      this.loadingStates[key] = true;
+
+      configItem.loadValue!().pipe(
+        take(1),
+        catchError(() => of(null)),
+        finalize(() => this.loadingStates[key] = false)
+      ).subscribe(value => {
+        const control = this.creationForm.get(key);
+        control?.setValue(value);
       });
+    }
   }
 
   private updateFieldOptions(fieldKey: string, newOptions: SelectOption[]) {
     const index = this.currentOptions.findIndex(opt => opt.key === fieldKey);
+    if (index === -1) {
+      return;
+    }
 
-    if (index > -1) {
-      this.currentOptions = [
-        ...this.currentOptions.slice(0, index),
-        { ...this.currentOptions[index], options: newOptions },
-        ...this.currentOptions.slice(index + 1)
-      ];
+    if (JSON.stringify(this.currentOptions[index].options) === JSON.stringify(newOptions)) {
+      return;
+    }
 
-      const control = this.creationForm.get(fieldKey);
-      control?.reset(null);
-      control?.updateValueAndValidity();
+    this.currentOptions[index] = { ...this.currentOptions[index], options: newOptions };
+
+    const control = this.creationForm.get(fieldKey);
+    if (control) {
+      const currentValue = control.value;
+      const isValidValue = newOptions.some(opt => opt.value === currentValue);
+
+      if (!isValidValue) {
+        control.reset(null);
+      }
+      control.updateValueAndValidity();
     }
   }
 
   protected onSubmit() {
     if (this.creationForm.invalid) {
       this.creationForm.markAllAsTouched();
+      return;
     }
-    if (this) {
-      this.context.completeWith(this.creationForm.value);
-    }
+    this.context.completeWith(this.creationForm.value);
   }
 
-  protected getFormControl(formName: keyof typeof this.creationForm.controls) {
-    return this.creationForm.controls[formName] as FormControl<any>;
+  protected getFormControl(formName: string): FormControl {
+    return this.creationForm.get(formName) as FormControl;
   }
 }

@@ -26,6 +26,7 @@
     "@angular/forms": "^20.1.0",
     "@angular/platform-browser": "^20.1.0",
     "@angular/router": "^20.1.0",
+    "@maskito/kit": "^3.10.2",
     "@taiga-ui/addon-charts": "^4.46.0",
     "@taiga-ui/addon-mobile": "^4.47.0",
     "@taiga-ui/addon-table": "^4.46.0",

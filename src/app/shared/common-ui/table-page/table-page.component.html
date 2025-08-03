@@ -25,6 +25,7 @@
   [title]="tableTitle"
   [columns]="columns"
   [loadFn]="transformRequestFn"
+  [trackFn]="itemTrackBy"
   [editable]="isEditable"
   [deletable]="isDeletable"
   (OnFilterOpened)="onFilterOpenClick()"

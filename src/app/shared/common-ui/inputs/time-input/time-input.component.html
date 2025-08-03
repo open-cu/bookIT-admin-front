@@ -1,0 +1,13 @@
+<tui-textfield>
+  <tui-error [error]="errorMessage"/>
+  <input
+    tuiInputTime
+    [mode]="mode"
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [accept]="acceptableValues"
+  />
+  @if (useHint) {
+    <tui-icon tuiTooltip="Только время, разделённое на часовые интервалы" />
+  }
+</tui-textfield>

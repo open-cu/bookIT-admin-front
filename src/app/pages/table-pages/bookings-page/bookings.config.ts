@@ -1,47 +1,42 @@
-import {ColumnConfig} from '../../shared/common-ui/items-table/column-config';
-import {FilterOptions} from '../../shared/common-ui/filter-block/filter-config';
-import {createEnumOptions} from '../../core/utils/create-enum-options';
-import {CreationConfig} from '../../shared/common-ui/creation-block/creation-config';
-import {DeletionConfig} from '../../shared/common-ui/table-page/deletion-config';
-import {provideInjectable} from '../../core/utils/injector.provider';
-import {DatePipe} from '@angular/common';
-import {BookingService} from '../../core/services/api/booking.service';
-import {map} from 'rxjs';
-import {BookingTimeline} from '../../core/models/enums/bookings/booking-timeline';
-import {BookingStatus} from '../../core/models/enums/bookings/booking-status';
+import {ColumnConfig} from '../../../shared/common-ui/items-table/column-config';
+import {FilterOptions} from '../../../shared/common-ui/filter-block/filter-config';
+import {createEnumOptions} from '../../../core/utils/create-enum-options';
+import {CreationConfig} from '../../../shared/common-ui/creation-block/creation-config';
+import {DeletionConfig} from '../../../shared/common-ui/table-page/deletion-config';
+import {BookingTimeline} from '../../../core/models/enums/bookings/booking-timeline';
+import {BookingStatus} from '../../../core/models/enums/bookings/booking-status';
+import {createTimeOptions, getAreaOptions, getMyId} from '../common-reactive-values';
+import {CellRenders} from '../cell-renders';
+import {CreateBooking} from '../../../core/models/interfaces/bookings/create-booking';
+import {UpdateBooking} from '../../../core/models/interfaces/bookings/update-booking';
+import {TuiTime} from '@taiga-ui/cdk';
 
 export const BOOKINGS_COLUMNS_CONFIG: ColumnConfig[] = [
   {
     key: "id",
-    render: value => `<p class="cell-id">${value}</p>`
+    render: CellRenders.withStyle('cell-id')
   },
   {
     key: "userId",
-    render: value => `<p class="cell-id">${value}</p>`
+    render: CellRenders.withStyle('cell-id')
   },
   {
     key: "areaId",
-    render: value => `<p class="cell-id">${value}</p>`
+    render: CellRenders.withStyle('cell-id')
   },
   {
     key: "startTime",
-    render: (value: string) => {
-      const datePipe = provideInjectable(DatePipe);
-      return `<p>${datePipe.transform(value, 'short')}</p>`
-    }
+    render: CellRenders.asDate()
   },
   {
     key: "endTime",
-    render: (value: string) => {
-      const datePipe = provideInjectable(DatePipe);
-      return `<p>${datePipe.transform(value, 'short')}</p>`
-    }
+    render: CellRenders.asDate()
   },
   {key: "quantity"},
   {key: "status"},
   {
     key: "createdAt",
-    render: (value: string) => `<p>${provideInjectable(DatePipe).transform(value, 'short')}</p>`
+    render: CellRenders.asDate()
   }
 ];
 
@@ -80,13 +75,14 @@ export const BOOKINGS_CREATION_CONFIG: CreationConfig = {
   options: [
     {
       key: 'userId',
-      label: 'id пользователя'
+      label: 'id пользователя',
+      loadValue: getMyId
     },
     {
       key: 'areaId',
       label: 'Помещение',
       type: 'select',
-      options: []
+      loadOptions: getAreaOptions
     },
     {
       key: 'date',
@@ -96,8 +92,7 @@ export const BOOKINGS_CREATION_CONFIG: CreationConfig = {
     {
       key: 'intervals',
       label: 'Время',
-      type: "multiple-select",
-      options: [],
+      type: "multipleSelect",
       dependsOn: ['areaId', 'date'],
       loadOptions: createTimeOptions
     },
@@ -117,7 +112,7 @@ export const BOOKINGS_EDITION_CONFIG: CreationConfig = {
       key: 'areaId',
       label: 'Помещение',
       type: 'select',
-      options: []
+      loadOptions: getAreaOptions,
     },
     {
       key: 'date',
@@ -125,12 +120,14 @@ export const BOOKINGS_EDITION_CONFIG: CreationConfig = {
       type: 'date'
     },
     {
-      key: 'intervals',
-      label: 'Время',
-      type: "multiple-select",
-      options: [],
-      dependsOn: ['areaId', 'date'],
-      loadOptions: createTimeOptions
+      key: 'startTime',
+      label: 'Время начало',
+      type: "time",
+    },
+    {
+      key: 'endTime',
+      label: 'Время окончания',
+      type: "time",
     },
     {
       key: 'status',
@@ -145,20 +142,13 @@ export const BOOKINGS_DELETION_CONFIG: DeletionConfig = {
   label: 'Вы уверены, что хотите отменить этe бронь?'
 }
 
-function createTimeOptions(values: Record<string, any>) {
-  const datePipe = provideInjectable(DatePipe);
-  return provideInjectable(BookingService)
-    .getAvailableTimes({
-      date: datePipe.transform(values['date'], 'y-MM-dd')!,
-      areaId: values['areaId'],
-    })
-    .pipe(
-      map(arr => [...arr[0], ...arr[1], ...arr[2]]),
-      map(arr => arr.map(time => ({
-        value: time,
-        label: time.split(';')
-          .map(time => datePipe.transform(time, 'HH:mm'))
-          .join('-')
-      })))
-    );
+export type BookingCreationItem = Omit<CreateBooking, 'startTime' | 'endTime'> & {
+  intervals: string[],
+  date: Date,
+}
+
+export type BookingUpdateItem = Omit<UpdateBooking, 'startTime' | 'endTime'> & {
+  startTime: TuiTime,
+  endTime: TuiTime,
+  date: Date,
 }

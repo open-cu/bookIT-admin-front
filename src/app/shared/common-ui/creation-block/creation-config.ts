@@ -9,8 +9,6 @@ export interface CreationConfig {
   title?: string,
   button?: string,
   validators?: ValidatorFn | ValidatorFn[],
-  dependsOn?: string[],
-  loadOptions?: (values: Record<string, any>) => Observable<SelectOption[]>,
 }
 
 export type CreationOptions = CreationOption[]
@@ -24,6 +22,7 @@ export interface CreationOption {
   key: string,
   /* label as same as key by default */
   value?: any,
+  loadValue?: () => Observable<any>,
   label?: string,
   placeholder?: string,
   validators?: ValidatorFn | ValidatorFn[],

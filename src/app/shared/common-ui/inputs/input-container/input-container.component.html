@@ -1,27 +1,27 @@
 @switch (inputType) {
   @case ("select") {
     <app-single-select-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
       [options]="additionalParams.select?.options"
     ></app-single-select-input>
   }
-  @case ("multiple-select") {
+  @case ("multipleSelect") {
     <app-multiple-select-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
       [options]="additionalParams.select?.options"
     ></app-multiple-select-input>
   }
   @case ("chips") {
     <app-chip-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
     ></app-chip-input>
   }
   @case ("number") {
     <app-number-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
       [min]="additionalParams.number?.min"
       [max]="additionalParams.number?.max"
@@ -30,31 +30,39 @@
   }
   @case ("images") {
     <app-image-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
     ></app-image-input>
   }
   @case ("dateRange") {
     <app-date-range-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
     ></app-date-range-input>
   }
   @case ("dateTime") {
     <app-date-time-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
     ></app-date-time-input>
   }
   @case ("date") {
     <app-date-input
-      [formControl]="usedControl"
+      [formControl]="inputFormControl"
       [placeholder]="placeholder"
     ></app-date-input>
   }
+  @case ("time") {
+    <app-time-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+      [useHint]="additionalParams.time?.useHint"
+      [mode]="additionalParams.time?.mode ?? 'HH:MM'"
+    ></app-time-input>
+  }
   @default {
     <app-text-input
-      [externalControl]="usedControl"
+      [externalControl]="inputFormControl"
       [placeholder]="placeholder"
     ></app-text-input>
   }

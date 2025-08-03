@@ -83,18 +83,6 @@ export namespace TypeUtils {
     return new Map<string, any>(Object.entries(obj));
   }
 
-  export function clone<T>(value: T): T {
-    return _.clone(value);
-  }
-
-  export function cloneDeep<T>(value: T): T {
-    return _.cloneDeep(value);
-  }
-
-  export function isEqual<T, K>(value: T, other: K): boolean {
-    return _.isEqual(value, other);
-  }
-
   type EnumKeys<T> = Exclude<keyof T, number>;
 
   export function getEnumKeys<T extends object>(enumObj: T): EnumKeys<T>[] {
@@ -131,5 +119,17 @@ export namespace TypeUtils {
 
       return targetFn(...newArgs);
     };
+  }
+
+  export function findIndex<T>(
+    array: T[],
+    condition: (item: T, index: number, array: T[]) => boolean
+  ): number {
+    for (let i = 0; i < array.length; i++) {
+      if (condition(array[i], i, array)) {
+        return i;
+      }
+    }
+    return -1;
   }
 }

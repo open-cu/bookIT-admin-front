@@ -39,8 +39,9 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   @Input('createFn') createItemFn: (item: any) => Observable<Partial<T>> = () => EMPTY;
   @Input('editFn') editItemFn: (item: any, patch: any) => Observable<Partial<T>> = () => EMPTY;
   @Input('deleteFn') deleteItemFn: (item: any) => Observable<string> = () => EMPTY;
+
   @Input() transformParamsFn: (params: any) => any = getSelf;
-  @Input() transformPatchFn: (config: CreationConfig, item: any) => CreationConfig = getSelf;
+  @Input() transformPatchFn: (config: CreationConfig, item: T) => CreationConfig = getSelf;
 
   @Input() override tableTitle: string = '';
   @Input() title: string = '';
@@ -71,7 +72,6 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
 
   protected isFilterOpened = signal(false);
   protected transformRequestFn!: typeof this.loadItemsFn;
-  private transformWithCompactFn!: typeof this.transformParamsFn;
   protected tableBlockSize = computed<string>(() => `calc(100vh - ${220 + this.filterHeight()}px)`);
   protected filterHeight = signal<number>(0);
 
@@ -86,8 +86,8 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
 
   override ngOnInit() {
     super.ngOnInit();
-    this.transformWithCompactFn = (params: any) => compactObject(this.transformParamsFn(params));
-    this.transformRequestFn = transformParam(this.loadItemsFn, this.transformWithCompactFn);
+    const transform = transformParam(compactObject, this.transformParamsFn);
+    this.transformRequestFn = transformParam(this.loadItemsFn, transform as (val: any) => any);
   }
 
   protected onFilterOpenClick() {
@@ -103,7 +103,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
     this.creationDialog(this.creationConfig)
       .pipe(
         switchMap(item => item
-          ? transformParam(this.createItemFn, this.transformWithCompactFn)(item)
+          ? this.createItemFn(item)
           : EMPTY
         )
       )
@@ -113,11 +113,10 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   protected onEditItem(tableRaw: any) {
     const item = Object.fromEntries(tableRaw);
     const config = this.patchConfigWithItem(this.editionConfig, item);
-    console.log(config);
     this.editionDialog(config)
       .pipe(
         switchMap(value => value
-          ? transformParam(this.editItemFn, this.transformWithCompactFn)(item, value)
+          ? this.editItemFn(item, value)
           : EMPTY
         )
       )
@@ -148,7 +147,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
       })
       .pipe(
         switchMap(result => !result
-          ? transformParam(this.deleteItemFn, this.transformWithCompactFn)(item)
+          ? this.deleteItemFn(item)
           : EMPTY
         ),
       )

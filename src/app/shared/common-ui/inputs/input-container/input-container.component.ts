@@ -9,8 +9,10 @@ import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {MultipleSelectInputComponent} from '../multiple-select-input/multiple-select-input.component';
 import {DateTimeInputComponent} from '../date-time-input/date-time-input.component';
 import {DateInputComponent} from '../date-input/date-input.component';
+import {TimeInputComponent} from '../time-input/time-input.component';
 
-export type InputType = 'text' | 'date' | 'dateTime' | 'dateRange' | 'select' | 'multiple-select' | 'images' | 'chips' | 'number';
+export type InputType = 'text' | 'date' | 'dateTime' | 'dateRange' | 'time'
+  | 'select' | 'multipleSelect' | 'images' | 'chips' | 'number';
 
 @Component({
   selector: 'app-input-container',
@@ -25,6 +27,7 @@ export type InputType = 'text' | 'date' | 'dateTime' | 'dateRange' | 'select' | 
     MultipleSelectInputComponent,
     DateTimeInputComponent,
     DateInputComponent,
+    TimeInputComponent,
   ],
   templateUrl: './input-container.component.html',
   styleUrl: './input-container.component.css',
@@ -33,6 +36,6 @@ export class InputContainerComponent {
   @Input('type') inputType: InputType = 'text';
   @Input('params') additionalParams: { [key in InputType]?: any } = {};
 
-  @Input ('control') usedControl!: FormControl<any>;
+  @Input ('control') inputFormControl!: FormControl<any>;
   @Input () placeholder: string = '';
 }

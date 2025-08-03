@@ -3,10 +3,10 @@ import {NotFoundPageComponent} from './pages/not-found-page/not-found-page.compo
 import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {APP_ROUTES} from './app.routes.paths';
 import {LoginPageComponent} from './pages/login-page/login-page.component';
-import {TicketsPageComponent} from './pages/tickets-page/tickets-page.component';
-import {AreasPageComponent} from './pages/areas-page/areas-page.component';
+import {TicketsPageComponent} from './pages/table-pages/tickets-page/tickets-page.component';
+import {AreasPageComponent} from './pages/table-pages/areas-page/areas-page.component';
 import {USER_DATA, userResolver} from './core/resolvers/user-resolver';
-import {BookingsPageComponent} from './pages/bookings-page/bookings-page.component';
+import {BookingsPageComponent} from './pages/table-pages/bookings-page/bookings-page.component';
 
 export const routes: Routes = [
   {path: APP_ROUTES.LOGIN, component: LoginPageComponent},

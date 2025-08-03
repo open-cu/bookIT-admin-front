@@ -1,11 +1,10 @@
 import {Component, inject} from '@angular/core';
-import {TablePageComponent} from "../../shared/common-ui/table-page/table-page.component";
-import {Ticket} from '../../core/models/interfaces/tickets/ticket';
-import {Area} from '../../core/models/interfaces/areas/area';
-import {FilterResult} from '../../shared/common-ui/filter-block/filter-config';
-import {CreationConfig, markAsRequired} from '../../shared/common-ui/creation-block/creation-config';
-import {AreaService} from '../../core/services/api/area.service';
-import {SortArea} from '../../core/models/interfaces/areas/sort-area';
+import {TablePageComponent} from "../../../shared/common-ui/table-page/table-page.component";
+import {Area} from '../../../core/models/interfaces/areas/area';
+import {FilterResult} from '../../../shared/common-ui/filter-block/filter-config';
+import {CreationConfig, markAsRequired} from '../../../shared/common-ui/creation-block/creation-config';
+import {AreaService} from '../../../core/services/api/area.service';
+import {SortArea} from '../../../core/models/interfaces/areas/sort-area';
 import {
   AREAS_COLUMNS_CONFIG,
   AREAS_CREATION_CONFIG,
@@ -15,10 +14,8 @@ import {
   CreateAreaFlat,
   UpdateAreaFlat
 } from './areas.config';
-import {Image} from '../../core/models/interfaces/images/image';
-import {imageToFile} from '../../core/utils/blob-format.utils';
-import {AreaType} from '../../core/models/enums/areas/area-type';
-import {AreaStatus} from '../../core/models/enums/areas/area-status';
+import {imageToFile} from '../../../core/utils/file-format.utils';
+import {AreaStatus} from '../../../core/models/enums/areas/area-status';
 
 @Component({
   selector: 'app-areas-page',
@@ -49,24 +46,24 @@ export class AreasPageComponent extends TablePageComponent<Area> {
 
   override createItemFn = (item: CreateAreaFlat) => {
     const { photos, ...area  } = item;
-    return this.areaService.post({createAreaRequest: { ...area, status: AreaStatus[AreaStatus.AVAILABLE] }, photos});
+    return this.areaService.post({createAreaRequest: {...area, status: AreaStatus[AreaStatus.AVAILABLE] }, photos});
   }
 
-  override deleteItemFn = (item: Ticket) => {
+  override deleteItemFn = (item: Area) => {
     return this.areaService.delete(item.id);
   }
 
-  override editItemFn = (item: any, patch: UpdateAreaFlat) => {
+  override editItemFn = (item: Area, patch: UpdateAreaFlat) => {
     const { photos, ...area  } = patch;
-    return this.areaService.put(item['id'], {updateAreaRequest: area, photos});
+    return this.areaService.put(item.id, {updateAreaRequest: area, photos});
   }
 
-  override transformPatchFn = (config: CreationConfig, item: any) => {
+  override transformPatchFn = (config: CreationConfig, item: Area) => {
     let photos = config.options.find(option => option.key === 'photos');
     if (!photos) {
       return config;
     }
-    photos.value = (item['images'] as Image[]).map(imageToFile);
+    photos.value = item.images.map(imageToFile);
 
     return config;
   }
