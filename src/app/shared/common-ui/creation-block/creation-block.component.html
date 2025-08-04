@@ -11,6 +11,7 @@
         [placeholder]="placeholder"
         [params]="{
           select: { options: config.options ?? [] },
+          multipleSelect: { options: config.options ?? [], sorted: true },
           number: { min: 0, max: 1000000 }
         }"
       ></app-input-container>

@@ -6,7 +6,7 @@ export const APP_ROUTES = {
   EVENTS: 'events',
   NEWS: 'news',
   STATS: 'statistics',
-  RATINGS: 'ratings',
+  REVIEWS: 'reviews',
   ADMINS: 'admins',
   LOGIN: 'login',
 }

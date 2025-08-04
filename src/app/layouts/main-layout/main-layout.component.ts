@@ -71,7 +71,7 @@ export class MainLayoutComponent {
       icon: '@tui.chart-column-increasing'
     },
     {
-      path: APP_ROUTES.RATINGS,
+      path: APP_ROUTES.REVIEWS,
       name: 'Оценки',
       icon: '@tui.star'
     },

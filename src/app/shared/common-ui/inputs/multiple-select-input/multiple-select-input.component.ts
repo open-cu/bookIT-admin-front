@@ -43,19 +43,35 @@ import {TuiIdentityMatcher, TuiStringHandler} from '@taiga-ui/cdk';
 })
 export class MultipleSelectInputComponent extends InputComponent<any> {
   @Input({required: true}) options!: SelectOption[];
+  @Input() sorted = true;
 
   protected stringify: TuiStringHandler<SelectOption> = option => option.label ?? option.value;
   protected matcher: TuiIdentityMatcher<SelectOption> = (a, b) => a.value === b.value;
 
   protected override convertToExternalValue(internalValue: SelectOption[] | null): any[] | null {
-    return internalValue
-      ? internalValue.map(select => select.value)
-      : null;
+    if (!internalValue) {
+      return null;
+    }
+    let result = internalValue.map(select => select.value);
+    if (this.sorted) {
+      result = result.sort(this.compareOptions);
+    }
+    return result;
   }
 
   protected override convertToInternalValue(externalValue: any[] | null): SelectOption[] | null {
-    return externalValue
-      ? externalValue.map(value => this.options.find(option => option.value === value)!) ?? null
-      : null;
+    if (!externalValue) {
+      return null;
+    }
+    return this.options.filter(option =>
+      externalValue.includes(option.value)
+    );
+  }
+
+  private compareOptions(a: any, b: any) {
+    if (typeof a === 'number' && typeof b === 'number') {
+      return a - b;
+    }
+    return String(a).localeCompare(b);
   }
 }

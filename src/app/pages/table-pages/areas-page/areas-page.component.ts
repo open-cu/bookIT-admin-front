@@ -35,7 +35,8 @@ export class AreasPageComponent extends TablePageComponent<Area> {
 
   constructor() {
     super();
-    markAsRequired(this.creationConfig, ['features', 'photos']);
+    markAsRequired(this.creationConfig, ['features']);
+    markAsRequired(this.editionConfig, ['features']);
   }
 
   override loadItemsFn = (params: SortArea) => {

@@ -10,7 +10,8 @@
     <app-multiple-select-input
       [formControl]="inputFormControl"
       [placeholder]="placeholder"
-      [options]="additionalParams.select?.options"
+      [options]="additionalParams.multipleSelect?.options"
+      [sorted]="additionalParams.multipleSelect?.sorted"
     ></app-multiple-select-input>
   }
   @case ("chips") {

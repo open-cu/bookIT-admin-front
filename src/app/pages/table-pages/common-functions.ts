@@ -10,6 +10,7 @@ import {TuiTime} from '@taiga-ui/cdk';
 import {imageToFile} from '../../core/utils/file-format.utils';
 import {Image} from '../../core/models/interfaces/images/image';
 import {UserStatus} from '../../core/models/enums/users/user-status';
+import {User} from '../../core/models/interfaces/users/user';
 
 export function getMyId() {
   return provideInjectable(UserService)
@@ -25,6 +26,24 @@ export function getAreaOptions() {
     .pipe(
       map(res => res.content),
       map(res => res.map(area => ({value: area.id, label: area.name})))
+    )
+}
+
+export function getUserOptions() {
+  const getName = (user: User) => {
+    let {firstName, lastName, username} = user;
+    if (username !== null) {
+      username = '(' + username + ')';
+    }
+    return [firstName, lastName, username]
+      .filter(name => name !== null)
+      .join(' ');
+  };
+  return provideInjectable(UserService)
+    .getList()
+    .pipe(
+      map(res => res.content),
+      map(res => res.map(user => ({value: user.id, label: getName(user)}))),
     )
 }
 
@@ -44,6 +63,12 @@ export function createTimeOptions(values: Record<string, any>) {
           .join('-')
       })))
     );
+}
+
+export function generateSequenceOptions(min: number = 0, max: number = 100) {
+  return Array.from({ length: max - min + 1 }, (_, i) => min + i)
+    .map(num => ({value: num}));
+
 }
 
 export function findIndexByKey(config: CreationConfig, key: string) {
