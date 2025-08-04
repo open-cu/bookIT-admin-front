@@ -171,7 +171,7 @@ export const EVENTS_CREATION_CONFIG: CreationConfig = {
     },
     {
       key: 'photos',
-      label: 'Фото',
+      label: 'Фото мероприятия',
       type: "images"
     }
   ],
@@ -245,7 +245,7 @@ export const EVENTS_EDITION_CONFIG: CreationConfig = {
     },
     {
       key: 'photos',
-      label: 'Фото',
+      label: 'Фото мероприятия',
       type: "images"
     }
   ],

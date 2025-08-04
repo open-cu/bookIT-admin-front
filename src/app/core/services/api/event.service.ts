@@ -19,7 +19,7 @@ export class EventService extends ApiService<Event> {
     return super.get(eventId);
   }
 
-  override getList(params?: SortEvent) {
+  override getList(params?: Partial<SortEvent>) {
     return super.getList(params);
   }
 
