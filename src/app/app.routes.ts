@@ -12,6 +12,7 @@ import {AdminsPageComponent} from './pages/table-pages/admins-page/admins-page.c
 import {EventsPageComponent} from './pages/table-pages/events-page/events-page.component';
 import {NewsPageComponent} from './pages/table-pages/news-page/news-page.component';
 import {ReviewsPageComponent} from './pages/table-pages/reviews-page/reviews-page.component';
+import {StatsPageComponent} from './pages/stats-page/stats-page.component';
 
 export const routes: Routes = [
   {path: APP_ROUTES.LOGIN, component: LoginPageComponent},
@@ -28,6 +29,7 @@ export const routes: Routes = [
       {path: APP_ROUTES.EVENTS, component: EventsPageComponent},
       {path: APP_ROUTES.NEWS, component: NewsPageComponent},
       {path: APP_ROUTES.REVIEWS, component: ReviewsPageComponent},
+      {path: APP_ROUTES.STATS, component: StatsPageComponent},
       {path: APP_ROUTES.ADMINS, component: AdminsPageComponent},
     ]
   },
