@@ -1,6 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {FilterResult} from '../../../shared/common-ui/filter-block/filter-config';
-import {CreationConfig, CreationOption, markAsRequired} from '../../../shared/common-ui/creation-block/creation-config';
+import {CreationConfig, markAsRequired} from '../../../shared/common-ui/creation-block/creation-config';
 import {TablePageComponent} from '../../../shared/common-ui/table-page/table-page.component';
 import {Booking} from '../../../core/models/interfaces/bookings/booking';
 import {
@@ -16,9 +15,8 @@ import {SortBooking} from '../../../core/models/interfaces/bookings/sort-booking
 import {BookingService} from '../../../core/services/api/booking.service';
 import {AreaService} from '../../../core/services/api/area.service';
 import {map} from 'rxjs';
-import {findIndex} from 'lodash';
-import {TuiTime} from '@taiga-ui/cdk';
 import {DatePipe} from '@angular/common';
+import {patchItemWithTime} from '../common-functions';
 
 @Component({
   selector: 'app-bookings-page',
@@ -29,7 +27,6 @@ import {DatePipe} from '@angular/common';
   styleUrl: './bookings-page.component.css'
 })
 export class BookingsPageComponent extends TablePageComponent<Booking> {
-  override filterResult: FilterResult<typeof this.filterOptions> = {};
   override filterOptions = BOOKINGS_FILTER_OPTIONS;
   override columns = BOOKINGS_COLUMNS_CONFIG;
   override creationConfig = BOOKINGS_CREATION_CONFIG
@@ -85,7 +82,6 @@ export class BookingsPageComponent extends TablePageComponent<Booking> {
         return res;
       })
       .map(date => this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss.SSS')! + 'Z');
-    console.log(update);
     return this.bookingService.put(item.id, {
       ...result,
       userId: item.userId,
@@ -95,18 +91,6 @@ export class BookingsPageComponent extends TablePageComponent<Booking> {
   }
 
   override transformPatchFn = (config: CreationConfig, item: Booking) => {
-    const findIndexByKey = (key: string) => {
-      return (option: CreationOption) => option.key === key
-    }
-    const dateIndex = findIndex(config.options, findIndexByKey('date'));
-    const startIndex = findIndex(config.options, findIndexByKey('startTime'));
-    const endIndex = findIndex(config.options, findIndexByKey('endTime'));
-    if (dateIndex < 0 || startIndex < 0 || endIndex < 0) {
-      return config;
-    }
-    config.options[dateIndex].value = new Date(item.startTime);
-    config.options[startIndex].value = TuiTime.fromLocalNativeDate(new Date(item.startTime));
-    config.options[endIndex].value = TuiTime.fromLocalNativeDate(new Date(item.endTime));
-    return config;
+    return patchItemWithTime(config, item);
   }
 }

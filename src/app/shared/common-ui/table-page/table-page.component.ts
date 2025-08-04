@@ -1,12 +1,4 @@
-import {
-  Component, computed, effect,
-  ElementRef,
-  inject,
-  Input,
-  OnInit,
-  signal,
-  ViewChild
-} from '@angular/core';
+import {Component, computed, effect, ElementRef, inject, Input, OnInit, Signal, signal, ViewChild} from '@angular/core';
 import {CreationConfig} from '../creation-block/creation-config';
 import {TuiButton, tuiDialog} from '@taiga-ui/core';
 import {CreationBlockComponent} from '../creation-block/creation-block.component';
@@ -17,12 +9,12 @@ import {FilterBlockComponent} from '../filter-block/filter-block.component';
 import {DeletionConfig} from './deletion-config';
 import {FilterOptions, FilterResult} from '../filter-block/filter-config';
 import {TypeUtils} from '../../../core/utils/type.utils';
-import compactObject = TypeUtils.compactObject;
-import transformParam = TypeUtils.transformParam;
-import getSelf = TypeUtils.getSelf;
 import {TuiResponsiveDialogService} from '@taiga-ui/addon-mobile';
 import {TUI_CONFIRM} from '@taiga-ui/kit';
 import {WaResizeObserver} from '@ng-web-apis/resize-observer';
+import compactObject = TypeUtils.compactObject;
+import transformParam = TypeUtils.transformParam;
+import getSelf = TypeUtils.getSelf;
 
 @Component({
   selector: 'app-table-page',
@@ -72,11 +64,14 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
 
   protected isFilterOpened = signal(false);
   protected transformRequestFn!: typeof this.loadItemsFn;
-  protected tableBlockSize = computed<string>(() => `calc(100vh - ${220 + this.filterHeight()}px)`);
-  protected filterHeight = signal<number>(0);
+  protected tableBlockSize: Signal<string>;
+  private filterHeight = signal<number>(0);
 
   constructor() {
     super();
+    this.tableBlockSize = computed<string>(
+      () => `calc(100vh - ${160 + this.filterHeight() + (this.canCreate ? 44 : 0)}px)`
+    );
     effect(() => {
       if (!this.isFilterOpened()) {
         this.filterHeight.set(0);

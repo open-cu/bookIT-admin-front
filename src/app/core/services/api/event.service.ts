@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {SortEvent} from '../../models/interfaces/events/sort-event';
 import {CreateEvent} from '../../models/interfaces/events/create-event';
 import {UpdateEvent} from '../../models/interfaces/events/update-event';
+import {Event} from '../../models/interfaces/events/event';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +24,10 @@ export class EventService extends ApiService<Event> {
   }
 
   override post(event: CreateEvent) {
-    return super.post(event);
+    return super.post(this.convertToFormData(event, 'photos'));
   }
 
   override put(eventId: string, event: UpdateEvent) {
-    return super.put(eventId, event);
+    return super.put(eventId, this.convertToFormData(event, 'photos'));
   }
 }

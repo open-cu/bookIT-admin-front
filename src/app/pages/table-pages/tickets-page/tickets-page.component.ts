@@ -13,7 +13,6 @@ import {
 } from './tickets.config';
 import {TablePageComponent} from '../../../shared/common-ui/table-page/table-page.component';
 import {PatchTicket} from '../../../core/models/interfaces/tickets/patch-ticket';
-import {FilterResult} from '../../../shared/common-ui/filter-block/filter-config';
 import {DatePipe} from '@angular/common';
 import {SortTicket} from '../../../core/models/interfaces/tickets/sort-ticket';
 
@@ -26,7 +25,6 @@ import {SortTicket} from '../../../core/models/interfaces/tickets/sort-ticket';
   styleUrl: './tickets-page.component.css'
 })
 export class TicketsPageComponent extends TablePageComponent<Ticket> {
-  override filterResult: FilterResult<typeof this.filterOptions> = {};
   override filterOptions = TICKETS_FILTER_OPTIONS;
   override columns = TICKETS_COLUMN_CONFIG;
   override creationConfig = TICKETS_CREATION_CONFIG
