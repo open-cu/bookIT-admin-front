@@ -5,7 +5,7 @@ import {CreationConfig} from '../../../shared/common-ui/creation-block/creation-
 import {DeletionConfig} from '../../../shared/common-ui/table-page/deletion-config';
 import {BookingTimeline} from '../../../core/models/enums/bookings/booking-timeline';
 import {BookingStatus} from '../../../core/models/enums/bookings/booking-status';
-import {createTimeOptions, getAreaOptions, getMyId} from '../common-reactive-values';
+import {createTimeOptions, getAreaOptions, getMyId} from '../common-functions';
 import {CellRenders} from '../cell-renders';
 import {CreateBooking} from '../../../core/models/interfaces/bookings/create-booking';
 import {UpdateBooking} from '../../../core/models/interfaces/bookings/update-booking';

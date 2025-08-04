@@ -1,13 +1,14 @@
 import {
-  ApplicationConfig, LOCALE_ID,
+  ApplicationConfig,
+  LOCALE_ID,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideEventPlugins } from '@taiga-ui/event-plugins';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import {provideRouter} from '@angular/router';
+import {routes} from './app.routes';
+import {provideEventPlugins} from '@taiga-ui/event-plugins';
+import {provideAnimations} from '@angular/platform-browser/animations';
 import {DATE_PIPE_DEFAULT_OPTIONS, registerLocaleData} from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import {TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE} from '@taiga-ui/i18n';

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {Ticket} from '../../models/interfaces/tickets/ticket';
 import {SortTicket} from '../../models/interfaces/tickets/sort-ticket';

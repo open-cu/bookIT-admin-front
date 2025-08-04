@@ -1,17 +1,11 @@
 import {inject, Injectable} from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpInterceptor,
-  HttpErrorResponse,
-  HttpEvent,
-} from '@angular/common/http';
-import { throwError, Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { CookieService } from 'ngx-cookie-service';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+import {CookieService} from 'ngx-cookie-service';
 import {Router} from '@angular/router';
 import {APP_ROUTES} from '../../../../app.routes.paths';
-import { AUTH_TOKEN } from './auth.token';
+import {AUTH_TOKEN} from './auth.token';
 
 @Injectable({
   providedIn: 'root',

@@ -1,6 +1,6 @@
 import {TuiIcons, TuiRoot} from "@taiga-ui/core";
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
 import {DatePipe} from '@angular/common';
 import {provideAppInjector} from './core/providers/injector.provider';
 

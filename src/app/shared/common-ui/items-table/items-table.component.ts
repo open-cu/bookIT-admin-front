@@ -74,6 +74,9 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
   @Input() paramsToQuery: string[] | boolean = false;
   @Input('trackFn') itemTrackBy?: (item: T) => any;
 
+  @Input() showRowNumbers = false;
+  @Input() rowNumberTitle: string = '№';
+
   @Output('OnFilterOpened') onFilterOpenedEmitter = new EventEmitter<void>();
   @Output('OnEdit') onEditEmitter = new EventEmitter<TableRow>();
   @Output('OnDelete') onDeleteEmitter = new EventEmitter<TableRow>();
@@ -100,6 +103,7 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
   private sanitizer = inject(DomSanitizer);
   protected cdr = inject(ChangeDetectorRef);
   protected readonly EDITING_BLOCK_KEY = 'editing' as const;
+  protected readonly ROW_NUMBER_KEY = 'rowNumber' as const;
 
   ngOnInit() {
     this.items$ = this.loadItems();
@@ -170,7 +174,11 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
   }
 
   protected getColumnsKeys() {
-    const res = this.columnConfigs.map(column => column.key);
+    let res: string[] = [];
+    if (this.showRowNumbers) {
+      res.push(this.ROW_NUMBER_KEY);
+    }
+    res.push(...this.columnConfigs.map(column => column.key));
     if (this.isEditable || this.isDeletable) {
       res.push(this.EDITING_BLOCK_KEY);
     }
@@ -178,7 +186,11 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
   }
 
   protected getColumnsTitles() {
-    const res = this.columnConfigs.map(column => column?.title ?? column.key);
+    let res: string[] = [];
+    if (this.showRowNumbers) {
+      res.push(this.rowNumberTitle);
+    }
+    res.push(...this.columnConfigs.map(column => column?.title ?? column.key));
     if (this.isEditable || this.isDeletable) {
       res.push('');
     }

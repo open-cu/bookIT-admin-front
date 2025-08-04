@@ -5,7 +5,7 @@ import {createEnumOptions} from '../../../core/utils/create-enum-options';
 import {CreationConfig} from '../../../shared/common-ui/creation-block/creation-config';
 import {DeletionConfig} from '../../../shared/common-ui/table-page/deletion-config';
 import {AppValidators} from '../../../shared/validators/app.validators';
-import {getAreaOptions, getMyId} from '../common-reactive-values';
+import {getAreaOptions, getMyId} from '../common-functions';
 import {CellRenders} from '../cell-renders';
 import {SortTicket} from '../../../core/models/interfaces/tickets/sort-ticket';
 

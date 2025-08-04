@@ -17,13 +17,22 @@ export const USERS_COLUMN_CONFIG: ColumnConfig[] = [
     render: CellRenders.withStyle('cell-id'),
   },
   {key: "firstName"},
-  {key: "lastName"},
+  {
+    key: "lastName",
+    render: CellRenders.asNullish()
+  },
   {
     key: "photoUrl",
     render: CellRenders.asUrlImage('tgId', 'user-avatar/'),
   },
-  {key: "email"},
-  {key: "phone"},
+  {
+    key: "email",
+    render: CellRenders.asNullish()
+  },
+  {
+    key: "phone",
+    render: CellRenders.asNullish()
+  },
   {key: "status"},
   {
     key: 'createdAt',
@@ -33,7 +42,10 @@ export const USERS_COLUMN_CONFIG: ColumnConfig[] = [
     key: 'updatedAt',
     render: CellRenders.asDate()
   },
-  {key: 'username'},
+  {
+    key: 'username',
+    render: CellRenders.asNullish()
+  },
   {
     key: 'roles',
     render: CellRenders.asList()

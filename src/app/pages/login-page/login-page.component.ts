@@ -1,12 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {
-  TuiAlertService,
-  TuiButton,
-  TuiLabel,
-  TuiTextfieldComponent,
-  TuiTextfieldDirective
-} from '@taiga-ui/core';
+import {TuiAlertService, TuiButton, TuiLabel, TuiTextfieldComponent, TuiTextfieldDirective} from '@taiga-ui/core';
 import {AppValidators} from '../../shared/validators/app.validators';
 import {Router} from '@angular/router';
 import {AuthService} from '../../core/services/api/auth/auth.service';

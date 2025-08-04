@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
+import {Injectable} from '@angular/core';
+import {ApiService} from './api.service';
 import {Area} from '../../models/interfaces/areas/area';
 import {SortArea} from '../../models/interfaces/areas/sort-area';
 import {CreateArea} from '../../models/interfaces/areas/create-area';

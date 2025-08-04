@@ -34,7 +34,8 @@ const errorMessages = new Map<string, (details: any) => string>([
     const { requiredLength, actualLength } = details;
     return `Максимум ${requiredLength} символов (сейчас ${actualLength})`;
   }],
-  ['pattern', () => 'Поле содержит недопустимые символы']
+  ['pattern', () => 'Поле содержит недопустимые символы'],
+  ['sequence', () => 'Значения должны быть последовательными']
 ]);
 
 function getErrorMessage(errors: ValidationErrors | null) {

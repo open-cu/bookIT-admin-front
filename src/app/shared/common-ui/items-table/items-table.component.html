@@ -19,21 +19,29 @@
         [columns]="getColumnsKeys()"
       >
         <thead>
-        <tr tuiThGroup>
-          @for (column of getColumnsTitles(); track i; let i = $index) {
-            <th
-              tuiTh
-              [sticky]="true"
-              [resizable]="true"
-              [ngStyle]="{ display: isColumnVisible(i) ? 'table-cell' : 'none' }"
-            >{{ column }}</th>
-          }
-        </tr>
+          <tr tuiThGroup>
+            @for (column of getColumnsTitles(); track i; let i = $index) {
+              <th
+                tuiTh
+                [sticky]="true"
+                [resizable]="true"
+                [ngStyle]="{ display: isColumnVisible(i) ? 'table-cell' : 'none' }"
+              >{{ column }}</th>
+            }
+          </tr>
         </thead>
         @let data = (items$ | async)?.content ?? [];
         <tbody tuiTbody [data]="data">
           @for (item of data; track itemTrackBy ? itemTrackBy(item) : $index) {
             <tr tuiTr>
+              @if (showRowNumbers) {
+                <td
+                  *tuiCell="ROW_NUMBER_KEY"
+                  tuiTd
+                >
+                  <p class="row-number-cell">{{ $index }}</p>
+                </td>
+              }
               @let tableRows = getRows(item);
               @for (value of tableRows; track i; let i = $index) {
                 <td

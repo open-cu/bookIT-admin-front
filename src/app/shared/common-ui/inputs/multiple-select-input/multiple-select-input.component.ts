@@ -6,12 +6,7 @@ import {
   TuiInputChipDirective,
   TuiMultiSelectGroupDirective,
 } from "@taiga-ui/kit";
-import {
-  TuiError,
-  TuiSelectLike,
-  TuiTextfieldDropdownDirective,
-  TuiTextfieldMultiComponent
-} from "@taiga-ui/core";
+import {TuiError, TuiSelectLike, TuiTextfieldDropdownDirective, TuiTextfieldMultiComponent} from "@taiga-ui/core";
 import {InputComponent} from '../input.component';
 import {SelectOption} from '../../creation-block/creation-config';
 import {TuiIdentityMatcher, TuiStringHandler} from '@taiga-ui/cdk';

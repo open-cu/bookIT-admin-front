@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {TablePageComponent} from "../../../shared/common-ui/table-page/table-page.component";
 import {Area} from '../../../core/models/interfaces/areas/area';
-import {FilterResult} from '../../../shared/common-ui/filter-block/filter-config';
 import {CreationConfig, markAsRequired} from '../../../shared/common-ui/creation-block/creation-config';
 import {AreaService} from '../../../core/services/api/area.service';
 import {SortArea} from '../../../core/models/interfaces/areas/sort-area';
@@ -14,8 +13,8 @@ import {
   CreateAreaFlat,
   UpdateAreaFlat
 } from './areas.config';
-import {imageToFile} from '../../../core/utils/file-format.utils';
 import {AreaStatus} from '../../../core/models/enums/areas/area-status';
+import {patchItemWithImages} from '../common-functions';
 
 @Component({
   selector: 'app-areas-page',
@@ -26,7 +25,6 @@ import {AreaStatus} from '../../../core/models/enums/areas/area-status';
   styleUrl: './areas-page.component.css'
 })
 export class AreasPageComponent extends TablePageComponent<Area> {
-  override filterResult: FilterResult<typeof this.filterOptions> = {};
   override filterOptions = AREAS_FILTER_OPTIONS;
   override columns = AREAS_COLUMNS_CONFIG;
   override creationConfig = AREAS_CREATION_CONFIG
@@ -59,12 +57,6 @@ export class AreasPageComponent extends TablePageComponent<Area> {
   }
 
   override transformPatchFn = (config: CreationConfig, item: Area) => {
-    let photos = config.options.find(option => option.key === 'photos');
-    if (!photos) {
-      return config;
-    }
-    photos.value = item.images.map(imageToFile);
-
-    return config;
+    return patchItemWithImages(config, item);
   }
 }

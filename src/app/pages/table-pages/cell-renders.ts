@@ -1,18 +1,18 @@
 import {provideInjectable} from '../../core/providers/injector.provider';
 import {DatePipe} from '@angular/common';
 import {TypeUtils} from '../../core/utils/type.utils';
-import toArray = TypeUtils.toArray;
 import {Image} from '../../core/models/interfaces/images/image';
 import {imageToFile} from '../../core/utils/file-format.utils';
 import {TableRow} from '../../shared/common-ui/items-table/column-config';
 import {random} from 'lodash';
+import toArray = TypeUtils.toArray;
 
 export class CellRenders {
 
-  static asDate(format: string = 'short') {
+  static asDate(format: string = 'short', placeholder: string = '——') {
     return (value: Date | string | number) => {
       const date = provideInjectable(DatePipe).transform(value, format)
-      return `<p>${date ?? 'Неизвестно'}</p>`
+      return `<p>${date ?? placeholder}</p>`
     }
   }
 
@@ -21,14 +21,24 @@ export class CellRenders {
     return (value: any) => `<p class="${styles}">${value}</p>`
   }
 
-  static asList() {
+  static asList(separator: string = ',', placeholder: string = '——') {
     return (value: string[]) => {
-      if (value.length === 0) {
-        return '——'
+      const length = value.length;
+      if (length === 0) {
+        return placeholder;
       }
-      let lines = value.map((item: any) => `<p>${item}</p>`);
-      return `<div class="cell-lines">${lines.join()}</div>`;
+      let lines = value.map(
+        (item: any, i: number) => {
+          const sep = (i === length - 1 ? '' : separator);
+          return `<p class="cell-line">${item + sep}</p>`;
+        }
+      );
+      return `<div class="cell-lines-container">${lines.join('')}</div>`;
     }
+  }
+
+  static asNullish(placeholder: string = '——') {
+    return (value: any) => value === null || value === undefined ? placeholder : value;
   }
 
   static asImages() {

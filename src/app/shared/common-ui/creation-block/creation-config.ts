@@ -1,8 +1,8 @@
 import {ValidatorFn, Validators} from '@angular/forms';
 import {TypeUtils} from '../../../core/utils/type.utils';
-import toArray = TypeUtils.toArray;
 import {InputType} from '../inputs/input-container/input-container.component';
 import {Observable} from 'rxjs';
+import toArray = TypeUtils.toArray;
 
 export interface CreationConfig {
   options: CreationOptions,
@@ -41,7 +41,9 @@ export type CreationReturn<T extends CreationOptions> = {
   [K in T[number]['key']]: any;
 };
 
-export function markAsRequired(config: CreationConfig, excludes?: string[] | string) {
+type OptionKeys<T extends CreationConfig> = T['options'][number]['key'];
+
+export function markAsRequired<T extends CreationConfig>(config: T, excludes?: OptionKeys<T>[] | OptionKeys<T>) {
   const excludedList = toArray(excludes);
   config.options
     .filter(option => !excludedList.includes(option.key))

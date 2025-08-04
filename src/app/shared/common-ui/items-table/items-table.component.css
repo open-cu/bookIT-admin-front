@@ -19,6 +19,10 @@
   margin-bottom: 12px;
 }
 
+.row-number-cell {
+  justify-self: center;
+}
+
 .table-title {
   display: flex;
   flex-direction: row;

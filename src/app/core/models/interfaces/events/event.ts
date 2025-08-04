@@ -1,5 +1,5 @@
-import { EventFormat } from '../../enums/events/event-format';
-import { ThemeTag } from '../../enums/theme-tag';
+import {EventFormat} from '../../enums/events/event-format';
+import {ThemeTag} from '../../enums/theme-tag';
 import {Image} from '../images/image';
 import {EventTime} from '../../enums/events/event-time';
 import {EventParticipationFormat} from '../../enums/events/event-participation-format';

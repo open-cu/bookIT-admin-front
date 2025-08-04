@@ -1,13 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormControl,
-  ValidationErrors,
-  AbstractControl,
-  Validator
-} from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
-import { AppValidators } from '../../validators/app.validators';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AbstractControl, ControlValueAccessor, FormControl, ValidationErrors, Validator} from '@angular/forms';
+import {Subject, takeUntil} from 'rxjs';
+import {AppValidators} from '../../validators/app.validators';
 
 @Component({
   template: '',

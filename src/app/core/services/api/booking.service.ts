@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService, QueryParams} from './api.service';
 import {CreateBooking} from '../../models/interfaces/bookings/create-booking';
 import {UpdateBooking} from '../../models/interfaces/bookings/update-booking';
@@ -31,7 +31,7 @@ export class BookingService extends ApiService<Booking> {
   }
 
   override put(bookingId: string, booking: UpdateBooking) {
-    return this.http.put<Booking>(`${this.baseUrl}/admin/${bookingId}`, booking);
+    return super.put(bookingId, booking);
   }
 
   getAvailableTimes(params: { date: string, areaId?: string, bookingId?: string }) {
