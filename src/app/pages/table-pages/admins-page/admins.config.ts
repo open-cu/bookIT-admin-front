@@ -1,0 +1,88 @@
+import {ColumnConfig} from '../../../shared/common-ui/items-table/column-config';
+import {FilterOptions} from '../../../shared/common-ui/filter-block/filter-config';
+import {createEnumOptions} from '../../../core/utils/create-enum-options';
+import {CreationConfig} from '../../../shared/common-ui/creation-block/creation-config';
+import {CellRenders} from '../cell-renders';
+import {UserRole} from '../../../core/models/enums/users/user-role';
+import {UserStatus} from '../../../core/models/enums/users/user-status';
+import {Validators} from '@angular/forms';
+
+export const ADMINS_COLUMN_CONFIG: ColumnConfig[] = [
+  {
+    key: "id",
+    render: CellRenders.withStyle('cell-id')
+  },
+  {
+    key: "tgId",
+    render: CellRenders.withStyle('cell-id'),
+  },
+  {key: "firstName"},
+  {key: "lastName"},
+  {
+    key: "photoUrl",
+    render: CellRenders.asUrlImage('tgId', 'user-avatar/'),
+  },
+  {key: "email"},
+  {key: "phone"},
+  {key: "status"},
+  {
+    key: 'createdAt',
+    render: CellRenders.asDate()
+  },
+  {
+    key: 'updatedAt',
+    render: CellRenders.asDate()
+  },
+  {key: 'username'},
+  {
+    key: 'roles',
+    render: CellRenders.asList()
+  },
+];
+
+export const ADMINS_FILTER_OPTIONS: FilterOptions = [
+  {
+    key: 'role',
+    placeholder: 'Поиск по роли',
+    type: 'multipleSelect',
+    options: createEnumOptions(UserRole)
+      .filter(role => role.value.toString() !== UserRole[UserRole.ROLE_USER]),
+  },
+  {
+    key: 'search',
+    placeholder: 'Поиск администратора',
+  },
+];
+
+export const ADMINS_EDITION_CONFIG: CreationConfig = {
+  button: 'Изменить пользователя',
+  title: 'Редатирование пользователя',
+  options: [
+    {
+      key: "firstName",
+      label: 'Имя',
+    },
+    {
+      key: "lastName",
+      label: 'Фамилия',
+      value: '',
+    },
+    {
+      key: "email",
+      label: 'Почта',
+      validators: Validators.email,
+    },
+    {
+      key: "roles",
+      label: 'Роли',
+      type: "multipleSelect",
+      options: createEnumOptions(UserRole),
+    },
+    {
+      key: "userStatus",
+      label: 'Статус',
+      type: "select",
+      options: createEnumOptions(UserStatus),
+    }
+  ],
+};

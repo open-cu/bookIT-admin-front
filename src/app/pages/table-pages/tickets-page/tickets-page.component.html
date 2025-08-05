@@ -1,0 +1,18 @@
+<app-table-page
+  title="Тикеты"
+  tableTitle="Список тикетов"
+  filterButton="Найти тикет"
+  filterTitle="Поиск тикета"
+  [columns]="columns"
+  [createFn]="createItemFn"
+  [deleteFn]="deleteItemFn"
+  [editFn]="editItemFn"
+  [loadFn]="loadItemsFn"
+  [transformParamsFn]="transformParamsFn"
+  [filterOptions]="filterOptions"
+  [creationConfig]="creationConfig"
+  [editionConfig]="editionConfig"
+  [deletionConfig]="deletionConfig"
+  [editable]="true"
+  [deletable]="true"
+></app-table-page>

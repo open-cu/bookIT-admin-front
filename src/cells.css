@@ -1,0 +1,23 @@
+.cell-id,
+.cell-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+.cell-description {
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.cell-lines-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.cell-line {
+  margin: 0;
+}

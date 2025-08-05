@@ -1,0 +1,14 @@
+tui-root {
+  --custom-background: var(--background-primary);
+  background: transparent;
+}
+
+tui-root::before {
+  position: fixed;
+  content: "";
+  background: var(--custom-background);
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}

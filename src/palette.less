@@ -1,0 +1,62 @@
+:root {
+  --button-primary: #fddc2c;
+  --button-text-primary: #000000;
+  --button-text-secondary: #428BF9;
+  --button-tertiary: #428BF9;
+  --button-text-tertiary: #FFFFFF;
+  --text-tertiary: #838383;
+  --main-color: #fddc2c;
+  --alternative-color: #428BF9;
+  --progress-bar-background: #D9D9D9;
+  --icon-check: #F52323;
+}
+
+.dark() {
+  --button-secondary: #333335;
+  --background-primary: #000000;
+  --background-secondary: #1C1C1E;
+  --background-tertiary: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: #9299A2;
+  --icon-primary: #ffffff;
+  --icon-secondary: #7A7D81;
+}
+
+.light() {
+  --button-secondary: #F8F8F8;
+  --background-primary: #f2f3f3;
+  --background-secondary: #ffffff;
+  --background-tertiary: #F4F5F5;
+  --text-primary: #000000;
+  --text-secondary: #9FA5AE;
+  --icon-primary: #000000;
+  --icon-secondary: #9FA5AE;
+}
+
+@media screen {
+  &:root,
+  [tuiTheme='dark'] {
+    color-scheme: dark;
+    .dark();
+  }
+
+  &:root,
+  [tuiTheme='light'] {
+    color-scheme: light;
+    .light();
+  }
+}
+
+@media print {
+  &:root,
+  [tuiTheme='dark'] {
+    color-scheme: dark;
+    .dark();
+  }
+
+  &:root,
+  [tuiTheme='light'] {
+    color-scheme: light;
+    .light();
+  }
+}

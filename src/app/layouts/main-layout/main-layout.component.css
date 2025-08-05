@@ -1,0 +1,62 @@
+:host {
+  display: flex;
+  flex-direction: row;
+}
+
+.nav-header {
+  block-size: 0 !important;
+  padding: 0 !important;
+  display: none !important;
+}
+
+.logo-container {
+  display: flex;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  justify-content: center;
+}
+
+aside::before,
+header::after,
+footer::after {
+  display: none;
+}
+
+aside[tuiNavigationAside] {
+  background: var(--background-secondary) !important;
+}
+
+.side-bar-block {
+  display: flex;
+  height: 100vh;
+  width: max-content;
+  --tui-theme-color: var(--tui-background-base-alt) !important;
+}
+
+.active {
+  color: var(--tui-background-accent-1);
+}
+
+.user-block {
+  display: flex;
+  flex-direction: row;
+  column-gap: 8px;
+  margin: 16px 0;
+  align-items: center;
+  p {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+}
+
+footer {
+  padding-bottom: 32px;
+}
+
+main[tuiNavigationMain] {
+  border-top: var(--top-layout-border) solid transparent;
+  flex: 1; /* Занимает всё свободное пространство */
+  min-height: 0; /* Разрешаем сжатие контента */
+  overflow: auto;
+}

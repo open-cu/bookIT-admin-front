@@ -1,0 +1,15 @@
+<tui-textfield>
+  <tui-error [error]="errorMessage"/>
+  @let usedStep = step ?? 1;
+  <input
+    tuiInputNumber
+    [placeholder]="placeholder"
+    [min]="min"
+    [max]="max"
+    [step]="usedStep"
+    [formControl]="control"
+    [invalid]="isInvalid"
+    (keydown.arrowDown)="onNumericStep(-usedStep)"
+    (keydown.arrowUp)="onNumericStep(+usedStep)"
+  />
+</tui-textfield>

@@ -1,17 +1,20 @@
 import {
-  ApplicationConfig, LOCALE_ID,
+  ApplicationConfig,
+  LOCALE_ID,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideEventPlugins } from '@taiga-ui/event-plugins';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import {provideRouter} from '@angular/router';
+import {routes} from './app.routes';
+import {provideEventPlugins} from '@taiga-ui/event-plugins';
+import {provideAnimations} from '@angular/platform-browser/animations';
 import {DATE_PIPE_DEFAULT_OPTIONS, registerLocaleData} from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import {TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE} from '@taiga-ui/i18n';
 import {of} from 'rxjs';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {AuthInterceptor} from './core/services/api/auth/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +23,12 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimations(),
     provideEventPlugins(),
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     {
       provide: TUI_LANGUAGE,
       useValue: of(TUI_RUSSIAN_LANGUAGE),

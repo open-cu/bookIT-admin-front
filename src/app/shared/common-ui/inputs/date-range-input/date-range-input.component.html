@@ -1,0 +1,13 @@
+<tui-textfield [content]="content">
+  <tui-error [error]="errorMessage"/>
+  <input
+    tuiInputDateRange
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [invalid]="isInvalid"
+  />
+  <tui-calendar-range
+    *tuiTextfieldDropdown
+    [items]="items"
+  />
+</tui-textfield>
