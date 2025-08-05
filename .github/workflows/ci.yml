@@ -6,6 +6,9 @@ on:
       - main
     types:
       - closed
+  push:
+    branches:
+      - fix-deploy
 
 env:
   SSH_HOST: ${{ secrets.SSH_HOST }}
