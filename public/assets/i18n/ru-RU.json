@@ -1,10 +1,96 @@
 {
-  "LECTURE_HALL": "Лекторий",
-  "MEETING_ROOM": "Переговорная",
-  "WORKPLACE": "Главный зал",
-
-  "CLEANING": "Уборка",
-  "REPAIR": "Ремонт",
-  "MAINTENANCE": "Поддержка",
-  "OTHER": "Другое"
+  "AreaFeature": {
+    "SILENT": "Тихая зона",
+    "LIGHT": "Хорошее освещение",
+    "PROJECTOR": "Проектор",
+    "WHITEBOARD": "Маркерная доска",
+    "TV": "Телевизор",
+    "CHANCELLERY": "Канцелярия",
+    "CONDITIONER": "Кондиционер",
+    "SPEAKER_SYSTEM": "Акустическая система"
+  },
+  "AreaStatus": {
+    "AVAILABLE": "Доступно",
+    "UNAVAILABLE": "Недоступно",
+    "BOOKED": "Забронировано"
+  },
+  "AreaType": {
+    "LECTURE_HALL": "Лекторий",
+    "MEETING_ROOM": "Переговорная",
+    "WORKPLACE": "Рабочее место"
+  },
+  "BookingStatus": {
+    "PENDING": "Ожидание",
+    "CONFIRMED": "Подтверждено",
+    "CANCELED": "Отменено",
+    "COMPLETED": "Завершено"
+  },
+  "BookingTimeline": {
+    "FUTURE": "Предстоящие",
+    "CURRENT": "Текущие",
+    "PAST": "Прошедшие"
+  },
+  "EventFormat": {
+    "WORKSHOP": "Воркшоп",
+    "NETWORKING": "Нетворкинг",
+    "LECTURE": "Лекция",
+    "MEETUP": "Митап",
+    "HACKATHON": "Хакатон",
+    "RELAX": "Отдых",
+    "GAMES": "Игры"
+  },
+  "EventParticipationFormat": {
+    "ONLINE": "Онлайн",
+    "OFFLINE": "Офлайн",
+    "INDIVIDUAL": "Индивидуально",
+    "HYBRID": "Гибридный",
+    "RECORDING": "Запись"
+  },
+  "EventStatus": {
+    "PENDING": "Ожидание",
+    "CONFIRMED": "Подтверждено",
+    "CANCELED": "Отменено",
+    "COMPLETED": "Завершено"
+  },
+  "EventTime": {
+    "MORNING": "Утро",
+    "DAY": "День",
+    "EVENING": "Вечер",
+    "NIGHT": "Ночь",
+    "WEEKDAYS": "Будни",
+    "WEEKENDS": "Выходные"
+  },
+  "StatsPeriod": {
+    "WEEK": "Неделя",
+    "FORTNIGHT": "Две недели",
+    "MONTH": "Месяц",
+    "QUARTER": "Квартал"
+  },
+  "TicketType": {
+    "CLEANING": "Уборка",
+    "REPAIR": "Ремонт",
+    "MAINTENANCE": "Обслуживание",
+    "OTHER": "Другое"
+  },
+  "UserRole": {
+    "ROLE_USER": "Пользователь",
+    "ROLE_ADMIN": "Администратор",
+    "ROLE_SUPERADMIN": "Супер-админ"
+  },
+  "UserStatus": {
+    "CREATED": "Создан",
+    "VERIFIED": "Верифицирован",
+    "BANNED": "Заблокирован",
+    "DELETED": "Удалён"
+  },
+  "ThemeTag": {
+    "PSYCHOLOGY": "Психология",
+    "ART": "Искусство",
+    "MARKETING": "Маркетинг",
+    "TECHNOLOGY": "Технологии",
+    "BUSINESS": "Бизнес",
+    "SCIENCE": "Наука",
+    "IT": "IT",
+    "SUCCESS_STORY": "Истории успеха"
+  }
 }
