@@ -1,4 +1,4 @@
-name: CI
+name: Deploy Angular App
 
 on:
   pull_request:
@@ -10,8 +10,11 @@ on:
 env:
   SSH_HOST: ${{ secrets.SSH_HOST }}
   SSH_USER: ${{ secrets.SSH_USER }}
+  SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+  REMOTE_DIR: ${{ secrets.REMOTE_DIR || '/var/www/html' }}
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: self-hosted
 
     steps:
@@ -32,13 +35,32 @@ jobs:
           ssh-private-key: |
             ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy on remote server
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        run: npm run build -- --configuration=production
+
+      - name: Create deployment archive
         run: |
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-          cd /home/$SSH_USER/bookIT-admin-front &&
-          git checkout main &&
-          git pull &&
-          docker-compose down &&
-          export COMPOSE_HTTP_TIMEOUT=300 &&
-          docker-compose up --build -d
+          cd dist/bookIT-admin-front/browser
+          tar -czf ../deploy.tar.gz .
+
+      - name: Deploy to server
+        run: |
+          scp -o StrictHostKeyChecking=no -P $SSH_PORT dist/deploy.tar.gz $SSH_USER@$SSH_HOST:/home/$SSH_USER
+          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "
+            sudo mkdir -p $REMOTE_DIR
+            sudo rm -rf $REMOTE_DIR/*
+            sudo tar -xzf /home/$SSH_USER/deploy.tar.gz -C $REMOTE_DIR
+            sudo chown -R www-data:www-data $REMOTE_DIR
+            rm /home/$SSH_USER/deploy.tar.gz
           "
+
+      - name: Cleanup
+        run: rm -f dist/deploy.tar.gz
