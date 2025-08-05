@@ -1,4 +1,16 @@
-import {Component, computed, effect, ElementRef, inject, Input, OnInit, Signal, signal, ViewChild} from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  Injector,
+  Input,
+  OnInit,
+  Signal,
+  signal,
+  ViewChild
+} from '@angular/core';
 import {CreationConfig} from '../creation-block/creation-config';
 import {TuiButton, tuiDialog} from '@taiga-ui/core';
 import {CreationBlockComponent} from '../creation-block/creation-block.component';
@@ -15,6 +27,7 @@ import {WaResizeObserver} from '@ng-web-apis/resize-observer';
 import compactObject = TypeUtils.compactObject;
 import transformParam = TypeUtils.transformParam;
 import getSelf = TypeUtils.getSelf;
+import {FILTER_OPTIONS, FilterService} from '../../../core/services/filter/filter.service';
 
 @Component({
   selector: 'app-table-page',
@@ -23,6 +36,13 @@ import getSelf = TypeUtils.getSelf;
     ItemsTableComponent,
     TuiButton,
     WaResizeObserver,
+  ],
+  viewProviders: [
+    {
+      provide: FILTER_OPTIONS,
+      useFactory: () => ({}),
+    },
+    FilterService,
   ],
   templateUrl: './table-page.component.html',
   styleUrl: './table-page.component.css'
@@ -67,10 +87,13 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   protected tableBlockSize: Signal<string>;
   private filterHeight = signal<number>(0);
 
+  protected injector = inject(Injector);
+  protected filterService!: FilterService;
+
   constructor() {
     super();
     this.tableBlockSize = computed<string>(
-      () => `calc(100vh - ${160 + this.filterHeight() + (this.canCreate ? 44 : 0)}px)`
+      () => `calc(100vh - ${170 + this.filterHeight() + (this.canCreate ? 44 : 0)}px)`
     );
     effect(() => {
       if (!this.isFilterOpened()) {
@@ -81,8 +104,26 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
 
   override ngOnInit() {
     super.ngOnInit();
+    this.initFilterService();
     const transform = transformParam(compactObject, this.transformParamsFn);
     this.transformRequestFn = transformParam(this.loadItemsFn, transform as (val: any) => any);
+  }
+
+  private initFilterService() {
+    const filterServiceInjector = Injector.create({
+      providers: [
+        {
+          provide: FILTER_OPTIONS,
+          useValue: Object.fromEntries(this.filterOptions.map(option => {
+            const { key, value } = option;
+            return [key, value];
+          }))
+        }
+      ],
+      parent: this.injector
+    });
+    this.filterService = filterServiceInjector.get(FilterService);
+    this.filterService.filter.get('tags')?.set([]);
   }
 
   protected onFilterOpenClick() {

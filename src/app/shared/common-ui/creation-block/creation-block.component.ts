@@ -9,6 +9,7 @@ import {combineLatest, filter, map, Observable, of} from 'rxjs';
 import {catchError, distinctUntilChanged, finalize, startWith, switchMap, take, tap} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import toArray = TypeUtils.toArray;
+import {NgStyle} from '@angular/common';
 
 type CreationContext = TuiDialogContext<any, CreationConfig>;
 
@@ -20,6 +21,7 @@ type CreationContext = TuiDialogContext<any, CreationConfig>;
     InputContainerComponent,
     TuiLabel,
     TuiButton,
+    NgStyle,
   ],
   templateUrl: './creation-block.component.html',
   styleUrls: ['./creation-block.component.css']

@@ -41,8 +41,8 @@ export const REVIEWS_FILTER_OPTIONS: FilterOptions = [
 ];
 
 export const REVIEWS_CREATION_CONFIG: CreationConfig = {
-  button: 'Создать новость',
-  title: 'Создание новости',
+  button: 'Создать отзыв',
+  title: 'Создание отзыва',
   options: [
     {
       key: 'userId',

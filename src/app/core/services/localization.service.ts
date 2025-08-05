@@ -1,50 +1,66 @@
-import {inject, Injectable, LOCALE_ID} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {map, Observable, shareReplay} from 'rxjs';
+import { inject, Injectable, InjectionToken } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import { catchError, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import {TypeUtils} from '../utils/type.utils';
 import toArray = TypeUtils.toArray;
-import getByKey = TypeUtils.getByKey;
+
+export const USED_LOCALE_ID = new InjectionToken<string>('USED_LOCALE_ID');
 
 @Injectable({
   providedIn: 'root',
-  deps: [LOCALE_ID]
+  deps: [USED_LOCALE_ID]
 })
 export class LocalizationService {
-  private http = inject(HttpClient);
-  private readonly sourcePath = 'assets/i18n' as const;
+  private readonly SOURCE_PATH = 'assets/i18n';
+  private readonly http = inject(HttpClient);
+  private readonly initialLocale = inject(USED_LOCALE_ID);
 
-  private LOCALE_ID = inject(LOCALE_ID);
-
-  private mappings$: Observable<object>;
+  private readonly currentLocale$ = new BehaviorSubject<string>(this.initialLocale);
+  private readonly translations$ = this.currentLocale$.pipe(
+    switchMap(locale => this.loadTranslations(locale)),
+    shareReplay(1)
+  );
 
   constructor() {
-    this.mappings$ = this.loadMappings(this.LOCALE_ID).pipe(
-      shareReplay(1)
+    this.translations$.pipe(take(1)).subscribe();
+  }
+
+  setLocale(locale: string): void {
+    if (locale !== this.currentLocale$.value) {
+      this.currentLocale$.next(locale);
+    }
+  }
+
+  getMapping(keys: string | string[]): Observable<string | undefined> {
+    return this.translations$.pipe(
+      map(translations => this.getNestedValue(translations, keys))
     );
   }
 
-  loadMappings(locale: string) {
-    return this.http.get<any>(`${this.sourcePath}/${locale}.json`);
-  }
-
-  getMapping(keys: string[] | string) {
-    return this.mappings$.pipe(
-      map(mappings => this.getNestedField(mappings, keys))
+  private loadTranslations(locale: string): Observable<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>(`${this.SOURCE_PATH}/${locale}.json`).pipe(
+      catchError(error => {
+        console.error(`Failed to load translations for ${locale}:`, error);
+        return of({});
+      })
     );
   }
 
-  private getNestedField(obj: any, keys: string[] | string) {
-    const array = toArray(keys);
-    let result: object | string | undefined = obj?.[array[0]];
-    for (const key of keys.slice(1)) {
-      if (!result) {
+  private getNestedValue(
+    obj: Record<string, unknown>,
+    keys: string | string[]
+  ): string | undefined {
+    const keyArray = toArray(keys);
+    let current: unknown = obj;
+
+    for (const key of keyArray) {
+      if (current === null || typeof current !== 'object' || Array.isArray(current)) {
         return undefined;
       }
-      if (typeof result === 'string') {
-        return result;
-      }
-      result = getByKey(result, key);
+      current = (current as Record<string, unknown>)[key];
     }
-    return result;
+
+    return typeof current === 'string' ? current : undefined;
   }
 }
