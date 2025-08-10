@@ -80,17 +80,17 @@
     </tui-scrollbar>
     <table [style.inline-size.%]="100">
       <tfoot class="table-foot">
-      <tr>
-        <td [colSpan]="getColumnsKeys().length">
-          <tui-table-pagination
-            class="tui-space_top-2"
-            [page]="page()"
-            [size]="size()"
-            [total]="total()"
-            (paginationChange)="onPaginationChange($event)"
-          />
-        </td>
-      </tr>
+        <tr>
+          <td [colSpan]="getColumnsKeys().length">
+            <tui-table-pagination
+              class="tui-space_top-2"
+              [page]="page()"
+              [size]="size()"
+              [total]="total()"
+              (paginationChange)="onPaginationChange($event)"
+            />
+          </td>
+        </tr>
       </tfoot>
     </table>
   </tui-loader>

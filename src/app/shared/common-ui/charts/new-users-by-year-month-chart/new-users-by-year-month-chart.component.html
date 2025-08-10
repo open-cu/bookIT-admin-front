@@ -1,0 +1,25 @@
+<tui-loader [showLoader]="isLoading" class="chart-container">
+  @if (chartData) {
+    <div>
+      <tui-axes
+        class="axes"
+        [axisXLabels]="axisXLabels"
+        [horizontalLines]="4"
+        [verticalLines]="axisXLabels.length - 1"
+      >
+        <tui-line-days-chart
+          class="chart"
+          [height]="200"
+          [value]="value"
+          [xStringify]="xStringify"
+          [yStringify]="yStringify"
+        />
+      </tui-axes>
+    </div>
+  }
+  @if (error) {
+    <div class="error-message">
+      Ошибка загрузки данных
+    </div>
+  }
+</tui-loader>

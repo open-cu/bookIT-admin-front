@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.chart-container {
+  height: 300px;
+  padding: 1.5rem;
+}
+
+.error-message {
+  color: var(--tui-text-negative);
+  padding: 1rem;
+  text-align: center;
+}
+
+.axes {
+  block-size: 12.5rem;
+}

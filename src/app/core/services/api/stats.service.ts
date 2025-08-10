@@ -26,7 +26,8 @@ export class StatsService {
 
   getCancellationsByArea(params: {
     startDate: string,
-    endDate: string
+    endDate: string,
+    areaNames?: string[],
   }) {
     return this.http.get<CancellationStats[]>(
       `${this.baseUrl}/cancellations-by-area`,
@@ -37,7 +38,7 @@ export class StatsService {
   getBusiestHours(params: {
     startDate: string,
     endDate: string,
-    areaName?: string
+    areaNames?: string[]
   }) {
     return this.http.get<BusiestHours[]>(
       `${this.baseUrl}/busiest-hours`,
@@ -48,6 +49,7 @@ export class StatsService {
   getBookings(params: {
     startDate: string,
     endDate: string,
+    areaNames?: string[],
     includeSummary?: boolean
   }) {
     return this.http.get<FullStats>(
@@ -58,6 +60,7 @@ export class StatsService {
 
   getBookingsPeriods(params: {
     period: StatsPeriod,
+    areaNames?: string[],
     includeSummary?: boolean
   }) {
     return this.http.get<FullStats>(
@@ -69,6 +72,7 @@ export class StatsService {
   getBookingsByDayOfWeek(params: {
     startDate: string,
     endDate: string,
+    areaNames?: string[],
   }) {
     return this.http.get<DayOfWeekStats>(
       `${this.baseUrl}/bookings-by-day-of-week`,
