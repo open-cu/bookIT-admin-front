@@ -59,16 +59,7 @@ export class NewUsersByYearMonthChartComponent extends BaseChartComponent<NewUse
   );
 
   protected axisYLabels$ = this.axisYTicks$.pipe(
-    map(data => {
-      const {niceMin, niceMax, tickCount} = data;
-      const step = (niceMax - niceMin) / tickCount;
-      let array: string[] = [];
-      for (let i = 0; i < tickCount + 1; ++i) {
-        const value = String(niceMin + i * step)
-        array.push(value);
-      }
-      return array;
-    })
+    map(data => this.generateTicksValues(data))
   );
 
   protected readonly yStringify: TuiStringHandler<number> = String;

@@ -152,10 +152,16 @@ tui-avatar::before {
   margin-top: var(--items-table-margin-top);
 }
 
-
-
 .chart-title {
   margin-top: 0;
   margin-bottom: 16px;
   justify-self: center;
+}
+
+.no-chart-info {
+  background:  var(--tui-status-info-pale);
+  color: var(--tui-text-action);
+  padding: 12px;
+  border-radius: 12px;
+  margin: auto;
 }

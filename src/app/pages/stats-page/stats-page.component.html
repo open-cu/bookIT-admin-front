@@ -10,8 +10,14 @@
   class="charts-scrollbar"
 >
   <div class="charts-container">
-    <app-new-users-by-year-month-chart class="stats-chart"></app-new-users-by-year-month-chart>
-    <app-cancellations-by-area-chart class="stats-chart"></app-cancellations-by-area-chart>
+    <app-new-users-by-year-month-chart
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-new-users-by-year-month-chart>
+    <app-cancellations-by-area-chart
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-cancellations-by-area-chart>
   </div>
 </tui-scrollbar>
 

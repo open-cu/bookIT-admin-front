@@ -1,7 +1,16 @@
 import {Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {BehaviorSubject, combineLatest, filter, Observable, of} from 'rxjs';
-import {catchError, debounceTime, distinctUntilChanged, map, shareReplay, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, filter, Observable, of, Subject, tap} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 import {StatsService} from '../../../core/services/api/stats.service';
+import {TypeUtils} from '../../../core/utils/type.utils';
+import compactObject = TypeUtils.compactObject;
+import {isEqual} from 'lodash';
+
+export interface TicksParams {
+  niceMin: number,
+  niceMax: number,
+  tickCount: number
+}
 
 @Component({
   template: ''
@@ -10,6 +19,7 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
   protected params$ = new BehaviorSubject<Partial<P>>({});
 
   protected data$: Observable<T | null>;
+  protected loadingTrigger$ = new Subject<boolean>();
   protected isLoading$: Observable<boolean>;
   protected error$: Observable<any | null>;
 
@@ -32,12 +42,9 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
   constructor() {
     const filteredParams$ = this.params$.pipe(
       debounceTime(this.debounceTime),
-      distinctUntilChanged((prev, curr) =>
-        this.requiredParams.every(key =>
-          JSON.stringify(prev[key]) === JSON.stringify(curr[key])
-        )
-      ),
+      distinctUntilChanged(isEqual),
       filter(params => this.hasRequiredParams(params)),
+      tap(() => this.loadingTrigger$.next(true)),
       shareReplay(1)
     );
 
@@ -47,17 +54,15 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
           catchError(error => {
             this.handleError(error);
             return of(null);
-          })
+          }),
+          tap(() => this.loadingTrigger$.next(false))
         )
       ),
       shareReplay(1)
     );
 
-    this.isLoading$ = combineLatest([
-      filteredParams$,
-      this.data$
-    ]).pipe(
-      map(([_, data]) => data === null && !this.error$),
+    this.isLoading$ = this.loadingTrigger$.pipe(
+      startWith(true),
       distinctUntilChanged()
     );
 
@@ -83,11 +88,7 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
     }
   }
 
-  protected calculateTicks(min: number, max: number): {
-    niceMin: number,
-    niceMax: number,
-    tickCount: number
-  } {
+  protected calculateTicks(min: number, max: number): TicksParams {
     const config = this.niceStepConfig;
 
     if (min === max) {
@@ -130,6 +131,17 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
     };
   }
 
+  protected generateTicksValues(params: TicksParams) {
+    const {niceMin, niceMax, tickCount} = params;
+    const step = (niceMax - niceMin) / tickCount;
+    let array: string[] = [];
+    for (let i = 0; i < tickCount + 1; ++i) {
+      const value = String(niceMin + i * step)
+      array.push(value);
+    }
+    return array;
+  }
+
   protected abstract fetchData(params: P): Observable<T>;
 
   protected handleError(error: any): void {
@@ -137,10 +149,11 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
   }
 
   private updateParams(newParams: Partial<P>): void {
-    this.params$.next({
+    const newValue = compactObject({
       ...this.params$.value,
       ...newParams
-    });
+    })
+    this.params$.next(newValue);
   }
 
   private hasRequiredParams(params: Partial<P>): boolean {

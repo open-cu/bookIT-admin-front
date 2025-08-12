@@ -11,7 +11,7 @@
   color: #bc71c9;
 }
 
-::ng-deep .t-label-x {
+:host ::ng-deep .t-label-x {
   z-index: -1;
   display: inline-block;
   transform: translate(12px, -4px) rotate(45deg);

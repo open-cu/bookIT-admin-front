@@ -1,6 +1,6 @@
 export interface CancellationStats {
   areaName: string,
   totalBookings: number,
-  cancellationBookings: number,
+  cancelledBookings: number,
   cancellationPercentage: number
 }

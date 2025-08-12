@@ -1,0 +1,38 @@
+<p class="h3 chart-title">Количество отменённых бронирований</p>
+<tui-loader
+  [showLoader]="(isLoading$ | async) ?? true"
+  class="t-loader"
+>
+  @let ticks = axisYTicks$ | async;
+  @let data = data$ | async;
+  @let axisXLabels = (axisXLabels$ | async) ?? [];
+  <tui-axes
+    class="axes"
+    [horizontalLines]="ticks?.tickCount ?? 0"
+    [axisYLabels]="(axisYLabels$ | async) ?? []"
+    [axisXLabels]="axisXLabels"
+    [verticalLines]="axisXLabels.length"
+    [verticalLinesHandler]="verticalLinesHandler"
+    axisY="none"
+  >
+    @if (data && data.length > 0) {
+      <tui-bar-chart
+        class="chart"
+        [collapsed]="true"
+        [max]="ticks?.niceMax ?? 0"
+        [value]="(value$ | async) ?? []"
+        [tuiHintContent]="hint"
+      />
+    } @else if (data && data.length === 0) {
+      <p class="no-chart-info">Нет информации</p>
+    }
+  </tui-axes>
+
+</tui-loader>
+<ng-template #hint let-index>
+  @let value = data ? data[index] : undefined;
+  <span>Помещение: {{ value?.areaName }}</span><br>
+  <span>Всего броней: {{ value?.totalBookings }}</span><br>
+  <span>Отмены брони: {{ value?.cancelledBookings }}</span><br>
+  <span>Процент отмены: {{ value?.cancellationPercentage | number }}%</span>
+</ng-template>

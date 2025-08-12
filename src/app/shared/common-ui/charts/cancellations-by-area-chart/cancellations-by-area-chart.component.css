@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  padding: 16px 16px 24px;
+  border-radius: 20px;
+  background: var(--background-secondary);
+  --cancelled-bar-color: var(--tui-chart-categorical-06);
+  --total-bar-color: var(--tui-background-accent-1);
+}
+
+.axes {
+  block-size: 12.5rem;
+  inline-size: inherit;
+
+  --tui-chart-categorical-00: var(--total-bar-color);
+  --tui-chart-categorical-01: var(--cancelled-bar-color);
+}
+
+.chart {
+  block-size: 100%;
+}
