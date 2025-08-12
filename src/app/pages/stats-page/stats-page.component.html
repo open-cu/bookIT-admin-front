@@ -1,7 +1,17 @@
-<header class="page-header">
-  <p class="h1 page-title">Статистика</p>
-</header>
-<div class="params-container">
+<app-filter-block
+  [filterOptions]="filterOptions"
+  filterText="Показать статистику"
+  title="Параметры статистики"
+  (onFilterItems)="onUpdateFilters($event)"
+  (waResizeObserver)="onFilterResize($event)"
+></app-filter-block>
+<tui-scrollbar
+  [style.block-size]="blockSize()"
+  class="charts-scrollbar"
+>
+  <div class="charts-container">
+    <app-new-users-by-year-month-chart class="stats-chart"></app-new-users-by-year-month-chart>
+    <app-cancellations-by-area-chart class="stats-chart"></app-cancellations-by-area-chart>
+  </div>
+</tui-scrollbar>
 
-</div>
-<app-new-users-by-year-month-chart></app-new-users-by-year-month-chart>

@@ -1,18 +1,20 @@
 :host {
   display: block;
-}
-
-.chart-container {
-  height: 300px;
-  padding: 1.5rem;
-}
-
-.error-message {
-  color: var(--tui-text-negative);
-  padding: 1rem;
-  text-align: center;
+  padding: 16px 16px 24px;
+  border-radius: 20px;
+  background: var(--background-secondary);
 }
 
 .axes {
   block-size: 12.5rem;
+  inline-size: inherit;
+  color: #bc71c9;
+}
+
+::ng-deep .t-label-x {
+  z-index: -1;
+  display: inline-block;
+  transform: translate(12px, -4px) rotate(45deg);
+  transform-origin: left center;
+  white-space: nowrap;
 }

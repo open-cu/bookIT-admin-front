@@ -1,81 +1,129 @@
 import {Component, inject} from '@angular/core';
 import {BaseChartComponent} from '../base-chart';
-import {NewUsersCreatedAt} from '../../../../core/models/interfaces/stats/new-users-created-at';
-import {map} from 'rxjs/operators';
-import {DatePipe} from '@angular/common';
-import {TuiDay, TuiStringHandler} from '@taiga-ui/cdk';
-import {TuiLoader} from '@taiga-ui/core';
-import {TuiAxes, TuiLineDaysChart} from '@taiga-ui/addon-charts';
+import {NewUsersCreatedAt} from '../../../../core/models/interfaces/stats/data/new-users-created-at';
+import {map, shareReplay} from 'rxjs/operators';
+import {AsyncPipe, DatePipe} from '@angular/common';
+import {TuiStringHandler} from '@taiga-ui/cdk';
+import {TuiLoader, TuiPoint} from '@taiga-ui/core';
+import {TuiAxes, TuiLineChart} from '@taiga-ui/addon-charts';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-new-users-by-year-month-chart',
+  standalone: true,
   imports: [
     TuiLoader,
     TuiAxes,
-    TuiLineDaysChart
+    AsyncPipe,
+    TuiLineChart
   ],
   templateUrl: './new-users-by-year-month-chart.component.html',
-  styleUrl: './new-users-by-year-month-chart.component.css'
+  styleUrls: ['./new-users-by-year-month-chart.component.css']
 })
 export class NewUsersByYearMonthChartComponent extends BaseChartComponent<NewUsersCreatedAt[], {}> {
   protected requiredParams = [];
-  protected override debounceTime = 100;
+  protected override debounceTime = 0;
+  private datePipe = inject(DatePipe);
 
-  protected datePipe = inject(DatePipe);
+  private filledValues$ = this.data$.pipe(
+    map(data => data ? this.fillMissingMonths(data) : []),
+    shareReplay(1)
+  );
 
-  protected get value(): Array<[TuiDay, number]> {
-    return this.chartData?.map(item => {
-      const [year, month] = item.created.split('-');
-      return [new TuiDay(parseInt(year), parseInt(month) - 1, 1), item.count];
-    }) ?? [];
-  }
+  protected readonly axisXPadding: number = 1;
+  protected width$ = this.filledValues$.pipe(
+    map(data => data.length + this.axisXPadding)
+  );
 
-  protected get axisXLabels(): (string | null)[] {
-    if (!this.chartData) return [];
+  protected values$ = this.filledValues$.pipe(
+    map(filledData => filledData.map(
+      (item, i) => [i, item.count] as TuiPoint)
+    ),
+    shareReplay(1)
+  );
+  private labels$ = this.filledValues$.pipe(
+    map(data => data.map(item => item.created)),
+    map(data => ['', ...data, '']),
+    shareReplay(1)
+  );
 
-    const labels = this.chartData.map(item => {
-      const [year, month] = item.created.split('-');
-      const date = new Date(parseInt(year), parseInt(month) - 1, 1);
-      return this.datePipe.transform(date, 'MMM') ?? null;
-    });
+  protected axisXLabels$ = this.labels$.pipe(
+    map(labels => labels.map(label => this.formatMonthLabel(label)))
+  );
 
-    return [...labels, null];
-  }
+  protected axisYTicks$ = this.filledValues$.pipe(
+    map(values => this.calculateTicks(0, values.length
+      ? Math.max(...values.map(v => v.count))
+      : 0
+    ))
+  );
 
-  protected readonly xStringify: TuiStringHandler<TuiDay> = (day) => {
-    const date = new Date(day.year, day.month, day.day);
-    return this.datePipe.transform(date, 'MMM yyyy') ?? '';
-  };
+  protected axisYLabels$ = this.axisYTicks$.pipe(
+    map(data => {
+      const {niceMin, niceMax, tickCount} = data;
+      const step = (niceMax - niceMin) / tickCount;
+      let array: string[] = [];
+      for (let i = 0; i < tickCount + 1; ++i) {
+        const value = String(niceMin + i * step)
+        array.push(value);
+      }
+      return array;
+    })
+  );
 
-  protected readonly yStringify: TuiStringHandler<number> = (value) => `${value}`;
+  protected readonly yStringify: TuiStringHandler<number> = String;
+
+  protected readonly xStringify: Observable<TuiStringHandler<number>> = this.axisXLabels$.pipe(
+    map(data => (value: number) => data[value + 1])
+  );
 
   protected override fetchData() {
-    return this.statsService.getNewUsersByYearMonth().pipe(
-      map(data => this.fillMissingMonths(data))
-    );
+    return this.statsService.getNewUsersByYearMonth();
+  }
+
+  private formatMonthLabel(monthKey: string): string {
+    const [year, month] = monthKey.split('-');
+    if (year === undefined || month === undefined) {
+      return '';
+    }
+    const date = new Date(+year, +month - 1, 1);
+    return this.datePipe.transform(date, 'MMM yyyy') ?? '';
   }
 
   private fillMissingMonths(data: NewUsersCreatedAt[]): NewUsersCreatedAt[] {
-    if (data.length === 0) return [];
-
-    const dates = data.map(item => new Date(item.created));
-    const minDate = new Date(Math.min(...dates.map(date => date.getTime())));
-    const maxDate = new Date(Math.max(...dates.map(date => date.getTime())));
-
-    const allMonths: string[] = [];
-    const current = new Date(minDate);
-
-    while (current <= maxDate) {
-      const year = current.getFullYear();
-      const month = (current.getMonth() + 1).toString().padStart(2, '0');
-      allMonths.push(`${year}-${month}`);
-      current.setMonth(current.getMonth() + 1);
+    if (data.length === 0) {
+      return [];
     }
 
-    const dataMap = new Map(data.map(item => [item.created, item.count]));
-    return allMonths.map(month => ({
-      created: month,
-      count: dataMap.get(month) ?? 0
-    }));
+    const result: NewUsersCreatedAt[] = [];
+    const first = data[0];
+    const last = data[data.length - 1];
+
+    const [startYear, startMonth] = first.created.split('-').map(Number);
+    const [endYear, endMonth] = last.created.split('-').map(Number);
+
+    let currentYear = startYear;
+    let currentMonth = startMonth;
+    let dataIndex = 0;
+
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthKey = `${currentYear}-${currentMonth.toString().padStart(2, '0')}`;
+
+      if (dataIndex < data.length && data[dataIndex].created === monthKey) {
+        result.push(data[dataIndex]);
+        dataIndex++;
+      } else {
+        result.push({ created: monthKey, count: 0 });
+      }
+
+      if (currentMonth === 12) {
+        currentYear++;
+        currentMonth = 1;
+      } else {
+        currentMonth++;
+      }
+    }
+
+    return result;
   }
 }

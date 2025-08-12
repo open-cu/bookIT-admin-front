@@ -1,32 +1,24 @@
 :host {
   display: block;
+  --chart-flex-basis: 250px;
+  --chart-min-width: 300px;
 }
 
-.params-container {
-  display: grid;
-  background: var(--background-secondary);
-  padding: 20px;
-  row-gap: 20px;
-  border-radius: 10px;
-  --input-flex-basis: 250px;
-  --input-min-width: 200px;
+.charts-scrollbar {
+  margin: 16px 0;
 }
 
-.params-title {
-  margin: 0;
-  justify-self: left;
-}
-
-.params-input {
-  flex: 1 1 var(--input-flex-basis);
-  min-width: var(--input-min-width);
-  max-width: 100%;
-}
-
-.params-container {
+.charts-container {
+  margin: 0 12px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  column-gap: 48px;
+  column-gap: 24px;
   row-gap: 12px;
+}
+
+.stats-chart {
+  flex: 1 1 var(--chart-flex-basis);
+  min-width: var(--chart-min-width);
+  max-width: 100%;
 }

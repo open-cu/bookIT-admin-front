@@ -1,25 +1,30 @@
-<tui-loader [showLoader]="isLoading" class="chart-container">
-  @if (chartData) {
-    <div>
-      <tui-axes
-        class="axes"
-        [axisXLabels]="axisXLabels"
-        [horizontalLines]="4"
-        [verticalLines]="axisXLabels.length - 1"
-      >
-        <tui-line-days-chart
-          class="chart"
-          [height]="200"
-          [value]="value"
-          [xStringify]="xStringify"
-          [yStringify]="yStringify"
-        />
-      </tui-axes>
-    </div>
-  }
-  @if (error) {
-    <div class="error-message">
-      Ошибка загрузки данных
-    </div>
+<p class="h3 chart-title">Количество новых пользователей в месяц</p>
+<tui-loader
+  [showLoader]="(isLoading$ | async) ?? true"
+  class="t-loader"
+>
+  @let ticks = axisYTicks$ | async;
+  @let axisXLabels = (axisXLabels$ | async) ?? [];
+  @let axisYLabels = (axisYLabels$ | async) ?? [];
+  @if (axisXLabels.length > 0) {
+    <tui-axes
+      class="axes"
+      [axisXLabels]="axisXLabels"
+      [axisYLabels]="axisYLabels"
+      [horizontalLines]="ticks?.tickCount ?? 0"
+      [verticalLines]="axisXLabels.length - 1"
+    >
+      <tui-line-chart
+        [filled]="true"
+        [height]="ticks?.niceMax ?? 0"
+        [width]="(width$ | async) ?? 0"
+        [value]="(values$ | async) ?? []"
+        [yStringify]="yStringify"
+        [xStringify]="xStringify | async"
+        [smoothingFactor]="0"
+        [x]="-axisXPadding"
+        [y]="ticks?.niceMin ?? 0"
+      />
+    </tui-axes>
   }
 </tui-loader>
