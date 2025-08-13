@@ -1,4 +1,6 @@
-<p class="h3 chart-title">Количество новых пользователей в месяц</p>
+<p class="h3 chart-title">
+  {{ ChartTitles[ChartTitles.NEW_USERS_BY_YEAR_MONTH] | local: "ChartTitles" | async }}
+</p>
 <tui-loader
   [showLoader]="(state$ | async) === ChartState.ERROR"
   class="t-loader"

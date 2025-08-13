@@ -1,11 +1,16 @@
-import { inject, Injectable, InjectionToken } from '@angular/core';
+import {inject, Injectable, InjectionToken, LOCALE_ID} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import {TypeUtils} from '../utils/type.utils';
 import toArray = TypeUtils.toArray;
 
-export const USED_LOCALE_ID = new InjectionToken<string>('USED_LOCALE_ID');
+export const USED_LOCALE_ID = new InjectionToken<string>(
+  'USED_LOCALE_ID',
+  {
+    factory: () => inject(LOCALE_ID),
+  }
+);
 
 @Injectable({
   providedIn: 'root',

@@ -8,6 +8,7 @@ import {TuiAxes, TuiLineChart} from '@taiga-ui/addon-charts';
 import {TuiLoader, TuiPoint} from '@taiga-ui/core';
 import {map, shareReplay} from 'rxjs/operators';
 import {findIndex} from 'lodash';
+import {LocalizePipe} from '../../../pipes/localize.pipe';
 
 @Component({
   selector: 'app-busiest-hours-chart',
@@ -15,7 +16,8 @@ import {findIndex} from 'lodash';
     AsyncPipe,
     TuiAxes,
     TuiLineChart,
-    TuiLoader
+    TuiLoader,
+    LocalizePipe
   ],
   templateUrl: './busiest-hours-chart.component.html',
   styleUrl: './busiest-hours-chart.component.css'

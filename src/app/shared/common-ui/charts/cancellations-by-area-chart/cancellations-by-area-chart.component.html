@@ -1,4 +1,6 @@
-<p class="h3 chart-title">Количество отменённых бронирований</p>
+<p class="h3 chart-title">
+  {{ ChartTitles[ChartTitles.CANCELLATIONS_BY_AREA] | local: "ChartTitles" | async }}
+</p>
 <tui-loader
   [showLoader]="(state$ | async) === ChartState.LOADING"
   class="t-loader"

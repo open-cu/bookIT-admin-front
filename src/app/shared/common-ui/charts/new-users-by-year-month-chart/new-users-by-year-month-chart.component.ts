@@ -7,6 +7,7 @@ import {TuiStringHandler} from '@taiga-ui/cdk';
 import {TuiLoader, TuiPoint} from '@taiga-ui/core';
 import {TuiAxes, TuiLineChart} from '@taiga-ui/addon-charts';
 import {Observable} from 'rxjs';
+import {LocalizePipe} from '../../../pipes/localize.pipe';
 
 @Component({
   selector: 'app-new-users-by-year-month-chart',
@@ -15,7 +16,8 @@ import {Observable} from 'rxjs';
     TuiLoader,
     TuiAxes,
     AsyncPipe,
-    TuiLineChart
+    TuiLineChart,
+    LocalizePipe
   ],
   templateUrl: './new-users-by-year-month-chart.component.html',
   styleUrls: ['./new-users-by-year-month-chart.component.css']

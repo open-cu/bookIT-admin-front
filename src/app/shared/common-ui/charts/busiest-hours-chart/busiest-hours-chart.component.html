@@ -1,4 +1,6 @@
-<p class="h3 chart-title">Количество людей в каждый час</p>
+<p class="h3 chart-title">
+  {{ ChartTitles[ChartTitles.BUSIEST_HOURS] | local: "ChartTitles" | async }}
+</p>
 <tui-loader
   [showLoader]="(state$ | async) === ChartState.ERROR"
   class="t-loader"

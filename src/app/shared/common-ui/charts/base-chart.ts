@@ -5,6 +5,7 @@ import {StatsService} from '../../../core/services/api/stats.service';
 import {TypeUtils} from '../../../core/utils/type.utils';
 import {isEqual} from 'lodash';
 import compactObject = TypeUtils.compactObject;
+import {ChartTitles} from '../../../core/models/enums/stats/chart-titles';
 
 export interface TicksParams {
   niceMin: number,
@@ -34,6 +35,7 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
   protected params$ = new BehaviorSubject<Partial<P>>({});
   protected state$ = new BehaviorSubject<ChartState>(ChartState.INIT);
   protected readonly ChartState = ChartState;
+  protected readonly ChartTitles = ChartTitles;
 
   protected data$: Observable<T | null>;
 

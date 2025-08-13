@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, Signal, signal} from '@angular/core';
+import {Component, computed, inject, Signal, signal} from '@angular/core';
 import {
   NewUsersByYearMonthChartComponent
 } from '../../shared/common-ui/charts/new-users-by-year-month-chart/new-users-by-year-month-chart.component';
@@ -51,9 +51,6 @@ export class StatsPageComponent {
         endDate,
         areaNames: filters['areaNames'] as string[] | null,
       }
-    });
-    effect(() => {
-      console.log(this.statsParams())
     });
   }
 

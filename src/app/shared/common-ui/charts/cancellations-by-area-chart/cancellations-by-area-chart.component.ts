@@ -7,6 +7,7 @@ import {AsyncPipe, DecimalPipe} from '@angular/common';
 import {TUI_ALWAYS_NONE, TuiAxes, TuiBarChart} from '@taiga-ui/addon-charts';
 import {TuiHintOptionsDirective, TuiLoader} from '@taiga-ui/core';
 import {map, shareReplay} from 'rxjs/operators';
+import {LocalizePipe} from '../../../pipes/localize.pipe';
 
 @Component({
   selector: 'app-cancellations-by-area-chart',
@@ -18,6 +19,7 @@ import {map, shareReplay} from 'rxjs/operators';
     TuiBarChart,
     TuiHintOptionsDirective,
     DecimalPipe,
+    LocalizePipe,
 
   ],
   templateUrl: './cancellations-by-area-chart.component.html',
