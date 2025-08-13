@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {BaseChartComponent} from '../base-chart';
+import {BaseChart} from '../base-chart';
 import {BusiestHours} from '../../../../core/models/interfaces/stats/data/busiest-hours';
 import {BusiestHoursStatsParams} from '../../../../core/models/interfaces/stats/params/busiest-hours-stats-params';
 import {combineLatest, Observable} from 'rxjs';
@@ -22,7 +22,7 @@ import {LocalizePipe} from '../../../pipes/localize.pipe';
   templateUrl: './busiest-hours-chart.component.html',
   styleUrl: './busiest-hours-chart.component.css'
 })
-export class BusiestHoursChartComponent extends BaseChartComponent<BusiestHours[], BusiestHoursStatsParams> {
+export class BusiestHoursChartComponent extends BaseChart<BusiestHours[], BusiestHoursStatsParams> {
   protected override requiredParams: (keyof BusiestHoursStatsParams)[] = ['startDate', 'endDate'];
   private datePipe = inject(DatePipe);
 

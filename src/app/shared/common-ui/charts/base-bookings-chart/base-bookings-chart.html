@@ -1,5 +1,5 @@
 <p class="h3 chart-title">
-  {{ ChartTitles[ChartTitles.BOOKINGS] | local: "ChartTitles" | async }}
+  {{ ChartTitles[chartTitle] | local: "ChartTitles" | async }}
 </p>
 <p class="legend">
   @for (areaName of (areaNames$ | async) ?? []; track $index) {
@@ -37,7 +37,7 @@
         <p class="no-chart-info">Нет данных</p>
       }
       @case (ChartState.PARAMS_REQUIRED) {
-        <p class="chart-params-required">Необходим диапозон дат</p>
+        <p class="chart-params-required">{{ requiredParamsMessage }}</p>
       }
       @case (ChartState.ERROR) {
         <p class="chart-error">Ошибка загрузки</p>

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {BaseChartComponent} from '../base-chart';
+import {BaseChart} from '../base-chart';
 import {CancellationStats} from '../../../../core/models/interfaces/stats/data/cancellation-stats';
 import {Observable} from 'rxjs';
 import {CancellationStatsParams} from '../../../../core/models/interfaces/stats/params/cancellation-stats-params';
@@ -25,7 +25,7 @@ import {LocalizePipe} from '../../../pipes/localize.pipe';
   templateUrl: './cancellations-by-area-chart.component.html',
   styleUrls: ['./cancellations-by-area-chart.component.css']
 })
-export class CancellationsByAreaChartComponent extends BaseChartComponent<CancellationStats[], CancellationStatsParams> {
+export class CancellationsByAreaChartComponent extends BaseChart<CancellationStats[], CancellationStatsParams> {
   protected override requiredParams: (keyof CancellationStatsParams)[] = ['startDate', 'endDate'];
 
   protected value$ = this.data$.pipe(

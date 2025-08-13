@@ -31,7 +31,7 @@ export enum ChartState {
 @Component({
   template: ''
 })
-export abstract class BaseChartComponent<T, P extends object> implements OnChanges {
+export abstract class BaseChart<T, P extends object> implements OnChanges {
   protected params$ = new BehaviorSubject<Partial<P>>({});
   protected state$ = new BehaviorSubject<ChartState>(ChartState.INIT);
   protected readonly ChartState = ChartState;

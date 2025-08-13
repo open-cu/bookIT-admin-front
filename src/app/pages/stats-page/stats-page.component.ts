@@ -15,6 +15,9 @@ import {
   BusiestHoursChartComponent
 } from '../../shared/common-ui/charts/busiest-hours-chart/busiest-hours-chart.component';
 import {BookingsChartComponent} from '../../shared/common-ui/charts/bookings-chart/bookings-chart.component';
+import {
+  BookingsPeriodChartComponent
+} from '../../shared/common-ui/charts/bookings-period-chart/bookings-period-chart.component';
 
 @Component({
   selector: 'app-stats-page',
@@ -25,7 +28,8 @@ import {BookingsChartComponent} from '../../shared/common-ui/charts/bookings-cha
     TuiScrollbar,
     CancellationsByAreaChartComponent,
     BusiestHoursChartComponent,
-    BookingsChartComponent
+    BookingsChartComponent,
+    BookingsPeriodChartComponent,
   ],
   templateUrl: './stats-page.component.html',
   styleUrl: './stats-page.component.css'
@@ -45,13 +49,13 @@ export class StatsPageComponent {
     );
     this.statsParams = computed(() => {
       const filters = this.filters();
-      const dates: Date[] = filters['dates'] ?? [];
-      const [startDate, endDate] = dates
-        .map((date: Date) => this.datePipe.transform(date, 'yyyy-MM-dd'));
+      const {dates, ...rest} = filters;
+      const [startDate, endDate] = (dates ?? [])
+        .map((date: Date) => date ? this.datePipe.transform(date, 'yyyy-MM-dd') : null);
       return {
         startDate,
         endDate,
-        areaNames: filters['areaNames'] as string[] | null,
+        ...rest,
       }
     });
   }

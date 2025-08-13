@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {BaseChartComponent} from '../base-chart';
+import {BaseChart} from '../base-chart';
 import {NewUsersCreatedAt} from '../../../../core/models/interfaces/stats/data/new-users-created-at';
 import {map, shareReplay} from 'rxjs/operators';
 import {AsyncPipe, DatePipe} from '@angular/common';
@@ -22,7 +22,7 @@ import {LocalizePipe} from '../../../pipes/localize.pipe';
   templateUrl: './new-users-by-year-month-chart.component.html',
   styleUrls: ['./new-users-by-year-month-chart.component.css']
 })
-export class NewUsersByYearMonthChartComponent extends BaseChartComponent<NewUsersCreatedAt[], {}> {
+export class NewUsersByYearMonthChartComponent extends BaseChart<NewUsersCreatedAt[], {}> {
   protected override requiredParams = [];
   protected override debounceTime = 0;
   private datePipe = inject(DatePipe);
