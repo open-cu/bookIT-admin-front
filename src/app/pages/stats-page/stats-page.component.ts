@@ -18,6 +18,9 @@ import {BookingsChartComponent} from '../../shared/common-ui/charts/bookings-cha
 import {
   BookingsPeriodChartComponent
 } from '../../shared/common-ui/charts/bookings-period-chart/bookings-period-chart.component';
+import {
+  BookingsByDayOfWeekComponent
+} from '../../shared/common-ui/charts/bookings-by-day-of-week/bookings-by-day-of-week.component';
 
 @Component({
   selector: 'app-stats-page',
@@ -30,6 +33,7 @@ import {
     BusiestHoursChartComponent,
     BookingsChartComponent,
     BookingsPeriodChartComponent,
+    BookingsByDayOfWeekComponent,
   ],
   templateUrl: './stats-page.component.html',
   styleUrl: './stats-page.component.css'

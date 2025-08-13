@@ -59,7 +59,7 @@ export class StatsService {
   }
 
   getBookingsByDayOfWeek(params: BookingsByDayOfWeekStatsParams) {
-    return this.http.get<DayOfWeekStats>(
+    return this.http.get<DayOfWeekStats[]>(
       `${this.baseUrl}/bookings-by-day-of-week`,
       this.getQueryParams(params)
     );

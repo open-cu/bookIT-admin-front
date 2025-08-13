@@ -131,7 +131,7 @@ export abstract class BaseBookingsChart<P extends object> extends BaseChart<Full
       let current = range.from;
       const daysCount = TuiDay.lengthBetween(range.from, range.to);
 
-      for (let i = 0; i <= daysCount; i++) {
+      for (let i = 0; i <= daysCount; ++i) {
         const key = current.toString();
         continuousSeries.push([
           current,
