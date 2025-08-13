@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {BaseChartComponent} from '../base-chart';
 import {BusiestHours} from '../../../../core/models/interfaces/stats/data/busiest-hours';
 import {BusiestHoursStatsParams} from '../../../../core/models/interfaces/stats/params/busiest-hours-stats-params';
-import {combineLatest, Observable, tap} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {AsyncPipe, DatePipe} from '@angular/common';
 import {TuiAxes, TuiLineChart} from '@taiga-ui/addon-charts';
 import {TuiLoader, TuiPoint} from '@taiga-ui/core';
@@ -29,7 +29,6 @@ export class BusiestHoursChartComponent extends BaseChartComponent<BusiestHours[
   protected value$ = this.data$.pipe(
     map(data => data ? data : []),
     map(data => data.map(item => [item.hour, item.bookingsCount] as TuiPoint)),
-    tap(data => console.log(data)),
     shareReplay(1),
   );
 
@@ -43,7 +42,6 @@ export class BusiestHoursChartComponent extends BaseChartComponent<BusiestHours[
   protected axisXLabels$ = this.value$.pipe(
     map(data => data.map(item => this.formatHour(item[0]))),
     map(data => [...data, '']),
-    tap(data => console.log(data))
   );
 
   protected axisYLabels$ = this.axisYTicks$.pipe(

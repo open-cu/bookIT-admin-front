@@ -20,3 +20,18 @@
   background:  var(--tui-status-positive-pale);
   color: black;
 }
+
+.axes {
+  block-size: 14rem;
+  inline-size: inherit;
+}
+
+.generate-chart-colors(@max-index: 20) {
+  each(range(0, @max-index), {
+    @num: if(@value < 10, ~"0@{value}", ~"@{value}");
+    @child-index: @value + 1;
+    &:nth-child(@{max-index}n + @{child-index}) {
+      color: var(~"--tui-chart-categorical-@{num}");
+    }
+  });
+}

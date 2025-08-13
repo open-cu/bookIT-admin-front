@@ -1,4 +1,4 @@
-@import '../charts.css';
+@import '../charts.less';
 
 :host {
   display: block;
@@ -9,10 +9,7 @@
   --total-bar-color: var(--tui-background-accent-1);
 }
 
-.axes {
-  block-size: 12.5rem;
-  inline-size: inherit;
-
+tui-axes {
   --tui-chart-categorical-00: var(--total-bar-color);
   --tui-chart-categorical-01: var(--cancelled-bar-color);
 }

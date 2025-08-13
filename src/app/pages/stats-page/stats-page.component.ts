@@ -14,6 +14,7 @@ import {
 import {
   BusiestHoursChartComponent
 } from '../../shared/common-ui/charts/busiest-hours-chart/busiest-hours-chart.component';
+import {BookingsChartComponent} from '../../shared/common-ui/charts/bookings-chart/bookings-chart.component';
 
 @Component({
   selector: 'app-stats-page',
@@ -23,7 +24,8 @@ import {
     WaResizeObserver,
     TuiScrollbar,
     CancellationsByAreaChartComponent,
-    BusiestHoursChartComponent
+    BusiestHoursChartComponent,
+    BookingsChartComponent
   ],
   templateUrl: './stats-page.component.html',
   styleUrl: './stats-page.component.css'
