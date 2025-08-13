@@ -11,6 +11,9 @@ import {DatePipe} from '@angular/common';
 import {
   CancellationsByAreaChartComponent
 } from '../../shared/common-ui/charts/cancellations-by-area-chart/cancellations-by-area-chart.component';
+import {
+  BusiestHoursChartComponent
+} from '../../shared/common-ui/charts/busiest-hours-chart/busiest-hours-chart.component';
 
 @Component({
   selector: 'app-stats-page',
@@ -19,7 +22,8 @@ import {
     FilterBlockComponent,
     WaResizeObserver,
     TuiScrollbar,
-    CancellationsByAreaChartComponent
+    CancellationsByAreaChartComponent,
+    BusiestHoursChartComponent
   ],
   templateUrl: './stats-page.component.html',
   styleUrl: './stats-page.component.css'

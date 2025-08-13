@@ -21,7 +21,7 @@ import {Observable} from 'rxjs';
   styleUrls: ['./new-users-by-year-month-chart.component.css']
 })
 export class NewUsersByYearMonthChartComponent extends BaseChartComponent<NewUsersCreatedAt[], {}> {
-  protected requiredParams = [];
+  protected override requiredParams = [];
   protected override debounceTime = 0;
   private datePipe = inject(DatePipe);
 

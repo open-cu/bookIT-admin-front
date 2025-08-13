@@ -1,0 +1,14 @@
+@import '../charts.css';
+
+:host {
+  display: block;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--background-secondary);
+}
+
+.axes {
+  block-size: 12.5rem;
+  inline-size: inherit;
+  color: var(--tui-chart-categorical-03);
+}

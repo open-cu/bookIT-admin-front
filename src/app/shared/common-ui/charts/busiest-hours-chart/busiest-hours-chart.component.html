@@ -1,0 +1,41 @@
+<p class="h3 chart-title">Количество людей в каждый час</p>
+<tui-loader
+  [showLoader]="(state$ | async) === ChartState.ERROR"
+  class="t-loader"
+>
+  @let ticks = axisYTicks$ | async;
+  @let axisXLabels = (axisXLabels$ | async) ?? [];
+  @let axisYLabels = (axisYLabels$ | async) ?? [];
+  <tui-axes
+    class="axes"
+    [axisXLabels]="axisXLabels"
+    [axisYLabels]="axisYLabels"
+    [horizontalLines]="ticks?.tickCount ?? 0"
+    [verticalLines]="axisXLabels.length - 1"
+  >
+    @let value = (value$ | async) ?? [];
+    @switch (state$ | async) {
+      @case (ChartState.DONE) {
+        <tui-line-chart
+          [filled]="true"
+          [height]="ticks?.niceMax ?? 0"
+          [width]="axisXLabels.length - 1"
+          [value]="(value$ | async) ?? []"
+          [yStringify]="yStringify"
+          [xStringify]="xStringify | async"
+          [x]="value[0][0]"
+          [y]="ticks?.niceMin ?? 0"
+        />
+      }
+      @case (ChartState.EMPTY_DATA) {
+        <p class="no-chart-info">Нет данных</p>
+      }
+      @case (ChartState.PARAMS_REQUIRED) {
+        <p class="chart-params-required">Необходим диапозон дат</p>
+      }
+      @case (ChartState.ERROR) {
+        <p class="chart-error">Ошибка загрузки</p>
+      }
+    }
+  </tui-axes>
+</tui-loader>

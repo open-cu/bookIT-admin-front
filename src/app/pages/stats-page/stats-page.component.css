@@ -1,7 +1,7 @@
 :host {
   display: block;
-  --chart-flex-basis: 250px;
-  --chart-min-width: 300px;
+  --chart-flex-basis: 400px;
+  --chart-min-width: 250px;
 }
 
 .charts-scrollbar {

@@ -24,7 +24,7 @@ import {map, shareReplay} from 'rxjs/operators';
   styleUrls: ['./cancellations-by-area-chart.component.css']
 })
 export class CancellationsByAreaChartComponent extends BaseChartComponent<CancellationStats[], CancellationStatsParams> {
-  protected requiredParams: (keyof CancellationStatsParams)[] = ['startDate', 'endDate'];
+  protected override requiredParams: (keyof CancellationStatsParams)[] = ['startDate', 'endDate'];
 
   protected value$ = this.data$.pipe(
     map(data => {
