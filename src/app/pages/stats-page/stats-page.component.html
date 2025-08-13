@@ -1,7 +1,8 @@
 <app-filter-block
-  [filterOptions]="filterOptions"
   filterText="Показать статистику"
   title="Параметры статистики"
+  [filterOptions]="filterOptions"
+  [closable]="true"
   (onFilterItems)="onUpdateFilters($event)"
   (waResizeObserver)="onFilterResize($event)"
 ></app-filter-block>
