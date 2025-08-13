@@ -1,0 +1,22 @@
+.no-chart-info,
+.chart-error,
+.chart-params-required {
+  padding: 12px;
+  border-radius: 12px;
+  margin: auto;
+}
+
+.no-chart-info {
+  background:  var(--tui-status-info-pale);
+  color: var(--tui-text-action);
+}
+
+.chart-error {
+  background:  var(--tui-status-negative-pale);
+  color: black;
+}
+
+.chart-params-required {
+  background:  var(--tui-status-positive-pale);
+  color: black;
+}

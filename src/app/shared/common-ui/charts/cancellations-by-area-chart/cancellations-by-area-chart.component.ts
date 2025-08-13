@@ -62,7 +62,11 @@ export class CancellationsByAreaChartComponent extends BaseChartComponent<Cancel
 
   protected readonly verticalLinesHandler = TUI_ALWAYS_NONE;
 
-  protected fetchData(params: CancellationStatsParams): Observable<CancellationStats[]> {
+  protected override fetchData(params: CancellationStatsParams): Observable<CancellationStats[]> {
     return this.statsService.getCancellationsByArea(params);
+  }
+
+  protected override isEmpty(data: CancellationStats[]): boolean {
+    return data.length === 0;
   }
 }

@@ -1,10 +1,10 @@
 import {Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {BehaviorSubject, filter, Observable, of, Subject, tap} from 'rxjs';
-import {catchError, debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of, tap} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, filter, shareReplay, switchMap} from 'rxjs/operators';
 import {StatsService} from '../../../core/services/api/stats.service';
 import {TypeUtils} from '../../../core/utils/type.utils';
-import compactObject = TypeUtils.compactObject;
 import {isEqual} from 'lodash';
+import compactObject = TypeUtils.compactObject;
 
 export interface TicksParams {
   niceMin: number,
@@ -12,16 +12,30 @@ export interface TicksParams {
   tickCount: number
 }
 
+export enum ChartState {
+  /* Initial state of chart */
+  INIT,
+  /* Waiting required params to start loading */
+  PARAMS_REQUIRED,
+  /* Awaiting data */
+  LOADING,
+  /* Data was successfully received */
+  DONE,
+  /* Data was received, but empty (depends on isEmpty method) */
+  EMPTY_DATA,
+  /* Error of data loading */
+  ERROR
+}
+
 @Component({
   template: ''
 })
 export abstract class BaseChartComponent<T, P extends object> implements OnChanges {
   protected params$ = new BehaviorSubject<Partial<P>>({});
+  protected state$ = new BehaviorSubject<ChartState>(ChartState.INIT);
+  protected readonly ChartState = ChartState;
 
   protected data$: Observable<T | null>;
-  protected loadingTrigger$ = new Subject<boolean>();
-  protected isLoading$: Observable<boolean>;
-  protected error$: Observable<any | null>;
 
   protected statsService = inject(StatsService);
 
@@ -42,33 +56,34 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
   constructor() {
     const filteredParams$ = this.params$.pipe(
       debounceTime(this.debounceTime),
-      distinctUntilChanged(isEqual),
+      distinctUntilChanged<Partial<P>>(isEqual),
+      tap(params => {
+        this.state$.next(
+          this.hasRequiredParams(params)
+            ? ChartState.LOADING
+            : ChartState.PARAMS_REQUIRED
+        );
+      }),
       filter(params => this.hasRequiredParams(params)),
-      tap(() => this.loadingTrigger$.next(true)),
       shareReplay(1)
     );
 
     this.data$ = filteredParams$.pipe(
       switchMap(params =>
         this.fetchData(params as P).pipe(
+          tap(data => this.state$.next(
+            this.isEmpty(data)
+              ? ChartState.EMPTY_DATA
+              : ChartState.DONE
+            )
+          ),
           catchError(error => {
             this.handleError(error);
             return of(null);
           }),
-          tap(() => this.loadingTrigger$.next(false))
         )
       ),
       shareReplay(1)
-    );
-
-    this.isLoading$ = this.loadingTrigger$.pipe(
-      startWith(true),
-      distinctUntilChanged()
-    );
-
-    this.error$ = this.data$.pipe(
-      map(data => data === null ? 'Error loading data' : null),
-      distinctUntilChanged()
     );
   }
 
@@ -87,6 +102,8 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
       this.updateParams(updatedParams);
     }
   }
+  protected abstract fetchData(params: P): Observable<T>;
+  protected abstract isEmpty(data: T): boolean;
 
   protected calculateTicks(min: number, max: number): TicksParams {
     const config = this.niceStepConfig;
@@ -142,9 +159,8 @@ export abstract class BaseChartComponent<T, P extends object> implements OnChang
     return array;
   }
 
-  protected abstract fetchData(params: P): Observable<T>;
-
   protected handleError(error: any): void {
+    this.state$.next(ChartState.ERROR);
     console.error('Data loading error:', error);
   }
 

@@ -157,11 +157,3 @@ tui-avatar::before {
   margin-bottom: 16px;
   justify-self: center;
 }
-
-.no-chart-info {
-  background:  var(--tui-status-info-pale);
-  color: var(--tui-text-action);
-  padding: 12px;
-  border-radius: 12px;
-  margin: auto;
-}

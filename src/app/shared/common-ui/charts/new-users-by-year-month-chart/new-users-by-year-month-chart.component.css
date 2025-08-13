@@ -1,3 +1,5 @@
+@import '../charts.css';
+
 :host {
   display: block;
   padding: 16px 16px 24px;

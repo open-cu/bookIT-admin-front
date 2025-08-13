@@ -72,6 +72,8 @@ export class NewUsersByYearMonthChartComponent extends BaseChartComponent<NewUse
     return this.statsService.getNewUsersByYearMonth();
   }
 
+  protected override isEmpty = () => false;
+
   private formatMonthLabel(monthKey: string): string {
     const [year, month] = monthKey.split('-');
     if (year === undefined || month === undefined) {

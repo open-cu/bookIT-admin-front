@@ -1,6 +1,6 @@
 <p class="h3 chart-title">Количество отменённых бронирований</p>
 <tui-loader
-  [showLoader]="(isLoading$ | async) ?? true"
+  [showLoader]="(state$ | async) === ChartState.LOADING"
   class="t-loader"
 >
   @let ticks = axisYTicks$ | async;
@@ -15,16 +15,25 @@
     [verticalLinesHandler]="verticalLinesHandler"
     axisY="none"
   >
-    @if (data && data.length > 0) {
-      <tui-bar-chart
-        class="chart"
-        [collapsed]="true"
-        [max]="ticks?.niceMax ?? 0"
-        [value]="(value$ | async) ?? []"
-        [tuiHintContent]="hint"
-      />
-    } @else if (data && data.length === 0) {
-      <p class="no-chart-info">Нет информации</p>
+    @switch (state$ | async) {
+      @case (ChartState.DONE) {
+        <tui-bar-chart
+          class="chart"
+          [collapsed]="true"
+          [max]="ticks?.niceMax ?? 0"
+          [value]="(value$ | async) ?? []"
+          [tuiHintContent]="hint"
+        />
+      }
+      @case (ChartState.EMPTY_DATA) {
+        <p class="no-chart-info">Нет данных</p>
+      }
+      @case (ChartState.PARAMS_REQUIRED) {
+        <p class="chart-params-required">Необходим диапозон дат</p>
+      }
+      @case (ChartState.ERROR) {
+        <p class="chart-error">Ошибка загрузки</p>
+      }
     }
   </tui-axes>
 
