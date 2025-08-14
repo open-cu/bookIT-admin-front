@@ -37,7 +37,7 @@ export class TicketsPageComponent extends TablePageComponent<Ticket> {
   constructor() {
     super();
     markAsRequired(this.creationConfig, 'description');
-    markAsRequired(this.editionConfig, 'description');
+    markAsRequired(this.editionConfig, ['description', 'reason']);
   }
 
   override loadItemsFn = (params: SortTicket) => {

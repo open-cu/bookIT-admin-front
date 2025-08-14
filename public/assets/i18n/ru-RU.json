@@ -100,5 +100,20 @@
     "BOOKINGS": "Количество бронирований в месяц",
     "BOOKINGS_PERIOD": "Количество бронирований за период",
     "BOOKINGS_BY_DAY_OF_WEEK": "Количество бронирований в день недели"
+  },
+  "TicketStatus": {
+    "OPEN": "Открыт",
+    "IN_PROGRESS": "В работе",
+    "ON_HOLD": "На паузе",
+    "RESOLVED": "Решен",
+    "CLOSED": "Закрыт",
+    "REJECTED": "Отклонен"
+  },
+  "TicketPriority": {
+    "DEFAULT": "По умолчанию",
+    "LOW": "Низкий",
+    "MEDIUM": "Средний",
+    "HIGH": "Высокий",
+    "CRITICAL": "Критический"
   }
 }
