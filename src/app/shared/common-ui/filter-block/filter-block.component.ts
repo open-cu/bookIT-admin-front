@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TuiButton} from '@taiga-ui/core';
+import {TuiButton, TuiIcon} from '@taiga-ui/core';
 import {FilterOptions, FilterResult} from './filter-config';
 import {InputContainerComponent} from "../inputs/input-container/input-container.component";
 import {Subject, takeUntil} from 'rxjs';
@@ -11,7 +11,8 @@ import {Subject, takeUntil} from 'rxjs';
     FormsModule,
     TuiButton,
     ReactiveFormsModule,
-    InputContainerComponent
+    InputContainerComponent,
+    TuiIcon
   ],
   templateUrl: './filter-block.component.html',
   styleUrl: './filter-block.component.css'
@@ -20,6 +21,7 @@ export class FilterBlockComponent implements OnInit, OnDestroy {
   @Input() title: string = 'Фильтр';
   @Input() filterText: string = 'Найти';
   @Input({ required: true }) filterOptions!: FilterOptions;
+  @Input() closable = false;
 
   @Output('onFilterItems')
   onFilterEmitter = new EventEmitter<FilterResult<typeof this.filterOptions>>();
@@ -30,6 +32,8 @@ export class FilterBlockComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private cdr = inject(ChangeDetectorRef);
+
+  protected isClosed = false;
 
   ngOnInit() {
     this.processedOptions = [...this.filterOptions];

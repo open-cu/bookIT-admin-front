@@ -1,0 +1,63 @@
+<p class="h3 chart-title">
+  {{ ChartTitles[ChartTitles.BOOKINGS_BY_DAY_OF_WEEK] | local: "ChartTitles" | async }}
+</p>
+<p class="legend">
+  @for (areaName of (areaNames$ | async) ?? []; track $index) {
+    <span class="item">
+    <small class="name">{{ areaName }}</small>
+  </span>
+  }
+
+</p>
+<tui-loader
+  [showLoader]="(state$ | async) === ChartState.LOADING"
+  class="t-loader"
+>
+  @let axisYTicks = axisYTicks$ | async;
+  <tui-axes
+    class="axes"
+    [horizontalLines]="axisYTicks?.tickCount ?? 0"
+    [axisYLabels]="(axisYLabels$ | async) ?? []"
+    [axisXLabels]="axisXLabels"
+    [verticalLines]="(state$ | async) === ChartState.DONE ? axisXLabels.length - 1 : 0"
+    [tuiLineChartHint]="hint"
+  >
+    @switch (state$ | async) {
+      @case (ChartState.DONE) {
+        @for (chart of (continuousLines$ | async) ?? []; track $index) {
+          <tui-line-chart
+            class="chart fixed-chart-line"
+            [value]="chart"
+            [width]="axisXLabels.length - 1"
+            [height]="axisYTicks?.niceMax ?? 1"
+            [xStringify]="xStringify"
+            [yStringify]="yStringify"
+            [x]="0"
+            [y]="0"
+          />
+        }
+      }
+      @case (ChartState.EMPTY_DATA) {
+        <p class="no-chart-info">Нет данных</p>
+      }
+      @case (ChartState.PARAMS_REQUIRED) {
+        <p class="chart-params-required">Необходим диапозон дат</p>
+      }
+      @case (ChartState.ERROR) {
+        <p class="chart-error">Ошибка загрузки</p>
+      }
+    }
+  </tui-axes>
+</tui-loader>
+
+<ng-template
+  #hint
+  let-data
+>
+  <div class="tui-space_bottom-2">
+    <strong>{{ axisXLabels[data[0][0]] }}</strong>
+    @for (areaName of (areaNames$ | async) ?? []; track $index) {
+      <br><span>{{ areaName }} : {{ data[$index][1] }}</span>
+    }
+  </div>
+</ng-template>

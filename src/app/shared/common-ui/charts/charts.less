@@ -1,0 +1,37 @@
+.no-chart-info,
+.chart-error,
+.chart-params-required {
+  padding: 12px;
+  border-radius: 12px;
+  margin: auto;
+}
+
+.no-chart-info {
+  background:  var(--tui-status-info-pale);
+  color: var(--tui-text-action);
+}
+
+.chart-error {
+  background:  var(--tui-status-negative-pale);
+  color: black;
+}
+
+.chart-params-required {
+  background:  var(--tui-status-positive-pale);
+  color: black;
+}
+
+.axes {
+  block-size: 14.5rem;
+  inline-size: inherit;
+}
+
+.generate-chart-colors(@max-index: 20) {
+  each(range(0, @max-index), {
+    @num: if(@value < 10, ~"0@{value}", ~"@{value}");
+    @child-index: @value + 1;
+    &:nth-child(@{max-index}n + @{child-index}) {
+      color: var(~"--tui-chart-categorical-@{num}");
+    }
+  });
+}

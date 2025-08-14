@@ -151,3 +151,9 @@ tui-avatar::before {
 .items-table {
   margin-top: var(--items-table-margin-top);
 }
+
+.chart-title {
+  margin-top: 0;
+  margin-bottom: 16px;
+  justify-self: center;
+}

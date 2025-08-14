@@ -21,6 +21,7 @@
     type="submit"
     tuiButton
     class="create-button"
+    [ngStyle]="{ 'pointer-events': creationForm.invalid ? 'none' : 'initial' }"
     [disabled]="creationForm.invalid"
   >{{ context.data.button ?? 'Создать' }}</button>
 </form>

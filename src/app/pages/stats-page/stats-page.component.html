@@ -1,3 +1,44 @@
-<div class="stats-container">
-
-</div>
+<app-filter-block
+  filterText="Показать статистику"
+  title="Параметры статистики"
+  [filterOptions]="filterOptions"
+  [closable]="true"
+  (onFilterItems)="onUpdateFilters($event)"
+  (waResizeObserver)="onFilterResize($event)"
+></app-filter-block>
+<tui-scrollbar
+  [style.block-size]="blockSize()"
+  class="charts-scrollbar"
+>
+  <div class="charts-container">
+    <app-new-users-by-year-month-chart
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-new-users-by-year-month-chart>
+    <app-cancellations-by-area-chart
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-cancellations-by-area-chart>
+    <app-busiest-hours-chart
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-busiest-hours-chart>
+    <app-bookings-chart
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-bookings-chart>
+    <app-bookings-period-chart
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-bookings-period-chart>
+    <app-bookings-by-day-of-week
+      class="stats-chart"
+      [params]="statsParams()"
+    ></app-bookings-by-day-of-week>
+  </div>
+</tui-scrollbar>
+<app-ai-assistant-chat
+  class="ai-assistant"
+  [style.inline-size.px]="assistantBoxSize().inlineSize"
+  (waResizeObserver)="onAiAssistantResize($event)"
+></app-ai-assistant-chat>

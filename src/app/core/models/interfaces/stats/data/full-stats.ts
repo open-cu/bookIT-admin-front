@@ -3,5 +3,5 @@ import {StatsSummary} from './stats-summary';
 
 export interface FullStats {
   stats: BookingStats[],
-  summary: StatsSummary,
+  summary: StatsSummary | null,
 }

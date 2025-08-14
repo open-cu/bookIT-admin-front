@@ -11,6 +11,10 @@
 .filter-title {
   margin: 0;
   justify-self: left;
+
+  tui-icon {
+    margin-left: 2px;
+  }
 }
 
 .input-container {

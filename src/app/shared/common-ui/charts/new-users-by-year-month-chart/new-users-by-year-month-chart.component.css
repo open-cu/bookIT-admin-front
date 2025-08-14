@@ -1,0 +1,20 @@
+@import '../charts.less';
+
+:host {
+  display: block;
+  padding: 16px 16px 24px;
+  border-radius: 20px;
+  background: var(--background-secondary);
+}
+
+tui-axes {
+  color: #bc71c9;
+}
+
+:host ::ng-deep .t-label-x {
+  z-index: -1;
+  display: inline-block;
+  transform: translate(12px, -4px) rotate(45deg);
+  transform-origin: left center;
+  white-space: nowrap;
+}

@@ -1,0 +1,27 @@
+<div class="ai-assistant-container">
+  <tui-textfield class="ai-assistant-input-line">
+    <tui-error [error]="null"/>
+    <input
+      placeholder="Задайте свой вопрос ИИ-ассистенту"
+      tuiTextfield
+      [formControl]="formControl"
+      (keyup.enter)="onRequestSend()"
+      [ngStyle]="{ 'color': isRequestInProgress ? 'var(--tui-text-tertiary)' : 'var(--tui-text-primary)' }"
+    />
+    <tui-icon
+      class="ai-assistant-enter-icon"
+      icon="@tui.corner-down-right"
+      (click)="onRequestSend()"
+      [ngStyle]="{ 'pointer-events': isRequestInProgress ? 'none' : 'initial' }"
+    ></tui-icon>
+  </tui-textfield>
+  <div class="ai-assistant-humanize-switch">
+    <input
+      tuiSwitch
+      type="checkbox"
+      [(ngModel)]="isHumanized"
+    />
+    <p class="h4">Humanize</p>
+  </div>
+</div>
+

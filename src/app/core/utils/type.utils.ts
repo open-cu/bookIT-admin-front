@@ -90,6 +90,12 @@ export namespace TypeUtils {
       .filter(key => isNaN(Number(key))) as EnumKeys<T>[];
   }
 
+  export function getEnumValues<T extends object>(enumObj: T): number[] {
+    return Object.keys(enumObj)
+      .filter(key => !isNaN(Number(key)))
+      .map(Number);
+  }
+
   export function compactObject<T extends Record<string, any>>(obj: T): Partial<T> {
     return Object.entries(obj).reduce((acc, [key, value]) => {
       if (value !== undefined && value !== null) {

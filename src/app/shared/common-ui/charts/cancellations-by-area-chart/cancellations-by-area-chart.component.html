@@ -1,0 +1,49 @@
+<p class="h3 chart-title">
+  {{ ChartTitles[ChartTitles.CANCELLATIONS_BY_AREA] | local: "ChartTitles" | async }}
+</p>
+<tui-loader
+  [showLoader]="(state$ | async) === ChartState.LOADING"
+  class="t-loader"
+>
+  @let ticks = axisYTicks$ | async;
+  @let data = data$ | async;
+  @let axisXLabels = (axisXLabels$ | async) ?? [];
+  <tui-axes
+    class="axes"
+    [horizontalLines]="ticks?.tickCount ?? 0"
+    [axisYLabels]="(axisYLabels$ | async) ?? []"
+    [axisXLabels]="axisXLabels"
+    [verticalLines]="axisXLabels.length"
+    [verticalLinesHandler]="verticalLinesHandler"
+    axisY="none"
+  >
+    @switch (state$ | async) {
+      @case (ChartState.DONE) {
+        <tui-bar-chart
+          class="chart"
+          [collapsed]="true"
+          [max]="ticks?.niceMax ?? 0"
+          [value]="(value$ | async) ?? []"
+          [tuiHintContent]="hint"
+        />
+      }
+      @case (ChartState.EMPTY_DATA) {
+        <p class="no-chart-info">Нет данных</p>
+      }
+      @case (ChartState.PARAMS_REQUIRED) {
+        <p class="chart-params-required">Необходим диапозон дат</p>
+      }
+      @case (ChartState.ERROR) {
+        <p class="chart-error">Ошибка загрузки</p>
+      }
+    }
+  </tui-axes>
+
+</tui-loader>
+<ng-template #hint let-index>
+  @let value = data ? data[index] : undefined;
+  <span>Помещение: {{ value?.areaName }}</span><br>
+  <span>Всего броней: {{ value?.totalBookings }}</span><br>
+  <span>Отмены брони: {{ value?.cancelledBookings }}</span><br>
+  <span>Процент отмены: {{ value?.cancellationPercentage | number }}%</span>
+</ng-template>

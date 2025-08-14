@@ -3,7 +3,6 @@ import {FilterOptions} from '../../../shared/common-ui/filter-block/filter-confi
 import {createEnumOptions} from '../../../core/utils/create-enum-options';
 import {CreationConfig} from '../../../shared/common-ui/creation-block/creation-config';
 import {DeletionConfig} from '../../../shared/common-ui/table-page/deletion-config';
-import {BookingTimeline} from '../../../core/models/enums/bookings/booking-timeline';
 import {BookingStatus} from '../../../core/models/enums/bookings/booking-status';
 import {createTimeOptions, getAreaOptions, getMyId} from '../common-functions';
 import {CellRenders} from '../cell-renders';
@@ -42,16 +41,10 @@ export const BOOKINGS_COLUMNS_CONFIG: ColumnConfig[] = [
 
 export const BOOKINGS_FILTER_OPTIONS: FilterOptions = [
   {
-    key: 'timeline',
-    placeholder: 'Поиск по завершённости',
-    type: 'select',
-    options: createEnumOptions(BookingTimeline)
-  },
-  {
     key: 'areaId',
     placeholder: 'Поиск по помещению',
     type: 'select',
-    options: []
+    loadOptions: getAreaOptions
   },
   {
     key: 'userId',
@@ -63,7 +56,7 @@ export const BOOKINGS_FILTER_OPTIONS: FilterOptions = [
     type: 'dateTime'
   },
   {
-    key: 'startTime',
+    key: 'endTime',
     placeholder: 'Поиск по времени окончания',
     type: 'dateTime'
   },

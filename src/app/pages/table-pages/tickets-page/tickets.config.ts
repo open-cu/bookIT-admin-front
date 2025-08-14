@@ -8,6 +8,8 @@ import {AppValidators} from '../../../shared/validators/app.validators';
 import {getAreaOptions, getMyId} from '../common-functions';
 import {CellRenders} from '../cell-renders';
 import {SortTicket} from '../../../core/models/interfaces/tickets/sort-ticket';
+import {TicketPriority} from '../../../core/models/enums/tickets/ticket-priority';
+import {TicketStatus} from '../../../core/models/enums/tickets/ticket-status';
 
 const ticketGroupValidator = AppValidators.requiredIfGroup({
   description: (group) => {
@@ -29,6 +31,8 @@ export const TICKETS_COLUMN_CONFIG: ColumnConfig[] = [
     render: CellRenders.withStyle('cell-id')
   },
   {key: "type"},
+  {key: "priority"},
+  {key: "status"},
   {key: "description"},
 ];
 
@@ -77,6 +81,20 @@ export const TICKETS_CREATION_CONFIG: CreationConfig = {
       label: 'Описание',
       value: '',
     },
+    {
+      key: 'priority',
+      label: 'Приоритет',
+      type: 'select',
+      options: createEnumOptions(TicketPriority),
+      value: TicketPriority[TicketPriority.DEFAULT]
+    },
+    {
+      key: 'status',
+      label: 'Статус',
+      type: 'select',
+      options: createEnumOptions(TicketStatus),
+      value: TicketStatus[TicketStatus.OPEN]
+    },
   ],
   validators: ticketGroupValidator
 };
@@ -95,6 +113,22 @@ export const TICKETS_EDITION_CONFIG: CreationConfig = {
       key: 'description',
       label: 'Описание',
     },
+    {
+      key: 'priority',
+      label: 'Приоритет',
+      type: 'select',
+      options: createEnumOptions(TicketPriority),
+    },
+    {
+      key: 'status',
+      label: 'Статус',
+      type: 'select',
+      options: createEnumOptions(TicketStatus),
+    },
+    {
+      key: 'reason',
+      label: 'Причина изменения'
+    }
   ],
   validators: ticketGroupValidator
 }

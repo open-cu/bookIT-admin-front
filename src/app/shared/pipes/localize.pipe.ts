@@ -10,10 +10,11 @@ import toArray = TypeUtils.toArray;
 export class LocalizePipe implements PipeTransform {
   private localizationService = inject(LocalizationService);
 
-  transform(value: string, args?: string[] | string | undefined | null): Observable<string> {
-    const mapping = toArray(args);
-    return this.localizationService.getMapping([...mapping, value]).pipe(
-      map(item => typeof item === 'object' || typeof item === 'undefined' ? value : item),
+  transform(value: string | undefined, args?: string[] | string | undefined | null): Observable<string> {
+    const rawMapping = toArray(args);
+    const mapping = value ? [...rawMapping, value] : [...rawMapping];
+    return this.localizationService.getMapping(mapping).pipe(
+      map(item => typeof item === 'object' || typeof item === 'undefined' ? (value ?? '') : item),
     );
   }
 }

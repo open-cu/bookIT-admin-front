@@ -1,0 +1,12 @@
+@import '../charts.less';
+
+:host {
+  display: block;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--background-secondary);
+}
+
+tui-axes {
+  color: var(--tui-chart-categorical-03);
+}

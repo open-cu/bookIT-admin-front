@@ -1,6 +1,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, isDevMode} from '@angular/core';
 import {AiRequest} from '../../models/interfaces/ai/ai-request';
+import {delay, Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,11 +9,27 @@ import {AiRequest} from '../../models/interfaces/ai/ai-request';
 export class AiService {
   private http = inject(HttpClient);
 
-  makeRequest(request: AiRequest, humanize = false) {
+  public readonly makeRequest: (request: AiRequest, humanize?: boolean) => Observable<string>;
+
+  constructor() {
+    this.makeRequest = isDevMode() ? this.makeRequestDev : this.makeRequestProd;
+  }
+
+  private makeRequestProd(request: AiRequest, humanize = false) {
     const httpParams = new HttpParams({ fromObject: { humanize } });
     return this.http.post('/api/ai', request, {
       responseType: 'text',
       params: httpParams,
     });
+  }
+
+  private makeRequestDev(request: AiRequest, humanize = false) {
+    return of(`
+        DevMode: ${isDevMode()}<br>
+        Ваш запрос: \"${request.prompt}\"<br>
+        humanize: ${humanize}<br>
+      `).pipe(
+      delay(Math.random() * 5000),
+    );
   }
 }

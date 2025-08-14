@@ -70,7 +70,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
   constructor() {
     super();
     this.tableBlockSize = computed<string>(
-      () => `calc(100vh - ${160 + this.filterHeight() + (this.canCreate ? 44 : 0)}px)`
+      () => `calc(100vh - ${170 + this.filterHeight() + (this.canCreate ? 44 : 0)}px)`
     );
     effect(() => {
       if (!this.isFilterOpened()) {

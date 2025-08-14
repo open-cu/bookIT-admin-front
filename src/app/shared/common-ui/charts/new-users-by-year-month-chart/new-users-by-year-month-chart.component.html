@@ -1,0 +1,40 @@
+<p class="h3 chart-title">
+  {{ ChartTitles[ChartTitles.NEW_USERS_BY_YEAR_MONTH] | local: "ChartTitles" | async }}
+</p>
+<tui-loader
+  [showLoader]="(state$ | async) === ChartState.ERROR"
+  class="t-loader"
+>
+  @let ticks = axisYTicks$ | async;
+  @let axisXLabels = (axisXLabels$ | async) ?? [];
+  @let axisYLabels = (axisYLabels$ | async) ?? [];
+  <tui-axes
+    class="axes"
+    [axisXLabels]="axisXLabels"
+    [axisYLabels]="axisYLabels"
+    [horizontalLines]="ticks?.tickCount ?? 0"
+    [verticalLines]="axisXLabels.length - 1"
+  >
+    @switch (state$ | async) {
+      @case (ChartState.DONE) {
+        <tui-line-chart
+          [filled]="true"
+          [height]="ticks?.niceMax ?? 0"
+          [width]="(width$ | async) ?? 0"
+          [value]="(values$ | async) ?? []"
+          [yStringify]="yStringify"
+          [xStringify]="xStringify | async"
+          [smoothingFactor]="0"
+          [x]="-axisXPadding"
+          [y]="ticks?.niceMin ?? 0"
+        />
+      }
+      @case (ChartState.EMPTY_DATA) {
+        <p class="no-chart-info">Нет данных</p>
+      }
+      @case (ChartState.ERROR) {
+        <p class="chart-error">Ошибка загрузки</p>
+      }
+    }
+  </tui-axes>
+</tui-loader>

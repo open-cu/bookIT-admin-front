@@ -1,0 +1,41 @@
+@import '../charts';
+
+:host {
+  display: block;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--background-secondary);
+}
+
+.chart {
+  .generate-chart-colors();
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item {
+  .generate-chart-colors();
+
+  display: flex;
+  align-items: center;
+  margin: 0 0.75rem;
+
+  &::before {
+    content: '';
+    border-block-end: 0.125rem solid;
+    inline-size: 1rem;
+    margin-inline-end: 0.5rem;
+  }
+}
+
+.name {
+  color: var(--tui-text-primary);
+}
+
+.fixed-chart-line {
+  position: absolute;
+}

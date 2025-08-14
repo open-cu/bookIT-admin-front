@@ -1,3 +1,38 @@
 :host {
   display: block;
+  --chart-flex-basis: 400px;
+  --chart-min-width: 250px;
+}
+
+.charts-scrollbar {
+  margin: 2px 0;
+}
+
+.charts-container {
+  margin: 0 12px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 24px;
+  row-gap: 12px;
+}
+
+.charts-container:first-child {
+  margin-top: 12px;
+}
+
+.charts-container:last-child {
+  margin-bottom: 12px;
+}
+
+.stats-chart {
+  flex: 1 1 var(--chart-flex-basis);
+  min-width: var(--chart-min-width);
+  max-width: 100%;
+}
+
+.ai-assistant {
+  position: fixed;
+  box-sizing: border-box;
+  bottom: 0;
 }

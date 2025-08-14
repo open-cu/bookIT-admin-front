@@ -102,8 +102,8 @@ export class ItemsTableComponent<T extends object> implements OnInit, OnChanges,
 
   private sanitizer = inject(DomSanitizer);
   protected cdr = inject(ChangeDetectorRef);
-  protected readonly EDITING_BLOCK_KEY = 'editing' as const;
-  protected readonly ROW_NUMBER_KEY = 'rowNumber' as const;
+  protected readonly EDITING_BLOCK_KEY = 'editing';
+  protected readonly ROW_NUMBER_KEY = 'rowNumber';
 
   ngOnInit() {
     this.items$ = this.loadItems();

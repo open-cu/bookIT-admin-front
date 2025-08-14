@@ -37,7 +37,7 @@ export class FilterService {
 
   constructor() {
     for (const [key, option] of Object.entries(this.filterOptions)) {
-      this.filter_.set(key, signal(option.initial));
+      this.filter_.set(key, signal(option?.initial));
       if (isDevMode()) {
         effect(() => {
           console.log(`Filter signal [${key}] changed value to\n`, this.filter_.get(key)!());
