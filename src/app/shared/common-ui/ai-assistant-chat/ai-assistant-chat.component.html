@@ -6,11 +6,13 @@
       tuiTextfield
       [formControl]="formControl"
       (keyup.enter)="onRequestSend()"
+      [ngStyle]="{ 'color': isRequestInProgress ? 'var(--tui-text-tertiary)' : 'var(--tui-text-primary)' }"
     />
     <tui-icon
       class="ai-assistant-enter-icon"
       icon="@tui.corner-down-right"
       (click)="onRequestSend()"
+      [ngStyle]="{ 'pointer-events': isRequestInProgress ? 'none' : 'initial' }"
     ></tui-icon>
   </tui-textfield>
   <div class="ai-assistant-humanize-switch">

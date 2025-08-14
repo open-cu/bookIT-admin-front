@@ -1,12 +1,20 @@
 import {Component, DestroyRef, inject} from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TuiAlertService, TuiError, TuiIcon, TuiTextfieldComponent, TuiTextfieldDirective} from '@taiga-ui/core';
+import {
+  TuiAlertOptions,
+  TuiAlertService,
+  TuiError,
+  TuiIcon,
+  TuiTextfieldComponent,
+  TuiTextfieldDirective
+} from '@taiga-ui/core';
 import {AiService} from '../../../core/services/api/ai.service';
 import {TuiSwitch} from '@taiga-ui/kit';
-import {EMPTY, mergeAll, Observable, Subject, switchMap, tap} from 'rxjs';
+import {mergeAll, Observable, of, Subject, switchMap} from 'rxjs';
 import {UserService} from '../../../core/services/api/auth/user.service';
-import {map} from 'rxjs/operators';
+import {catchError, finalize, map} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NgStyle} from '@angular/common';
 
 @Component({
   selector: 'app-ai-assistant-chat',
@@ -17,7 +25,8 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
     TuiTextfieldDirective,
     TuiIcon,
     TuiSwitch,
-    FormsModule
+    FormsModule,
+    NgStyle
   ],
   templateUrl: './ai-assistant-chat.component.html',
   styleUrl: './ai-assistant-chat.component.css',
@@ -28,38 +37,64 @@ export class AiAssistantChatComponent {
   private alertService = inject(TuiAlertService);
   private destroyRef = inject(DestroyRef);
 
-  private readonly maxConcurrent = 5;
-  private readonly queue$ = new Subject<Observable<void>>();
+  private readonly alertQueue$ = new Subject<Observable<void>>();
 
+  private readonly requestQueue$ = new Subject<Observable<string>>();
+
+  protected isRequestInProgress = false;
   protected isHumanized = false;
   protected formControl = new FormControl('');
 
   constructor() {
-    this.queue$.pipe(
-      mergeAll(this.maxConcurrent),
+    this.requestQueue$.pipe(
+      mergeAll(),
+      takeUntilDestroyed(this.destroyRef),
+      switchMap(response => this.showAlert(response, 'success')),
+      catchError(error => this.showAlert(`Ошибка: ${error?.message ?? 'unknown error'}`, 'error'))
+    ).subscribe(
+      result => this.alertQueue$.next(of(result)),
+    );
+
+    this.alertQueue$.pipe(
+      mergeAll(5),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe();
   }
 
-  protected makeRequest() {
-    const prompt = this.formControl.getRawValue();
-
-    if (!prompt || prompt === '') {
-      return EMPTY;
+  protected onRequestSend() {
+    if (this.isRequestInProgress) {
+      return;
     }
 
+    const prompt = this.formControl.getRawValue()?.trim();
+    if (!prompt) {
+      return;
+    }
+
+    this.isRequestInProgress = true;
+    this.formControl.reset();
+
+    const request$ = this.createRequest(prompt).pipe(
+      finalize(() => this.isRequestInProgress = false),
+    );
+
+    this.requestQueue$.next(request$);
+  }
+
+  private createRequest(prompt: string): Observable<string> {
     return this.userService.getMe().pipe(
       map(user => user.id),
-      tap(() => this.formControl.setValue(null)),
       switchMap(user_id => this.aiService.makeRequest({ user_id, prompt }, this.isHumanized))
     );
   }
 
-  protected onRequestSend() {
-    this.queue$.next(
-      this.makeRequest().pipe(
-        switchMap(result => this.alertService.open(result, {autoClose: 0}))
-      )
-    );
+  private showAlert(content: string, type: 'success' | 'error'): Observable<void> {
+    const options: Partial<TuiAlertOptions> = {
+      autoClose: 0,
+      closeable: true,
+      appearance: type === 'success' ? 'info' : 'action-destructive'
+    };
+
+    return this.alertService.open(content, options);
   }
 }
