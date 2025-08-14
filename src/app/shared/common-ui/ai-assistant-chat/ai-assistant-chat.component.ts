@@ -10,9 +10,9 @@ import {
 } from '@taiga-ui/core';
 import {AiService} from '../../../core/services/api/ai.service';
 import {TuiSwitch} from '@taiga-ui/kit';
-import {mergeAll, Observable, of, Subject, switchMap} from 'rxjs';
+import {EMPTY, mergeAll, Observable, Subject, switchMap} from 'rxjs';
 import {UserService} from '../../../core/services/api/auth/user.service';
-import {catchError, finalize, map} from 'rxjs/operators';
+import {finalize, map} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {NgStyle} from '@angular/common';
 
@@ -38,7 +38,6 @@ export class AiAssistantChatComponent {
   private destroyRef = inject(DestroyRef);
 
   private readonly alertQueue$ = new Subject<Observable<void>>();
-
   private readonly requestQueue$ = new Subject<Observable<string>>();
 
   protected isRequestInProgress = false;
@@ -48,12 +47,11 @@ export class AiAssistantChatComponent {
   constructor() {
     this.requestQueue$.pipe(
       mergeAll(),
-      takeUntilDestroyed(this.destroyRef),
-      switchMap(response => this.showAlert(response, 'success')),
-      catchError(error => this.showAlert(`Ошибка: ${error?.message ?? 'unknown error'}`, 'error'))
-    ).subscribe(
-      result => this.alertQueue$.next(of(result)),
-    );
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: request => this.addAlertInQueue(request, 'success'),
+      error: error => this.addAlertInQueue(error, 'error'),
+    });
 
     this.alertQueue$.pipe(
       mergeAll(5),
@@ -92,9 +90,28 @@ export class AiAssistantChatComponent {
     const options: Partial<TuiAlertOptions> = {
       autoClose: 0,
       closeable: true,
-      appearance: type === 'success' ? 'info' : 'action-destructive'
+      appearance: type === 'success' ? 'positive' : 'negative'
     };
 
     return this.alertService.open(content, options);
   }
+
+  private addAlertInQueue(content: string, type: 'success'): void;
+  private addAlertInQueue(content: any, type: 'error'): void;
+
+  private addAlertInQueue(content: string | any, type: 'success' | 'error') {
+    let alert$: Observable<void>;
+    switch (type) {
+      case 'success':
+        alert$ = this.showAlert(content as string, type);
+        break;
+      case 'error':
+        alert$ = this.showAlert(`Ошибка: ${content?.message ?? 'unknown error'}`, type);
+        break
+      default:
+        alert$ = EMPTY;
+    }
+
+    this.alertQueue$.next(alert$);
+  };
 }

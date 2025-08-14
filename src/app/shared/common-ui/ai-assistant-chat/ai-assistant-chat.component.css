@@ -8,7 +8,8 @@
 
 
 ::ng-deep tui-alert {
-  margin: auto !important;
+  margin: auto 24px 108px auto !important;
+  inline-size: max(50vw, 18rem) !important;
 }
 
 .ai-assistant-input-line {
