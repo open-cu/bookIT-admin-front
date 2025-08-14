@@ -1,0 +1,70 @@
+@switch (inputType) {
+  @case ("select") {
+    <app-single-select-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+      [options]="additionalParams.select?.options"
+    ></app-single-select-input>
+  }
+  @case ("multipleSelect") {
+    <app-multiple-select-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+      [options]="additionalParams.multipleSelect?.options"
+      [sorted]="additionalParams.multipleSelect?.sorted"
+    ></app-multiple-select-input>
+  }
+  @case ("chips") {
+    <app-chip-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+    ></app-chip-input>
+  }
+  @case ("number") {
+    <app-number-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+      [min]="additionalParams.number?.min"
+      [max]="additionalParams.number?.max"
+      [step]="additionalParams.number?.step"
+    ></app-number-input>
+  }
+  @case ("images") {
+    <app-image-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+    ></app-image-input>
+  }
+  @case ("dateRange") {
+    <app-date-range-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+    ></app-date-range-input>
+  }
+  @case ("dateTime") {
+    <app-date-time-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+    ></app-date-time-input>
+  }
+  @case ("date") {
+    <app-date-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+    ></app-date-input>
+  }
+  @case ("time") {
+    <app-time-input
+      [formControl]="inputFormControl"
+      [placeholder]="placeholder"
+      [useHint]="additionalParams.time?.useHint"
+      [mode]="additionalParams.time?.mode ?? 'HH:MM'"
+    ></app-time-input>
+  }
+  @default {
+    <app-text-input
+      [externalControl]="inputFormControl"
+      [placeholder]="placeholder"
+    ></app-text-input>
+  }
+}

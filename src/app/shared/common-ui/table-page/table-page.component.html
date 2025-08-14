@@ -1,0 +1,35 @@
+<header class="page-header">
+  <p class="h1 page-title">{{ isFilterOpened() ? title : '' }}</p>
+  @if (canCreate) {
+    <button
+      tuiButton
+      appearance="info"
+      class="btn create-item-btn"
+      (click)="onCreateNewItem()"
+    >{{ createButton ?? creationConfig.button ?? 'Создать' }}</button>
+  }
+</header>
+@if (isFilterOpened()) {
+  <app-filter-block
+    [filterOptions]="filterOptions"
+    [filterText]="filterButton"
+    [title]="filterTitle"
+    (onFilterItems)="onUpdateFilters($event)"
+    (waResizeObserver)="onFilterResize($event)"
+  ></app-filter-block>
+}
+<app-items-table
+  [style.--table-block-size]="tableBlockSize()"
+  #itemsTable
+  class="items-table"
+  [title]="tableTitle"
+  [columns]="columns"
+  [loadFn]="transformRequestFn"
+  [trackFn]="itemTrackBy"
+  [editable]="isEditable"
+  [deletable]="isDeletable"
+  (OnFilterOpened)="onFilterOpenClick()"
+  (OnDelete)="onDeleteItem($event)"
+  (OnEdit)="onEditItem($event)"
+  [(params)]="filterResult"
+></app-items-table>

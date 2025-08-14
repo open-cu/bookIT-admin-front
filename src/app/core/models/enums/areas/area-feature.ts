@@ -1,0 +1,10 @@
+export enum AreaFeature {
+  SILENT,
+  LIGHT,
+  PROJECTOR,
+  WHITEBOARD,
+  TV,
+  CHANCELLERY,
+  CONDITIONER,
+  SPEAKER_SYSTEM
+}

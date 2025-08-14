@@ -1,0 +1,26 @@
+<div class="auth-container">
+  <p class="h1 auth-title">Авторизация</p>
+  <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form">
+    @for (control of getControls(); track control[0]) {
+      <tui-textfield>
+        @let isError = isInvalidForm(control[0]);
+        @if (isError) {
+          <label class="invalid-input-label" tuiLabel>{{ getErrorMessage(control[0]) }}</label>
+        }
+        <input
+          [placeholder]="placeholders[control[0]]"
+          tuiTextfield
+          [invalid]="isError"
+          [formControl]="control[1]"
+          (input)="control[0] === 'telegram' ? formatTelegram($event) : undefined"
+        />
+      </tui-textfield>
+    }
+    <button
+      type="submit"
+      tuiButton
+      class="submit-button"
+      [disabled]="authForm.invalid"
+    >Войти</button>
+  </form>
+</div>

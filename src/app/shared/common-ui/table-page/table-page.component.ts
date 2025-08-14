@@ -1,0 +1,155 @@
+import {Component, computed, effect, ElementRef, inject, Input, OnInit, Signal, signal, ViewChild} from '@angular/core';
+import {CreationConfig} from '../creation-block/creation-config';
+import {TuiButton, tuiDialog} from '@taiga-ui/core';
+import {CreationBlockComponent} from '../creation-block/creation-block.component';
+import {EMPTY, Observable, switchMap} from 'rxjs';
+import {ColumnConfig} from '../items-table/column-config';
+import {ItemsTableComponent} from '../items-table/items-table.component';
+import {FilterBlockComponent} from '../filter-block/filter-block.component';
+import {DeletionConfig} from './deletion-config';
+import {FilterOptions, FilterResult} from '../filter-block/filter-config';
+import {TypeUtils} from '../../../core/utils/type.utils';
+import {TuiResponsiveDialogService} from '@taiga-ui/addon-mobile';
+import {TUI_CONFIRM} from '@taiga-ui/kit';
+import {WaResizeObserver} from '@ng-web-apis/resize-observer';
+import compactObject = TypeUtils.compactObject;
+import transformParam = TypeUtils.transformParam;
+import getSelf = TypeUtils.getSelf;
+
+@Component({
+  selector: 'app-table-page',
+  imports: [
+    FilterBlockComponent,
+    ItemsTableComponent,
+    TuiButton,
+    WaResizeObserver,
+  ],
+  templateUrl: './table-page.component.html',
+  styleUrl: './table-page.component.css'
+})
+export class TablePageComponent<T extends object> extends ItemsTableComponent<T> implements OnInit {
+  @Input('createFn') createItemFn: (item: any) => Observable<Partial<T>> = () => EMPTY;
+  @Input('editFn') editItemFn: (item: any, patch: any) => Observable<Partial<T>> = () => EMPTY;
+  @Input('deleteFn') deleteItemFn: (item: any) => Observable<string> = () => EMPTY;
+
+  @Input() transformParamsFn: (params: any) => any = getSelf;
+  @Input() transformPatchFn: (config: CreationConfig, item: T) => CreationConfig = getSelf;
+
+  @Input() override tableTitle: string = '';
+  @Input() title: string = '';
+  @Input() filterButton: string = 'Найти';
+  @Input() filterTitle: string = 'Поиск';
+  @Input() createButton?: string;
+
+  @Input() filterOptions!: FilterOptions;
+
+  @Input() columns!: ColumnConfig[];
+
+  @Input() creationConfig!: CreationConfig;
+  @Input() editionConfig!: CreationConfig;
+  @Input() deletionConfig!: DeletionConfig;
+  @Input('creatable') canCreate = true;
+
+  @ViewChild('itemsTable') itemsTableElement!: ElementRef<HTMLElement>;
+
+  protected filterResult: FilterResult<typeof this.filterOptions> = {};
+
+  private readonly creationDialog = tuiDialog(CreationBlockComponent, {
+    dismissible: true,
+  });
+  private readonly editionDialog = tuiDialog(CreationBlockComponent, {
+    dismissible: true,
+  });
+  private dialogService = inject(TuiResponsiveDialogService);
+
+  protected isFilterOpened = signal(false);
+  protected transformRequestFn!: typeof this.loadItemsFn;
+  protected tableBlockSize: Signal<string>;
+  private filterHeight = signal<number>(0);
+
+  constructor() {
+    super();
+    this.tableBlockSize = computed<string>(
+      () => `calc(100vh - ${160 + this.filterHeight() + (this.canCreate ? 44 : 0)}px)`
+    );
+    effect(() => {
+      if (!this.isFilterOpened()) {
+        this.filterHeight.set(0);
+      }
+    });
+  }
+
+  override ngOnInit() {
+    super.ngOnInit();
+    const transform = transformParam(compactObject, this.transformParamsFn);
+    this.transformRequestFn = transformParam(this.loadItemsFn, transform as (val: any) => any);
+  }
+
+  protected onFilterOpenClick() {
+    this.isFilterOpened.update(value => !value);
+  }
+
+  protected onFilterResize(entry: readonly ResizeObserverEntry[]) {
+    const blockSize = entry[0].borderBoxSize[0].blockSize;
+    this.filterHeight.set(blockSize);
+  }
+
+  protected onCreateNewItem() {
+    this.creationDialog(this.creationConfig)
+      .pipe(
+        switchMap(item => item
+          ? this.createItemFn(item)
+          : EMPTY
+        )
+      )
+      .subscribe(() => this.updateItems());
+  }
+
+  protected onEditItem(tableRaw: any) {
+    const item = Object.fromEntries(tableRaw);
+    const config = this.patchConfigWithItem(this.editionConfig, item);
+    this.editionDialog(config)
+      .pipe(
+        switchMap(value => value
+          ? this.editItemFn(item, value)
+          : EMPTY
+        )
+      )
+      .subscribe(() => this.updateItems());
+  }
+
+  private patchConfigWithItem(config: CreationConfig, item: any): CreationConfig {
+    for (let option of config.options) {
+      if (item[option.key] !== undefined && item[option.key] !== null) {
+        option.value = item[option.key];
+      }
+    }
+    return this.transformPatchFn(config, item);
+  }
+
+  protected onDeleteItem(tableRaw: any) {
+    const item = Object.fromEntries(tableRaw);
+    const { label, ...other } = this.deletionConfig;
+
+    // to swap buttons in template
+    [other.yes, other.no] = [other.no ?? 'Нет', other.yes ?? 'Да'];
+
+    this.dialogService
+      .open<boolean>(TUI_CONFIRM, {
+        label: label,
+        size: 's',
+        data: other,
+      })
+      .pipe(
+        switchMap(result => !result
+          ? this.deleteItemFn(item)
+          : EMPTY
+        ),
+      )
+      .subscribe(() => this.updateItems());
+  }
+
+  protected onUpdateFilters(filters: typeof this.filterResult) {
+    this.filterResult = compactObject(filters);
+  }
+}

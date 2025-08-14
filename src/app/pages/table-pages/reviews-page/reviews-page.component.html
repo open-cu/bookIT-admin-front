@@ -1,0 +1,18 @@
+<app-table-page
+  title="Отзывы"
+  tableTitle="Список отзывов"
+  filterButton="Найти отзыв"
+  filterTitle="Поиск отзывов"
+  createButton="Создать отзыв"
+  [columns]="columns"
+  [createFn]="createItemFn"
+  [deleteFn]="deleteItemFn"
+  [loadFn]="loadItemsFn"
+  [transformParamsFn]="transformParamsFn"
+  [transformPatchFn]="transformPatchFn"
+  [filterOptions]="filterOptions"
+  [creationConfig]="creationConfig"
+  [deletionConfig]="deletionConfig"
+  [editable]="false"
+  [deletable]="true"
+></app-table-page>

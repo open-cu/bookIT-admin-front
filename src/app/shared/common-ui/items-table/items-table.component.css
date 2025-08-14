@@ -1,0 +1,82 @@
+:host {
+  display: block;
+  --table-block-size: 100%;
+  --table-inline-size: 100%;
+}
+
+.table-container {
+  padding: 16px;
+  background: var(--background-secondary);
+  border-radius: 10px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.row-number-cell {
+  justify-self: center;
+}
+
+.table-title {
+  display: flex;
+  flex-direction: row;
+  color: var(--text-primary);
+  margin: 0;
+  justify-self: flex-start;
+}
+
+.filter-button {
+  color: var(--text-primary);
+  border: none;
+  background: var(--background-secondary);
+  justify-self: flex-start;
+  margin-left: 8px;
+}
+
+.update-button {
+  color: var(--alternative-color);
+  font-size: 14px;
+  background: transparent;
+  border: none;
+  height: 19px;
+  width: min-content;
+  justify-self: flex-end;
+  align-self: center;
+}
+
+.table-scrollbar {
+  inline-size: var(--table-inline-size);
+  block-size: var(--table-block-size);
+}
+
+.table {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.editing-cell {
+  padding: 0 !important;
+}
+
+.editing-block {
+  display: flex;
+  flex-direction: row;
+}
+
+.edit-item-button,
+.delete-item-button {
+  border: none;
+  background: none;
+  color: var(--icon-secondary);
+
+  tui-icon {
+    width: 20px;
+    height: 20px;
+  }
+}

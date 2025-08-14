@@ -1,1 +1,153 @@
-/* You can add global styles to this file, and also import other style files */
+@import "@taiga-ui/core/styles/taiga-ui-theme.less";
+@import "@taiga-ui/core/styles/taiga-ui-fonts.less";
+@import 'palette.less';
+@import 'cells.css';
+
+:root {
+  box-sizing: border-box;
+  --top-layout-border: 20px;
+  --items-table-margin-top: 16px;
+}
+
+body {
+  overflow: hidden;
+  margin: 0;
+}
+
+button:active, a:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+  transition: all 0.2s ease;
+}
+
+tui-avatar::before {
+  box-sizing: border-box !important;
+  width: inherit !important;
+  height: inherit !important;
+  padding: inherit !important;
+}
+
+.underline::after {
+  content: '';
+  width: 100%;
+  border: 1px solid;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.overline::after {
+  content: '';
+  width: 100%;
+  border: 1px solid;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+.h1 {
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: 0;
+}
+
+.h2 {
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: 0;
+}
+
+.h3 {
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.b1 {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.b2 {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+
+.b3 {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  font-size: 8px;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
+.btn {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.confirm {
+  color: var(--text-primary) !important;
+  font-family: Inter, sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  font-size: 20px !important;
+  line-height: 24px!important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  justify-self: center !important;
+  margin: 12px 0 24px !important;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 12px;
+  justify-content: space-between;
+}
+
+.page-title {
+  color: var(--text-primary);
+  margin: 0;
+  justify-self: flex-start;
+  align-self: center;
+}
+
+.create-item-btn {
+  box-sizing: border-box;
+  height: 44px !important;
+  min-width: 158px;
+  justify-self: flex-end;
+  align-items: center;
+}
+
+.items-table {
+  margin-top: var(--items-table-margin-top);
+}

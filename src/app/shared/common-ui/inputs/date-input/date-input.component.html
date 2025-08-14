@@ -1,0 +1,10 @@
+<tui-textfield>
+  <tui-error [error]="errorMessage"/>
+  <input
+    tuiInputDate
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [invalid]="isInvalid"
+  />
+  <tui-calendar *tuiTextfieldDropdown />
+</tui-textfield>

@@ -1,0 +1,26 @@
+<p class="h1 block-title">{{ context.data.title ?? 'Создание' }}</p>
+<form [formGroup]="creationForm" (ngSubmit)="onSubmit()" class="creation-block-form">
+  @for (config of currentOptions; track $index) {
+    <div class="input-container">
+      <label class="input-label" tuiLabel>{{ config.label ?? config.key }}</label>
+      @let placeholder = config.placeholder ?? '';
+      @let control = getFormControl(config.key);
+      <app-input-container
+        [type]="config.type ?? 'text'"
+        [control]="control"
+        [placeholder]="placeholder"
+        [params]="{
+          select: { options: config.options ?? [] },
+          multipleSelect: { options: config.options ?? [], sorted: true },
+          number: { min: 0, max: 1000000 }
+        }"
+      ></app-input-container>
+    </div>
+  }
+  <button
+    type="submit"
+    tuiButton
+    class="create-button"
+    [disabled]="creationForm.invalid"
+  >{{ context.data.button ?? 'Создать' }}</button>
+</form>

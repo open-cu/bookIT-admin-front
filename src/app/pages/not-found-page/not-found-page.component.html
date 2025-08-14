@@ -1,0 +1,26 @@
+<tui-block-status>
+  <img
+    alt="not found"
+    src="/assets/images/not-found.svg"
+    tuiSlot="top"
+    class="not-found-image"
+  />
+  <h4 class="not-found-text">Страница не найдена</h4>
+  <span class="text">
+    Вы можете попытаться обновить страницу или вернуться на главную
+  </span>
+  <button
+    appearance="secondary"
+    tuiButton
+    type="button"
+    size="l"
+    (click)="reloadPage()"
+  >Перезагрузить</button>
+  <button
+    appearance="primary"
+    tuiButton
+    type="button"
+    size="l"
+    (click)="onMainPage()"
+  >На главную</button>
+</tui-block-status>

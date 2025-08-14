@@ -1,0 +1,10 @@
+export enum ThemeTag {
+  PSYCHOLOGY,
+  ART,
+  MARKETING,
+  TECHNOLOGY,
+  BUSINESS,
+  SCIENCE,
+  IT,
+  SUCCESS_STORY
+}
