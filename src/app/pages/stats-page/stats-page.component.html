@@ -37,4 +37,8 @@
     ></app-bookings-by-day-of-week>
   </div>
 </tui-scrollbar>
-
+<app-ai-assistant-chat
+  class="ai-assistant"
+  [style.inline-size.px]="assistantBoxSize().inlineSize"
+  (waResizeObserver)="onAiAssistantResize($event)"
+></app-ai-assistant-chat>

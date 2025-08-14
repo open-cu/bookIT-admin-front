@@ -5,7 +5,7 @@
 }
 
 .charts-scrollbar {
-  margin: 16px 0;
+  margin: 2px 0;
 }
 
 .charts-container {
@@ -17,8 +17,22 @@
   row-gap: 12px;
 }
 
+.charts-container:first-child {
+  margin-top: 12px;
+}
+
+.charts-container:last-child {
+  margin-bottom: 12px;
+}
+
 .stats-chart {
   flex: 1 1 var(--chart-flex-basis);
   min-width: var(--chart-min-width);
   max-width: 100%;
+}
+
+.ai-assistant {
+  position: fixed;
+  box-sizing: border-box;
+  bottom: 0;
 }

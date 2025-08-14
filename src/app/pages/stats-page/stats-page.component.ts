@@ -21,6 +21,11 @@ import {
 import {
   BookingsByDayOfWeekComponent
 } from '../../shared/common-ui/charts/bookings-by-day-of-week/bookings-by-day-of-week.component';
+import {AiAssistantChatComponent} from '../../shared/common-ui/ai-assistant-chat/ai-assistant-chat.component';
+
+type BoxSize = {
+  -readonly [key in keyof ResizeObserverSize]: ResizeObserverSize[key];
+}
 
 @Component({
   selector: 'app-stats-page',
@@ -34,6 +39,7 @@ import {
     BookingsChartComponent,
     BookingsPeriodChartComponent,
     BookingsByDayOfWeekComponent,
+    AiAssistantChatComponent,
   ],
   templateUrl: './stats-page.component.html',
   styleUrl: './stats-page.component.css'
@@ -43,13 +49,14 @@ export class StatsPageComponent {
   private filters = signal<FilterResult<FilterOption[]>>({});
   protected statsParams: Signal<object>;
   protected filterHeight = signal(0);
+  protected assistantBoxSize = signal<BoxSize>({ blockSize: 0, inlineSize: 0 });
   protected blockSize: Signal<string>;
 
   private datePipe = inject(DatePipe);
 
   constructor() {
     this.blockSize = computed<string>(
-      () => `calc(100vh - ${170 + this.filterHeight()}px)`
+      () => `calc(100vh - ${24 + this.filterHeight() + this.assistantBoxSize().blockSize}px)`
     );
     this.statsParams = computed(() => {
       const filters = this.filters();
@@ -69,7 +76,17 @@ export class StatsPageComponent {
   }
 
   protected onFilterResize(entry: readonly ResizeObserverEntry[]) {
-    const blockSize = entry[0].borderBoxSize[0].blockSize;
+    const { blockSize, inlineSize } = entry[0].borderBoxSize[0];
+    this.assistantBoxSize.update(
+      ({ blockSize }) => ({inlineSize, blockSize})
+    );
     this.filterHeight.set(blockSize);
+  }
+
+  protected onAiAssistantResize(entry: readonly ResizeObserverEntry[]) {
+    const { blockSize } = entry[0].borderBoxSize[0];
+    this.assistantBoxSize.update(
+      ({ inlineSize }) => ({inlineSize, blockSize})
+    );
   }
 }
