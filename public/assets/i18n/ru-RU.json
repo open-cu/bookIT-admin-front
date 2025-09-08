@@ -69,7 +69,7 @@
   "TicketType": {
     "CLEANING": "Уборка",
     "REPAIR": "Ремонт",
-    "MAINTENANCE": "Обслуживание",
+    "MAINTENANCE": "Техническое обслуживание",
     "OTHER": "Другое"
   },
   "UserRole": {

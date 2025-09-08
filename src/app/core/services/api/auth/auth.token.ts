@@ -7,3 +7,7 @@ export const AUTH_TOKEN = new InjectionToken<{key: string, expired: number}>('AU
     expired: convertTime(24, 'hours')
   })
 });
+
+export const AUTH_URL = new InjectionToken<string>('AUTH_URL', {
+  factory: () => '/api/auth/telegram'
+})

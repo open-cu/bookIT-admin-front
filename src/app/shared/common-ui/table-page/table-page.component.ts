@@ -141,6 +141,7 @@ export class TablePageComponent<T extends object> extends ItemsTableComponent<T>
         data: other,
       })
       .pipe(
+        // cause buttons swap
         switchMap(result => !result
           ? this.deleteItemFn(item)
           : EMPTY

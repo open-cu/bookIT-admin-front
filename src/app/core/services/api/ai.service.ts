@@ -12,7 +12,7 @@ export class AiService {
   public readonly makeRequest: (request: AiRequest, humanize?: boolean) => Observable<string>;
 
   constructor() {
-    this.makeRequest = isDevMode() ? this.makeRequestDev : this.makeRequestProd;
+    this.makeRequest = isDevMode() ? this.makeRequestProd : this.makeRequestProd;
   }
 
   private makeRequestProd(request: AiRequest, humanize = false) {

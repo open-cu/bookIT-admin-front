@@ -13,6 +13,7 @@ import compactObject = TypeUtils.compactObject;
 })
 export class BookingService extends ApiService<Booking> {
   protected override baseUrl = '/api/bookings';
+  private readonly availabilityUrl = `${this.baseUrl}/availability`;
 
   override delete(bookingId: string) {
     return super.delete(bookingId);
@@ -35,22 +36,32 @@ export class BookingService extends ApiService<Booking> {
   }
 
   getAvailableTimes(params: { date: string, areaId?: string, bookingId?: string }) {
-    const httpParams = new HttpParams({fromObject: compactObject(params) as QueryParams});
-    return this.http.get<[string, string, string][]>(`${this.baseUrl}/availability/times`, {params: httpParams});
+    const httpParams = new HttpParams({
+      fromObject: compactObject(params) as QueryParams
+    });
+    return this.http.get<[string, string, string][]>(
+      `${this.availabilityUrl}/times`,
+      {params: httpParams}
+    );
   }
 
   getAvailableDates(params?: {areaId?: string}) {
-    const httpParams = new HttpParams({fromObject: compactObject(params ?? {}) as QueryParams});
-    return this.http.get<string[]>(`${this.baseUrl}/availability/dates`, {params: httpParams});
+    const httpParams = new HttpParams({
+      fromObject: compactObject(params ?? {}) as QueryParams
+    });
+    return this.http.get<string[]>(
+      `${this.availabilityUrl}/dates`,
+      {params: httpParams}
+    );
   }
 
-  getClosestTimes(params: {areaId: string}) {
-    const httpParams = new HttpParams({fromObject: params as QueryParams});
-    return this.http.get<string[]>(`${this.baseUrl}/availability/closest-times`, {params: httpParams});
-  }
-
-  getAvailableAreas(params: {startTimes: string[]}) {
-    const httpParams = new HttpParams({fromObject: params as QueryParams});
-    return this.http.get<string[]>(`${this.baseUrl}/availability/areas`, {params: httpParams});
+  getAvailableAreas(params?: {startTimes?: string[]}) {
+    const httpParams = new HttpParams({
+      fromObject: compactObject(params ?? {}) as QueryParams
+    });
+    return this.http.get<string[]>(
+      `${this.availabilityUrl}/areas`,
+      {params: httpParams}
+    );
   }
 }

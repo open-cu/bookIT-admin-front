@@ -1,7 +1,7 @@
 import {Image} from '../models/interfaces/images/image';
 
 export function base64ToBlob(base64Data: string, contentType: string): Blob {
-  const base64Content = base64Data.split(',')[1] || base64Data;
+  const base64Content = base64Data.split(',')[1] ?? base64Data;
 
   const byteCharacters = atob(base64Content);
   const byteArrays = [];

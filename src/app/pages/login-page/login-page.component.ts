@@ -67,7 +67,7 @@ export class LoginPageComponent {
 
     const formData = this.authForm.value;
     this.authService.authorize({
-      id: 0,
+      id: 1,
       first_name: formData.firstName!,
       last_name: formData.lastName ?? undefined,
     }).subscribe({

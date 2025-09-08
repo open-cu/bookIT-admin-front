@@ -5,7 +5,7 @@ import {catchError} from 'rxjs/operators';
 import {CookieService} from 'ngx-cookie-service';
 import {Router} from '@angular/router';
 import {APP_ROUTES} from '../../../../app.routes.paths';
-import {AUTH_TOKEN} from './auth.token';
+import {AUTH_TOKEN, AUTH_URL} from './auth.token';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,7 @@ import {AUTH_TOKEN} from './auth.token';
 })
 export class AuthInterceptor implements HttpInterceptor {
   private readonly AUTH_TOKEN = inject(AUTH_TOKEN);
+  private readonly AUTH_URL = inject(AUTH_URL);
 
   private cookieService = inject(CookieService);
   private router = inject(Router);
@@ -26,7 +27,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
     const token = this.cookieService.get(this.AUTH_TOKEN.key);
 
-    const authReq = this.addTokenToRequest(request, token);
+    const authReq = request.url === this.AUTH_URL
+      ? request
+      : this.addTokenToRequest(request, token);
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
