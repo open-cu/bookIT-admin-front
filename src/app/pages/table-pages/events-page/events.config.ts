@@ -13,6 +13,7 @@ import {EventParticipationFormat} from '../../../core/models/enums/events/event-
 import {EventStatus} from '../../../core/models/enums/events/event-status';
 import {createTimeOptions, getAreaOptions} from '../common-functions';
 import {TuiTime} from '@taiga-ui/cdk';
+import {EventTargetAudience} from '../../../core/models/enums/events/event-target-audience';
 
 export const EVENTS_COLUMNS_CONFIG: ColumnConfig[] = [
   {
@@ -38,6 +39,10 @@ export const EVENTS_COLUMNS_CONFIG: ColumnConfig[] = [
   },
   {
     key: "participationFormats",
+    render: CellRenders.asList()
+  },
+  {
+    key: "targetAudiences",
     render: CellRenders.asList()
   },
   {
@@ -95,6 +100,12 @@ export const EVENTS_FILTER_OPTIONS: FilterOptions = [
     options: createEnumOptions(EventParticipationFormat)
   },
   {
+    key: "targetAudiences",
+    placeholder: 'Целевая аудитория',
+    type: 'multipleSelect',
+    options: createEnumOptions(EventTargetAudience)
+  },
+  {
     key: 'search',
     placeholder: 'Поиск мероприятия',
   },
@@ -145,6 +156,13 @@ export const EVENTS_CREATION_CONFIG: CreationConfig = {
       type: 'multipleSelect',
       options: createEnumOptions(EventParticipationFormat),
       value: [],
+    },
+    {
+      key: "targetAudiences",
+      label: 'Целевая аудитория',
+      type: 'multipleSelect',
+      options: createEnumOptions(EventTargetAudience),
+      value: []
     },
     {
       key: 'areaId',
@@ -216,6 +234,13 @@ export const EVENTS_EDITION_CONFIG: CreationConfig = {
       type: 'multipleSelect',
       options: createEnumOptions(EventParticipationFormat),
       value: [],
+    },
+    {
+      key: "targetAudiences",
+      label: 'Целевая аудитория',
+      type: 'multipleSelect',
+      options: createEnumOptions(EventTargetAudience),
+      value: []
     },
     {
       key: 'areaId',
